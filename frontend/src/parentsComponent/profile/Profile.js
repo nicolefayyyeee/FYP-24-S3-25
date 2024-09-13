@@ -9,7 +9,7 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const response = await fetch('http://localhost:5000/users');
+      const response = await fetch('http://localhost:5000/get_users');
       const data = await response.json();
       setUsers(data.reverse()); 
     };
@@ -18,22 +18,30 @@ const Profile = () => {
   }, []);
 
   const addUser = async () => {
-    let userName = prompt('Please enter your name');
-    if (userName !== null) {
-      const response = await fetch('http://localhost:5000/add_user', {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json' },
-        body: JSON.stringify({ name: userName }),
-      });
+    let username = prompt('Please enter your username');
+    if (username === null) return; 
 
-      const data = await response.json();
+    let name = prompt('Please enter your name');
+    if (name === null) return; 
 
-      if (response.status === 201) {
-        setUsers((prevUsers) => [userName, ...prevUsers]);
-      } else {
-        alert(data.message);
-      }
+    let password = prompt('Please enter your password');
+    if (password === null) return; 
+
+    const response = await fetch('http://localhost:5000/add_child', {
+      method: 'POST',
+      credentials: 'include',
+      headers: { 'Content-Type': 'application/json' },
+      body: JSON.stringify({ username, name, password }),
+    });
+
+    const data = await response.json();
+
+    if (response.status === 201) {
+      setUsers((prevUsers) => [...prevUsers, name]);
+    } else {
+      alert(data.message);
     }
+    
   };
 
   return (
