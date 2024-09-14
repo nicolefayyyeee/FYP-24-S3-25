@@ -12,7 +12,8 @@ import { AccountContext } from "./accountContext";
 
 export function SignupForm(props) {
   const { switchToSignin } = useContext(AccountContext);
-
+  
+  const [username, setUsername] = useState('');
   const [name, setName] = useState('');
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
@@ -28,7 +29,7 @@ export function SignupForm(props) {
     e.preventDefault();
 
     // Basic validation
-    if (!name || !email || !password || !confirmPassword) {
+    if (!username || !name || !email || !password || !confirmPassword) {
       setErrorMessage("Please fill out all fields.");
       return;
     }
@@ -50,6 +51,7 @@ export function SignupForm(props) {
           'Content-Type': 'application/json',
         },
         body: JSON.stringify({
+          username,
           name,
           email,
           password
@@ -72,6 +74,13 @@ export function SignupForm(props) {
   return (
     <BoxContainer>
       <FormContainer onSubmit={handleSubmit}>
+        <Input
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
+          required
+        />
         <Input
           type="text"
           placeholder="Full Name"

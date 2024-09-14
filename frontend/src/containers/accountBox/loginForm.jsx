@@ -15,30 +15,37 @@ export function LoginForm(props) {
   const { switchToSignup } = useContext(AccountContext);
   const navigate = useNavigate();  // Initialize useNavigate hook
 
-  const [email, setEmail] = useState('');
+  const [username, setUsername] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState('');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
+
+    if (!username || !password) {
+      setErrorMessage("Please fill out all fields.");
+      return;
+    }
 
     const response = await fetch('http://localhost:5000/login', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
       },
-      body: JSON.stringify({ email, password }),
+      credentials: 'include',
+      body: JSON.stringify({ username, password }),
     });
 
     const data = await response.json();
 
     if (response.ok) {
-      // Store the email in localStorage or wherever necessary
-      localStorage.setItem('email', email);
+      // localStorage.setItem('username', username);
+      localStorage.setItem('user_id', data.user_id);
 
       // Redirect to the /profile page after successful login
       navigate('/profile');
     } else {
-      alert(data.message);
+      setErrorMessage(data.message);
     }
   };
 
@@ -46,10 +53,10 @@ export function LoginForm(props) {
     <BoxContainer>
       <FormContainer>
         <Input
-          type="email"
-          placeholder="Email"
-          value={email}
-          onChange={(e) => setEmail(e.target.value)}
+          type="text"
+          placeholder="Username"
+          value={username}
+          onChange={(e) => setUsername(e.target.value)}
           required
         />
         <Input
@@ -63,6 +70,7 @@ export function LoginForm(props) {
         <Marginer direction="vertical" margin={10} />
         <MutedLink href="#">Forget your password?</MutedLink>
         <Marginer direction="vertical" margin="1.6em" />
+        {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
         <SubmitButton type="submit" onClick={handleSubmit}>Signin</SubmitButton>
       <Marginer direction="vertical" margin="1em" />
       <MutedLink href="#">

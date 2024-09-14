@@ -8,7 +8,7 @@ const Navbar = () => {
     const [nav, setNav] = useState(false);
     const handleNav = () => setNav(!nav);
 
-    const email = localStorage.getItem('email');
+    const user_id = localStorage.getItem('user_id');
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -19,10 +19,8 @@ const Navbar = () => {
             },
         });
 
-        const data = await response.json();
-
         if (response.ok) {
-            localStorage.removeItem('email');
+            localStorage.removeItem('user_id');
             navigate('/login');
         } else {
             alert("Logout failed. Please try again.");
@@ -41,9 +39,10 @@ const Navbar = () => {
                     <li><Link to='/ourApp'>Our App</Link></li>
                     <li><Link to='/about'>About</Link></li>
                     <li><Link to='/contact'>Contact</Link></li>
-                    <li><Link to="/imageCaption">Image Captioner</Link></li>
-                    {email ? (
+                    {/* <li><Link to="/imageCaption">Image Captioner</Link></li> */}
+                    {user_id ? (
                         <>
+                            <li><Link to="/imageCaption">Image Captioner</Link></li>
                             <li><Link to="/profile" className="profile-link">
                                 <div className="profile-navbar" />
                             </Link></li>
