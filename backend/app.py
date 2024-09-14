@@ -2,7 +2,7 @@ from datetime import datetime
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
-from flask import Flask, render_template, request, jsonify, session
+from flask import Flask, request, jsonify, session
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
@@ -100,11 +100,16 @@ with app.app_context():
 # Fetch all users (for user list)
 @app.route('/get_users', methods=['GET'])
 def get_users():
-    global session_user # temp
+    # global session_user # temp
     # session_user = session['user']
-    current_user = Users.query.filter_by(id=session_user).first()
-    child_users = Users.query.filter_by(parent_id=session_user).order_by(Users.id.desc()).all()
-    # users = Users.query.all()
+    user_id = request.args.get('user_id')
+    print(user_id)
+    # user_id2 = session.get("user_id")
+    # print(user_id2)
+    if not user_id:
+        return jsonify({"message": "Login required!"}), 401
+    current_user = Users.query.filter_by(id=user_id).first()
+    child_users = Users.query.filter_by(parent_id=user_id).order_by(Users.id.desc()).all()
     user_list = [user.name for user in child_users]
     user_list.append(current_user.name)
     return jsonify(user_list), 200
@@ -112,16 +117,19 @@ def get_users():
 # Add new child user (for user list)
 @app.route('/add_child', methods=['POST'])
 def add_child():
-    global session_user # temp
+    # global session_user # temp
     data = request.get_json()
-
+    user_id = data.get('user_id') 
+    if not user_id:
+        return jsonify({"message": "Login required!"}), 401
+    
     # Check if the user already exists
     if Users.query.filter_by(username=data['username']).first():
         return jsonify({"message": "Username already exists"}), 400
 
     # Create new user
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    new_user = Users(username=data['username'], name=data['name'], password=hashed_password, parent_id=session_user)
+    new_user = Users(username=data['username'], name=data['name'], password=hashed_password, parent_id=user_id)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({"message": "User added successfully!"}), 201
@@ -148,19 +156,20 @@ def signup():
 # Login Route
 @app.route('/login', methods=['POST'])
 def login():
-    global session_user # temp
+    # global session_user # temp
     data = request.get_json()
     user = Users.query.filter_by(username=data['username']).first()
     if user and bcrypt.check_password_hash(user.password, data['password']):
-        session['user'] = user.id
-        session_user = user.id # temp
-        return jsonify({"message": "Login successful!"}), 200
+        session['user_id'] = user.id
+        # session_user = user.id # temp
+        return jsonify({"message": "Login successful!", "user_id": user.id}), 200
     return jsonify({"message": "Invalid username or password!"}), 401
 
 # Logout Route
 @app.route('/logout', methods=['POST'])
 def logout():
     session.pop('user', None)
+    session.clear()
     return jsonify({"message": "Logout successful!"}), 200
 
 # Add new child profile for the logged-in parent

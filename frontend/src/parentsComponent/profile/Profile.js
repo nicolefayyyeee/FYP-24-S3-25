@@ -9,7 +9,8 @@ const Profile = () => {
 
   useEffect(() => {
     const fetchUsers = async () => {
-      const response = await fetch('http://localhost:5000/get_users');
+      const userId = localStorage.getItem('user_id');
+      const response = await fetch(`http://localhost:5000/get_users?user_id=${userId}`);
       const data = await response.json();
       setUsers(data.reverse()); 
     };
@@ -27,11 +28,13 @@ const Profile = () => {
     let password = prompt('Please enter your password');
     if (password === null) return; 
 
+    const userId = localStorage.getItem('user_id'); 
+
     const response = await fetch('http://localhost:5000/add_child', {
       method: 'POST',
       credentials: 'include',
       headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, name, password }),
+      body: JSON.stringify({ username, name, password, user_id: userId }),
     });
 
     const data = await response.json();

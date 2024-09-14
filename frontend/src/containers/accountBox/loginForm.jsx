@@ -39,8 +39,8 @@ export function LoginForm(props) {
     const data = await response.json();
 
     if (response.ok) {
-      // Store the username in localStorage or wherever necessary
-      localStorage.setItem('username', username);
+      // localStorage.setItem('username', username);
+      localStorage.setItem('user_id', data.user_id);
 
       // Redirect to the /profile page after successful login
       navigate('/profile');
