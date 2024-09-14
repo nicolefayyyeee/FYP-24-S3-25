@@ -1,0 +1,6 @@
+# Ignore Python virtual environment directories
+backend/.venv/
+backend/.venv/bin/
+
+# Ignore Visual Studio Code workspace settings
+.vscode/
