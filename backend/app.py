@@ -162,7 +162,13 @@ def login():
     if user and bcrypt.check_password_hash(user.password, data['password']):
         session['user_id'] = user.id
         # session_user = user.id # temp
-        return jsonify({"message": "Login successful!", "user_id": user.id}), 200
+
+        # Check if the user is a child user
+        if user.parent_id: # change to profileID later on 
+            return jsonify({"message": "Child login successful!", "user_id": user.id, "child": True}), 200
+        else:
+            return jsonify({"message": "Parent login successful!", "user_id": user.id, "child": False}), 200
+   
     return jsonify({"message": "Invalid username or password!"}), 401
 
 # Logout Route

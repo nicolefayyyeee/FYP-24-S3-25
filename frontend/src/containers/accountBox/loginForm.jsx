@@ -42,8 +42,12 @@ export function LoginForm(props) {
       // localStorage.setItem('username', username);
       localStorage.setItem('user_id', data.user_id);
 
-      // Redirect to the /profile page after successful login
-      navigate('/profile');
+      // Redirect based on parent_id check
+      if (data.child) {
+        navigate('/');
+      } else {
+        navigate('/profile');
+      }
     } else {
       setErrorMessage(data.message);
     }
