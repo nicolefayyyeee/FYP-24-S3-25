@@ -13,7 +13,7 @@ const ParentHome = () => {
                 </div>
                 <div className="options-grid">
                     <div className="option-card red">
-                    <Link to="/snap">Create and Manage Child Account</Link>
+                    <Link to="/profile">Create and Manage Child Account</Link>
                     </div>
                     <div className="option-card yellow">
                     <Link to="/moments">View Child's Achievments and Activity</Link>
