@@ -23,7 +23,7 @@ ReactDOM.render(
       <Route path='/about' element={<AboutPage />} />
       <Route path='/contact' element={<ContactPage />} />
       <Route path='/login' element={<LoginPage />} />
-      <Route path="/imageCaption" element={<ImageCaptionPage />} />
+      <Route path="/imageCaptioning" element={<ImageCaptionPage />} />
       <Route path='/profile' element={<ProfilePage />} />
       <Route path='/adminhome' element={<AdminHomePage />} />
       <Route path='/parenthome' element={<ParentHomePage />} />
