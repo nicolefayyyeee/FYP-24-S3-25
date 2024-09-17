@@ -5,7 +5,6 @@ import About from './containers/about/About';
 import Features from './containers/features/Features'
 import FAQ from './containers/faq/FAQ';
 import Footer from './containers/footer/Footer';
-import ChildHome from './childUser/ChildHomePage';
 
 function App() {
   return (

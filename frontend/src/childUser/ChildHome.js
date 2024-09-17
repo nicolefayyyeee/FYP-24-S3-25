@@ -1,15 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './ChildHomePage.css'; // Custom styles for the home page
-import Navbar from "../containers/navbar/Navbar";
-import Footer from "../containers/footer/Footer";
+import './ChildHome.css'; // Custom styles for the home page
 
-
-const ChildHomePage = () => {
+const ChildHome = () => {
     return (
         <>
-           <Navbar /> 
-           
            <div className="childHome">
                 <div className="welcome-header">
                     <h2>Welcome, Junior Explorer!</h2>
@@ -18,7 +13,7 @@ const ChildHomePage = () => {
                 </div>
                 <div className="options-grid">
                     <div className="option-card red">
-                    <Link to="/snap">Snap a Memory</Link>
+                    <Link to="/imageCaption">Snap a Memory</Link>
                     </div>
                     <div className="option-card yellow">
                     <Link to="/moments">My Moments</Link>
@@ -37,10 +32,8 @@ const ChildHomePage = () => {
                     </div>
                 </div>
             </div>
-            
-           <Footer />
         </>
     )
 }
 
-export default ChildHomePage;
+export default ChildHome;

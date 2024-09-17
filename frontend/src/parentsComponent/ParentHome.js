@@ -1,15 +1,10 @@
 import React from 'react';
 import { Link } from 'react-router-dom';
-import './ParentHomePage.css'; // Custom styles for the home page
-import Navbar from "../containers/navbar/Navbar";
-import Footer from "../containers/footer/Footer";
+import './ParentHome.css'; // Custom styles for the home page
 
-
-const ParentHomePage = () => {
+const ParentHome = () => {
     return (
         <>
-           <Navbar /> 
-           
            <div className="parentHome">
                 <div className="welcome-header">
                     <h2>Welcome, Parent!</h2>
@@ -28,10 +23,8 @@ const ParentHomePage = () => {
                     </div>
                 </div>
             </div>
-            
-           <Footer />
         </>
     )
 }
 
-export default ParentHomePage;
+export default ParentHome;

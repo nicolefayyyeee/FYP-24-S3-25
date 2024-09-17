@@ -11,6 +11,9 @@ import ContactPage from './routes/ContactPage'
 import LoginPage from './routes/LoginPage'
 import ImageCaptionPage from "./routes/ImageCaptionPage";
 import ProfilePage from './routes/ProfilePage'
+import AdminHomePage from './routes/AdminHomePage';
+import ParentHomePage from './routes/ParentHomePage';
+import ChildHomePage from './routes/ChildHomePage';
 
 ReactDOM.render(
   <BrowserRouter>
@@ -22,6 +25,9 @@ ReactDOM.render(
       <Route path='/login' element={<LoginPage />} />
       <Route path="/imageCaption" element={<ImageCaptionPage />} />
       <Route path='/profile' element={<ProfilePage />} />
+      <Route path='/adminhome' element={<AdminHomePage />} />
+      <Route path='/parenthome' element={<ParentHomePage />} />
+      <Route path='/childhome' element={<ChildHomePage />} />
     </Routes>
   </BrowserRouter>,
   document.getElementById('root')

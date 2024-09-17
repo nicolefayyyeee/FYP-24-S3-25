@@ -9,6 +9,7 @@ const Navbar = () => {
     const handleNav = () => setNav(!nav);
 
     const user_id = localStorage.getItem('user_id');
+    const profile = localStorage.getItem('profile');
     const navigate = useNavigate();
 
     const handleLogout = async () => {
@@ -21,9 +22,23 @@ const Navbar = () => {
 
         if (response.ok) {
             localStorage.removeItem('user_id');
+            localStorage.removeItem('profile');
             navigate('/login');
         } else {
             alert("Logout failed. Please try again.");
+        }
+    };
+
+    // home page link based on profile
+    const getHomeLink = () => {
+        if (profile === 'admin') {
+            return '/adminhome';
+        } else if (profile === 'parent') {
+            return '/parenthome';
+        } else if (profile === 'child') {
+            return '/childhome';
+        } else {
+            return '/';
         }
     };
 
@@ -35,18 +50,24 @@ const Navbar = () => {
                     <h1>SeeSay Moments</h1>
                 </div>
                 <ul className={nav ? 'nav-menu active' : 'nav-menu'}>
-                    <li><Link to='/'>Home</Link></li>
+                    <li><Link to={getHomeLink()}>Home</Link></li>
                     <li><Link to='/ourApp'>Our App</Link></li>
                     <li><Link to='/about'>About</Link></li>
                     <li><Link to='/contact'>Contact</Link></li>
                     {/* <li><Link to="/imageCaption">Image Captioner</Link></li> */}
                     {user_id ? (
                         <>
-                            <li><Link to="/imageCaption">Image Captioner</Link></li>
-                            <li><Link to="/profile" className="profile-link">
-                                <div className="profile-navbar" />
-                            </Link></li>
-                            <li><Link to="/" onClick={handleLogout}>Logout</Link></li>
+                        {profile === 'admin' ? (
+                                // change to edit account page
+                                <li><Link to="/" className="profile-link">
+                                    <div className="profile-navbar" />
+                                </Link></li>
+                            ) : (
+                                <li><Link to="/profile" className="profile-link">
+                                    <div className="profile-navbar" />
+                                </Link></li>
+                            )}
+                        <li><Link onClick={handleLogout}>Logout</Link></li>
                         </>
                     ) : (
                         <li><Link to='/login'>Login</Link></li>

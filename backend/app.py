@@ -67,13 +67,14 @@ def predict_caption():
 # Image caption function end
 
 # User model (for admin + parent accounts)
-class Users(db.Model):
+class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
+    profileID = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(150), nullable=False, unique=True)
     name = db.Column(db.String(), nullable=False)
     email = db.Column(db.String(), nullable=True, unique=True)
     password = db.Column(db.String(150), nullable=False)
-    parent_id = db.Column(db.Integer, nullable=True)
+    parentID = db.Column(db.Integer, nullable=True)
     # icon = db.Column(db.String(), nullable=True)
 
     # Define relationship
@@ -108,8 +109,8 @@ def get_users():
     # print(user_id2)
     if not user_id:
         return jsonify({"message": "Login required!"}), 401
-    current_user = Users.query.filter_by(id=user_id).first()
-    child_users = Users.query.filter_by(parent_id=user_id).order_by(Users.id.desc()).all()
+    current_user = User.query.filter_by(id=user_id).first()
+    child_users = User.query.filter_by(parentID=user_id).order_by(User.id.desc()).all()
     user_list = [user.name for user in child_users]
     user_list.append(current_user.name)
     return jsonify(user_list), 200
@@ -124,31 +125,31 @@ def add_child():
         return jsonify({"message": "Login required!"}), 401
     
     # Check if the user already exists
-    if Users.query.filter_by(username=data['username']).first():
+    if User.query.filter_by(username=data['username']).first():
         return jsonify({"message": "Username already exists"}), 400
 
     # Create new user
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    new_user = Users(username=data['username'], name=data['name'], password=hashed_password, parent_id=user_id)
+    new_user = User(profileID=3, username=data['username'], name=data['name'], password=hashed_password, parentID=user_id)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({"message": "User added successfully!"}), 201
 
-# Signup Route
+# Parent Signup Route
 @app.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
 
     # Check if the user already exists
-    if Users.query.filter_by(username=data['username']).first():
+    if User.query.filter_by(username=data['username']).first():
         return jsonify({"message": "Username already exists!"}), 400
     
     # Check if the email already exists
-    if Users.query.filter_by(email=data['email']).first():
+    if User.query.filter_by(email=data['email']).first():
         return jsonify({"message": "Email already exists!"}), 400
     
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    new_user = Users(username=data['username'], name=data['name'], email=data['email'], password=hashed_password)
+    new_user = User(profileID=2, username=data['username'], name=data['name'], email=data['email'], password=hashed_password)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({"message": "User created successfully!"}), 201
@@ -158,16 +159,18 @@ def signup():
 def login():
     # global session_user # temp
     data = request.get_json()
-    user = Users.query.filter_by(username=data['username']).first()
+    user = User.query.filter_by(username=data['username']).first()
     if user and bcrypt.check_password_hash(user.password, data['password']):
         session['user_id'] = user.id
         # session_user = user.id # temp
 
-        # Check if the user is a child user
-        if user.parent_id: # change to profileID later on 
-            return jsonify({"message": "Child login successful!", "user_id": user.id, "child": True}), 200
-        else:
-            return jsonify({"message": "Parent login successful!", "user_id": user.id, "child": False}), 200
+        # Check if the user role
+        if user.profileID == 1: # admin
+            return jsonify({"message": "Admin login successful!", "user_id": user.id, "profile": "admin"}), 200
+        elif user.profileID == 2: # parent
+            return jsonify({"message": "Parent login successful!", "user_id": user.id, "profile": "parent"}), 200
+        elif user.profileID == 3: # child
+            return jsonify({"message": "Child login successful!", "user_id": user.id, "profile": "child"}), 200
    
     return jsonify({"message": "Invalid username or password!"}), 401
 

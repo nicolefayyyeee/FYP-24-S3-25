@@ -41,12 +41,15 @@ export function LoginForm(props) {
     if (response.ok) {
       // localStorage.setItem('username', username);
       localStorage.setItem('user_id', data.user_id);
+      localStorage.setItem('profile', data.profile);
 
       // Redirect based on parent_id check
-      if (data.child) {
-        navigate('/');
-      } else {
-        navigate('/profile');
+      if (data.profile === "admin") {
+        navigate('/adminhome');
+      } else if (data.profile === "parent") {
+        navigate('/parenthome');
+      } else if (data.profile === "child") {
+        navigate('/childhome');
       }
     } else {
       setErrorMessage(data.message);
