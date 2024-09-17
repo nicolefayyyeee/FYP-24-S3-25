@@ -1,3 +1,4 @@
+import React from 'react'
 import ChildHome from '../childUser/ChildHome'
 import Navbar from '../containers/navbar/Navbar'
 import Footer from '../containers/footer/Footer'
