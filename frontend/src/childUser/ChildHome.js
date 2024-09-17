@@ -12,7 +12,7 @@ const ChildHome = () => {
           <button className="profile-btn">Edit Profile</button>
         </div>
         <div className="options-grid">
-          <Link to="/imageCaption">
+          <Link to="/imageCaptioning">
             <div className="option-card red">Snap a Memory</div>
           </Link>
           <Link to="/moments">
