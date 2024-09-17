@@ -1,4 +1,4 @@
-header {
+.header {
     position: relative; /* Ensure positioning context for absolute child elements */
     background-image: url('../../images/header-image.jpeg');
 
@@ -10,7 +10,7 @@ header {
     height: 100vh;
 }
 
-header::before {
+.header::before {
     content: '';
     position: absolute;
     top: 0;
@@ -21,7 +21,7 @@ header::before {
     z-index: 1; /* Ensure the overlay is above the background image but below the text */
 }
 
-header h1 {
+.header h1 {
     margin: 0;
     font-size: 6vw;
     font-weight: 900;
@@ -32,7 +32,7 @@ header h1 {
     z-index: 2; /* Higher than the ::before element */
 }
 
-header p {
+.header p {
     margin: 0;
     font-size: 2vw;
     padding: 1rem 0 2rem 0;
@@ -40,7 +40,7 @@ header p {
     z-index: 2; /* Higher than the ::before element */
 }
 
-header button {
+.header button {
     background-color: #892A42;
     font-size: 1vw;
     color: white;
