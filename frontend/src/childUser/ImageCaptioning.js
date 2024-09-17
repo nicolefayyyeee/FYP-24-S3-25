@@ -265,8 +265,8 @@ const ImageCaptioning = () => {
             <option value="" disabled selected>
               Select model
             </option>
-            <option value="J">Johan</option>
-            <option value="V">Vinnie</option>
+            <option value="J">Pre-Trained</option>
+            <option value="V">Self-Trained</option>
           </select>
         </div>
       </form>
