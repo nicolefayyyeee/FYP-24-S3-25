@@ -57,12 +57,18 @@ const Navbar = () => {
                     {/* <li><Link to="/imageCaption">Image Captioner</Link></li> */}
                     {user_id ? (
                         <>
-                        {profile === 'admin' ? (
+                            {profile === 'admin' ? (
                                 // change to edit account page
                                 <li><Link to="/" className="profile-link">
                                     <div className="profile-navbar" />
                                 </Link></li>
+                            ) : profile === 'child' ? (
+                                // change to customisation page
+                                <li><Link to="/" className="profile-link">
+                                    <div className="profile-navbar" />
+                                </Link></li>
                             ) : (
+                                // link to profile page
                                 <li><Link to="/profile" className="profile-link">
                                     <div className="profile-navbar" />
                                 </Link></li>
