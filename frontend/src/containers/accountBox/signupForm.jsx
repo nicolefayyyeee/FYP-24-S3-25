@@ -109,12 +109,12 @@ export function SignupForm(props) {
           onChange={(e) => setConfirmPassword(e.target.value)}
           required
         />
-        </FormContainer>
         <Marginer direction="vertical" margin={20} />
 
-        {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
+        {errorMessage && <p style={{ color: 'red', textAlign: 'center' }}>{errorMessage}</p>}
 
         <SubmitButton type="submit" onClick={handleSubmit}>Signup</SubmitButton>
+        </FormContainer>
       <Marginer direction="vertical" margin="1em" />
       <MutedLink href="#">
         Already have an account? 
