@@ -73,12 +73,12 @@ export function LoginForm(props) {
           onChange={(e) => setPassword(e.target.value)}
           required
         />
-        </FormContainer>
         <Marginer direction="vertical" margin={10} />
         <MutedLink href="#">Forget your password?</MutedLink>
         <Marginer direction="vertical" margin="1.6em" />
         {errorMessage && <p style={{ color: 'red' }}>{errorMessage}</p>}
         <SubmitButton type="submit" onClick={handleSubmit}>Signin</SubmitButton>
+        </FormContainer>
       <Marginer direction="vertical" margin="1em" />
       <MutedLink href="#">
         Don't have an account?{" "}
