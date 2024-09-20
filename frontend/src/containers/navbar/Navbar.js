@@ -9,6 +9,9 @@ const Navbar = () => {
     const location = useLocation();
     const navigate = useNavigate();
 
+    const user_id = localStorage.getItem('user_id');
+    const profile = localStorage.getItem('profile');
+
     const handleNav = () => {
         setNav(!nav);
         setSlide(!slide);
@@ -27,19 +30,14 @@ const Navbar = () => {
             },
         });
 
-        const data = await response.json();
-
         if (response.ok) {
-            localStorage.removeItem('email');
+            localStorage.removeItem('user_id');
             localStorage.removeItem('profile'); 
             navigate('/login');
         } else {
             alert("Logout failed. Please try again.");
         }
     };
-
-    const email = localStorage.getItem('email'); 
-    const profile = localStorage.getItem('profile'); 
 
     // Home page link based on profile
     const getHomeLink = () => {
@@ -78,24 +76,26 @@ const Navbar = () => {
                     <li><Link onClick={handleClose} to="/#faq">FAQ</Link></li>
                     <li><Link onClick={handleClose} to="/#contact">Contact</Link></li>
 
-                    {email ? (
+                    {user_id ? (
                         <>
                             {profile === 'admin' ? (
                                 <li>
-                                    <Link to="/adminhome" className="profile-link" onClick={handleClose}>
-                                        Admin Home
+                                    {/* change to edit account page */}
+                                    <Link to="/" className="profile-link" onClick={handleClose}>
+                                        Account
                                     </Link>
                                 </li>
                             ) : profile === 'child' ? (
                                 <li>
-                                    <Link to="/childhome" className="profile-link" onClick={handleClose}>
+                                    {/* change to customisation page */}
+                                    <Link to="/" className="profile-link" onClick={handleClose}>
                                         Customization
                                     </Link>
                                 </li>
                             ) : (
                                 <li>
                                     <Link to="/profile" className="profile-link" onClick={handleClose}>
-                                        Profile
+                                        Profiles
                                     </Link>
                                 </li>
                             )}
