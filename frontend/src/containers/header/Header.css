@@ -1,108 +1,53 @@
 .header {
-    position: relative;
+    position: relative; /* Ensure positioning context for absolute child elements */
     background-image: url('../../images/header-image.jpeg');
-    background-size: cover;
-    background-position: center;
-    height: 100vh;
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    text-align: center;
+
+    background-size: cover; /* Make the background cover the entire header */
+    background-position: center; /* Center the background image */
+    padding: 2rem;
+    text-align: center; /* Center the text */
     color: white;
-    padding: 0 20px;
-  }
-  
-  .header::before {
+    height: 100vh;
+}
+
+.header::before {
     content: '';
     position: absolute;
     top: 0;
     left: 0;
     width: 100%;
     height: 100%;
-    background: rgba(0, 0, 0, 0.5);
-    z-index: 1;
-  }
-  
-  .header-content {
-    position: relative;
-    z-index: 2;
-    max-width: 800px;
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-  }
-  
-  .header h1 {
+    background: rgba(0, 0, 0, 0.5); /* Adjust color and opacity as needed */
+    z-index: 1; /* Ensure the overlay is above the background image but below the text */
+}
+
+.header h1 {
     margin: 0;
-    font-size: 4vw; /* Reduce size for large screens */
+    font-size: 6vw;
     font-weight: 900;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-    line-height: 1.2;
-  }
-  
-  .header p {
+    padding: calc(25vh + 1rem) 0 1rem 0;
+    line-height: 1.0;
+    position: relative; /* Ensure it is above the ::before element */
+    z-index: 2; /* Higher than the ::before element */
+}
+
+.header p {
     margin: 0;
-    font-size: 1.8vw; /* Adjusted for large screens */
-    padding: 1rem 0;
-  }
-  
-  .header-button {
+    font-size: 2vw;
+    padding: 1rem 0 2rem 0;
+    position: relative; /* Ensure it is above the ::before element */
+    z-index: 2; /* Higher than the ::before element */
+}
+
+.header button {
     background-color: #892A42;
-    font-size: 1.2vw; /* Reduced the size slightly */
+    font-size: 1vw;
     color: white;
     border: none;
-    padding: 1rem 2rem;
+    padding: 0.8rem 2rem;
     cursor: pointer;
     border-radius: 5px;
-  }
-  
-  .header-button:hover {
-    background-color: #661f32;
-  }
-  
-  /* Adjust for very large screens */
-  @media screen and (min-width: 1400px) {
-    .header h1 {
-      font-size: 3.5vw; /* Smaller for very large screens */
-    }
-  
-    .header p {
-      font-size: 1.5vw; /* Smaller for very large screens */
-    }
-  
-    .header-button {
-      font-size: 1vw;
-    }
-  }
-  
-  /* Responsive design for smaller screens */
-  @media screen and (max-width: 768px) {
-    .header h1 {
-      font-size: 8vw;
-    }
-  
-    .header p {
-      font-size: 3.5vw;
-    }
-  
-    .header-button {
-      font-size: 3vw;
-      padding: 1rem 2rem;
-    }
-  }
-  
-  /* Extra small devices */
-  @media screen and (max-width: 480px) {
-    .header h1 {
-      font-size: 10vw;
-    }
-  
-    .header p {
-      font-size: 4vw;
-    }
-  
-    .header-button {
-      font-size: 4vw;
-      padding: 1rem 2rem;
-    }
-  }
+    position: relative; /* Ensure it is above the ::before element */
+    z-index: 2; /* Higher than the ::before element */
+}

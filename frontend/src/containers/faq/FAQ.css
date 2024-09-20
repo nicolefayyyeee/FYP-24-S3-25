@@ -1,75 +1,70 @@
-.faq {
-  padding: 50px 0;
-  background-color: #f9f9f9;
-}
-
+/* FAQ container */
 .faq-container {
-  width: 90%;
-  max-width: 1200px;
-  margin: 0 auto;
-  background-color: #fff;
-  padding: 40px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
-}
-
-.faq-header {
-  text-align: center;
-  margin-bottom: 30px;
-}
-
-.faq-title {
-  font-size: 2.5rem;
-  color: #333;
-}
-
-.faq-subtitle {
-  font-size: 1.2rem;
-  color: #666;
-}
-
-.faq-content {
+  background-color: #FEB7C4;
+  padding: 60px 170px;
   display: flex;
   flex-direction: column;
-  gap: 20px;
+  align-items: flex-start; /* Align content to the left */
+  gap: 40px; /* Space between header and content */
 }
 
+/* FAQ header */
+.faq-header {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-start; /* Align header to the left */
+  gap: 20px; /* Space between title and subtitle */
+}
+
+/* FAQ title */
+.faq-title {
+  color: #892a42;
+  font-size: 50px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 900;
+}
+
+/* FAQ subtitle */
+.faq-subtitle {
+  color: #222222;
+  font-size: 20px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
+}
+
+/* FAQ content */
+.faq-content {
+  display: flex;
+  flex-wrap: wrap; /* Allow FAQ items to wrap when there’s no more space */
+  gap: 20px; /* Space between FAQ items */
+  justify-content: flex-start; /* Align items to the left */
+  width: 100%;
+}
+
+/* FAQ item */
 .faq-item {
-  padding: 20px;
-  border-bottom: 1px solid #ddd;
+  display: flex;
+  flex-direction: column; /* Stack question and answer inside each item */
+  width: 30%; /* Each FAQ item takes up 30% of the width */
+  background-color: #ffffff;
+  padding: 16px;
+  border: 1px solid rgba(255, 140, 160, 0.1);
+  border-radius: 6px;
 }
 
+/* FAQ question */
 .faq-question {
-  font-size: 1.5rem;
-  color: #333;
-  margin-bottom: 10px;
+  color: #222222;
+  font-size: 24px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 700;
+  margin-bottom: 10px; /* Space between question and answer */
 }
 
+/* FAQ answer */
 .faq-answer {
-  font-size: 1rem;
-  color: #555;
-}
-
-@media screen and (max-width: 768px) {
-  .faq-title {
-    font-size: 2rem;
-  }
-
-  .faq-subtitle {
-    font-size: 1rem;
-  }
-
-  .faq-question {
-    font-size: 1.3rem;
-  }
-
-  .faq-answer {
-    font-size: 0.9rem;
-  }
-}
-
-@media screen and (max-width: 480px) {
-  .faq-container {
-    padding: 20px;
-  }
+  color: #222222;
+  font-size: 16px;
+  font-family: 'Poppins', sans-serif;
+  font-weight: 400;
 }
