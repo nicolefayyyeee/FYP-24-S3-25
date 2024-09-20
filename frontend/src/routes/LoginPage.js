@@ -4,6 +4,8 @@ import Navbar from '../containers/navbar/Navbar'
 
 const AppContainer = styled.div`
   width: 100%;
+  height: calc(100vh - 60px);
+  background-color: #94a8d1;
   padding: 10rem;
   position: relative;
   display: flex;

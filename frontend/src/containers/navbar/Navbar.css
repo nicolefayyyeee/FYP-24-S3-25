@@ -1,9 +1,17 @@
+/* Default Navbar */
 .navbar {
   width: 100%;
   height: 60px;
-  position: fixed;
+  position :fixed;
   background-color: rgba(0, 0, 0, 0.7);
   z-index: 100; /* Ensure the navbar is on top of all elements */
+  transition: background-color 0.3s ease;
+}
+
+.navbar.sticky {
+  position: sticky;
+  background-color: #1b0041;
+  top: 0;
 }
 
 .navbar .container {
@@ -40,7 +48,7 @@
 
 .nav-menu {
   display: flex;
-  list-style: none; /* Remove bullet points */
+  list-style: none;
   margin: 0;
   padding: 0;
   z-index: 102;
@@ -79,6 +87,10 @@
 
 /* Mobile view (for screens below 940px) */
 @media screen and (max-width: 940px) {
+  .navbar {
+      background-color: transparent; /* Make navbar background transparent in mobile view */
+  }
+
   .hamburger {
       display: block;
       z-index: 120;

@@ -52,6 +52,9 @@ const Navbar = () => {
         }
     };
 
+    // Determine if the current page is one of the main pages (where navbar should not be sticky)
+    const isNonStickyPage = ['/', '/#features', '/#about', '/#faq', '/#contact'].includes(location.pathname);
+
     useEffect(() => {
         const sectionId = location.hash.replace("#", "");
         if (sectionId) {
@@ -63,15 +66,14 @@ const Navbar = () => {
     }, [location]);
 
     return (
-        <div className='navbar'>
+        <div className={`navbar ${isNonStickyPage ? '' : 'sticky'}`}>
             <div className='container'>
                 <div className={slide ? 'logo slide-right' : 'logo'}>
                     <h3>SeeSay Moments.</h3>
                 </div>
 
                 <ul className={nav ? 'nav-menu active' : 'nav-menu'}>
-                    <li><Link onClick={handleClose} to={getHomeLink()}>Home</Link></li>
-                    <li><Link onClick={handleClose} to="/#features">Features</Link></li>
+                <li><Link onClick={handleClose} to="/#header">Home</Link></li>                    <li><Link onClick={handleClose} to="/#features">Features</Link></li>
                     <li><Link onClick={handleClose} to="/#about">About</Link></li>
                     <li><Link onClick={handleClose} to="/#faq">FAQ</Link></li>
                     <li><Link onClick={handleClose} to="/#contact">Contact</Link></li>
