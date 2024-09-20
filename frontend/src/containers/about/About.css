@@ -1,50 +1,69 @@
 .about {
-  background-color: #FF9F1C; /* Background color */
-  color: white;
-  padding: 60px; /* Updated padding to match container styles */
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f4f4f9;
+  padding: 2rem 0;
+}
+
+.about-container {
   display: flex;
   flex-direction: column;
-  align-items: center; /* Center items horizontally */
-  gap: 60px; /* Space between image and text, matching container gap */
-}
-
-.about-content {
-  display: flex;
   align-items: center;
-  justify-content: center; /* Center content horizontally */
-  flex-wrap: wrap; /* Allow wrapping for smaller screens */
-  gap: 24px; /* Space between image and text */
-}
-
-.about-image {
-  flex: 1;
-  max-width: 100%; /* Ensure image does not exceed container width */
-  margin-right: 24px; /* Space between image and text */
+  justify-content: center;
+  text-align: center;
+  max-width: 1000px;
+  margin: 0 auto;
+  padding: 2rem;
 }
 
 .about-image img {
-  width: 100%;
+  max-width: 100%;
   height: auto;
   border-radius: 10px;
 }
 
 .about-text {
-  flex: 1;
+  margin-top: 2rem;
 }
 
 .about-text h2 {
-  font-size: 40px; /* Match the specified font size */
-  font-family: 'Poppins', sans-serif; /* Font family */
-  font-weight: 700; /* Font weight */
-  color: #ffffff; /* Text color */
-  margin-top: 0;
+  font-size: 2.5rem;
+  color: #333;
+  margin-bottom: 1.5rem;
 }
 
 .about-text p {
-  font-size: 16px; /* Match the specified font size */
-  font-family: 'Poppins', sans-serif; /* Font family */
-  font-weight: 400; /* Font weight */
-  color: #ffffff; /* Text color */
-  margin-bottom: 1rem; /* Space between paragraphs */
-  text-align: left; /* Align text to the left */
+  color: #666;
+  font-size: 1.1rem;
+  line-height: 1.6;
+  margin-bottom: 1rem;
+}
+
+.about-gallery {
+  display: flex;
+  flex-direction: row;
+  justify-content: space-around;
+  flex-wrap: wrap;
+  padding: 2rem 0;
+  max-width: 1200px;
+  margin: 0 auto;
+}
+
+.gallery-item {
+  flex: 1;
+  margin: 1rem;
+  max-width: 500px;
+  text-align: center;
+}
+
+.gallery-item img {
+  width: 100%;
+  height: auto;
+  border-radius: 10px;
+}
+
+.gallery-item p {
+  margin-top: 1rem;
+  font-size: 1rem;
+  color: #444;
 }

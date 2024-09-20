@@ -21,10 +21,10 @@ const Features = () => {
   const slideStyles = { backgroundImage: `url(${slides[currentIndex].url})` };
 
   return (
-    <div className="features-container">
+    <div id="features" className="features-container"> {/* Added id="features" */}
       <div className="text-slider-container">
         <div className="text-content">
-          <h1>Discover and <br></br> Describe</h1>
+          <h1>Discover and Describe</h1>
           <p className="text-description">
             Encourage your child to describe their world and uncover new insights through creative exploration and observation.
           </p>
@@ -42,22 +42,22 @@ const Features = () => {
       </div>
       <div className="features-grid">
         <div className="feature-item">
-          <div class="star">⭐</div>
+          <div className="star">⭐</div>
           <h3>Capture and Describe the World</h3>
           <p>Let your child be the storyteller by capturing their favorite moments and adding their own voice to describe the scenes, making every photo a unique expression of their creativity.</p>
         </div>
         <div className="feature-item">
-          <div class="star">⭐</div>
+          <div className="star">⭐</div>
           <h3>Interactive Games for Learning</h3>
           <p>Engage your child with fun, educational games that enhance creativity and reinforce learning outcomes, all within a safe and enjoyable environment.</p>
         </div>
         <div className="feature-item">
-          <div class="star">⭐</div>
+          <div className="star">⭐</div>
           <h3>Safe and Family-Friendly</h3>
           <p>Designed with young users in mind, SeeSay Moments offers a secure platform where kids can explore and create with confidence, while parents can monitor their progress.</p>
         </div>
         <div className="feature-item">
-          <div class="star">⭐</div>
+          <div className="star">⭐</div>
           <h3>Personalized Experience</h3>
           <p>Tailor the app experience to your child’s interests. Whether it’s their favorite activities or interactive games, SeeSay Moments adapts to their preferences, making it a truly personalized experience.</p>
         </div>

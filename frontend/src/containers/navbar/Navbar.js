@@ -1,16 +1,23 @@
-import React, { useState } from 'react';
-import { SiDatabricks } from 'react-icons/si';
-import { FaBars, FaTimes } from 'react-icons/fa';
-import { Link, useNavigate } from 'react-router-dom';
+import React, { useState, useEffect } from 'react';
+import { Link, useLocation, useNavigate } from 'react-router-dom';
+import { FaBars, FaTimes, FaFacebook, FaInstagram } from 'react-icons/fa';
 import './Navbar.css';
 
 const Navbar = () => {
     const [nav, setNav] = useState(false);
-    const handleNav = () => setNav(!nav);
-
-    const user_id = localStorage.getItem('user_id');
-    const profile = localStorage.getItem('profile');
+    const [slide, setSlide] = useState(false);
+    const location = useLocation();
     const navigate = useNavigate();
+
+    const handleNav = () => {
+        setNav(!nav);
+        setSlide(!slide);
+    };
+
+    const handleClose = () => {
+        setNav(false); 
+        setSlide(false); 
+    };
 
     const handleLogout = async () => {
         const response = await fetch('http://localhost:5000/logout', {
@@ -20,16 +27,21 @@ const Navbar = () => {
             },
         });
 
+        const data = await response.json();
+
         if (response.ok) {
-            localStorage.removeItem('user_id');
-            localStorage.removeItem('profile');
+            localStorage.removeItem('email');
+            localStorage.removeItem('profile'); 
             navigate('/login');
         } else {
             alert("Logout failed. Please try again.");
         }
     };
 
-    // home page link based on profile
+    const email = localStorage.getItem('email'); 
+    const profile = localStorage.getItem('profile'); 
+
+    // Home page link based on profile
     const getHomeLink = () => {
         if (profile === 'admin') {
             return '/adminhome';
@@ -42,45 +54,71 @@ const Navbar = () => {
         }
     };
 
+    useEffect(() => {
+        const sectionId = location.hash.replace("#", "");
+        if (sectionId) {
+            const targetSection = document.getElementById(sectionId);
+            if (targetSection) {
+                targetSection.scrollIntoView({ behavior: "smooth" });
+            }
+        }
+    }, [location]);
+
     return (
         <div className='navbar'>
-            <div className='navbar-container'>
-                <div className='logo'>
-                    <SiDatabricks className='icon' />
-                    <h1>SeeSay Moments</h1>
+            <div className='container'>
+                <div className={slide ? 'logo slide-right' : 'logo'}>
+                    <h3>SeeSay Moments.</h3>
                 </div>
+
                 <ul className={nav ? 'nav-menu active' : 'nav-menu'}>
-                    <li><Link to={getHomeLink()}>Home</Link></li>
-                    <li><Link to='/ourApp'>Our App</Link></li>
-                    <li><Link to='/about'>About</Link></li>
-                    <li><Link to='/contact'>Contact</Link></li>
-                    {/* <li><Link to="/imageCaption">Image Captioner</Link></li> */}
-                    {user_id ? (
+                    <li><Link onClick={handleClose} to={getHomeLink()}>Home</Link></li>
+                    <li><Link onClick={handleClose} to="/#features">Features</Link></li>
+                    <li><Link onClick={handleClose} to="/#about">About</Link></li>
+                    <li><Link onClick={handleClose} to="/#faq">FAQ</Link></li>
+                    <li><Link onClick={handleClose} to="/#contact">Contact</Link></li>
+
+                    {email ? (
                         <>
                             {profile === 'admin' ? (
-                                // change to edit account page
-                                <li><Link to="/" className="profile-link">
-                                    <div className="profile-navbar" />
-                                </Link></li>
+                                <li>
+                                    <Link to="/adminhome" className="profile-link" onClick={handleClose}>
+                                        Admin Home
+                                    </Link>
+                                </li>
                             ) : profile === 'child' ? (
-                                // change to customisation page
-                                <li><Link to="/" className="profile-link">
-                                    <div className="profile-navbar" />
-                                </Link></li>
+                                <li>
+                                    <Link to="/childhome" className="profile-link" onClick={handleClose}>
+                                        Customization
+                                    </Link>
+                                </li>
                             ) : (
-                                // link to profile page
-                                <li><Link to="/profile" className="profile-link">
-                                    <div className="profile-navbar" />
-                                </Link></li>
+                                <li>
+                                    <Link to="/profile" className="profile-link" onClick={handleClose}>
+                                        Profile
+                                    </Link>
+                                </li>
                             )}
-                        <li><Link onClick={handleLogout}>Logout</Link></li>
+                            <li>
+                                <button onClick={handleLogout} className="auth-button">Logout</button>
+                            </li>
                         </>
                     ) : (
-                        <li><Link to='/login'>Login</Link></li>
+                        <li>
+                            <button onClick={() => navigate('/login')} className="auth-button">Login</button>
+                        </li>
                     )}
+
+                    <div className='mobile-menu'>
+                        <div className="social-icons">
+                            <FaFacebook className='icon' />
+                            <FaInstagram className='icon' />
+                        </div>
+                    </div>
                 </ul>
-                <div className='hamburger' onClick={handleNav}>
-                    {!nav ? <FaBars className='icon' /> : <FaTimes className='icon' />}
+
+                <div className="hamburger" onClick={handleNav}>
+                    {nav ? (<FaTimes size={20} style={{ color: '#ffffff' }} />) : (<FaBars style={{ color: '#ffffff' }} size={20} />)}
                 </div>
             </div>
         </div>
