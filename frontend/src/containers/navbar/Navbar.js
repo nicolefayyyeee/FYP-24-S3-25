@@ -73,10 +73,11 @@ const Navbar = () => {
                 </div>
 
                 <ul className={nav ? 'nav-menu active' : 'nav-menu'}>
-                <li><Link onClick={handleClose} to="/#header">Home</Link></li>                    <li><Link onClick={handleClose} to="/#features">Features</Link></li>
-                    <li><Link onClick={handleClose} to="/#about">About</Link></li>
-                    <li><Link onClick={handleClose} to="/#faq">FAQ</Link></li>
-                    <li><Link onClick={handleClose} to="/#contact">Contact</Link></li>
+                <li><Link onClick={handleClose} to={getHomeLink()}>Home</Link></li>                    
+                <li><Link onClick={handleClose} to="/#features">Features</Link></li>
+                <li><Link onClick={handleClose} to="/#about">About</Link></li>
+                <li><Link onClick={handleClose} to="/#faq">FAQ</Link></li>
+                <li><Link onClick={handleClose} to="/#contact">Contact</Link></li>
 
                     {user_id ? (
                         <>
