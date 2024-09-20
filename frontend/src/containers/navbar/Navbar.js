@@ -56,6 +56,12 @@ const Navbar = () => {
     const isNonStickyPage = ['/', '/#features', '/#about', '/#faq', '/#contact'].includes(location.pathname);
 
     useEffect(() => {
+        // scroll to top on route change
+        if (!location.hash) {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        }
+        
+        // scroll to section if hash exists
         const sectionId = location.hash.replace("#", "");
         if (sectionId) {
             const targetSection = document.getElementById(sectionId);
@@ -69,11 +75,13 @@ const Navbar = () => {
         <div className={`navbar ${isNonStickyPage ? '' : 'sticky'}`}>
             <div className='container'>
                 <div className={slide ? 'logo slide-right' : 'logo'}>
+                    <Link to={getHomeLink()} style={{ color: "white"}}>
                     <h3>SeeSay Moments.</h3>
+                    </Link>
                 </div>
 
                 <ul className={nav ? 'nav-menu active' : 'nav-menu'}>
-                <li><Link onClick={handleClose} to={getHomeLink()}>Home</Link></li>                    
+                <li><Link onClick={handleClose} to="/#header">Home</Link></li>                    
                 <li><Link onClick={handleClose} to="/#features">Features</Link></li>
                 <li><Link onClick={handleClose} to="/#about">About</Link></li>
                 <li><Link onClick={handleClose} to="/#faq">FAQ</Link></li>
