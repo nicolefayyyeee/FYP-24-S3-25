@@ -4,6 +4,7 @@ import Header from './containers/header/Header';
 import About from './containers/about/About';
 import Features from './containers/features/Features'
 import FAQ from './containers/faq/FAQ';
+import Contact from './containers/contact/Contact';
 import Footer from './containers/footer/Footer';
 
 function App() {
@@ -14,6 +15,7 @@ function App() {
       <Features />
       <About />
       <FAQ />
+      <Contact />
       <Footer />
     </>
   );

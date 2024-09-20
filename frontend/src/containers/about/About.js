@@ -1,10 +1,10 @@
 import React from 'react';
-import '../about/About.css';
+import './About.css';
 
 const About = () => {
   return (
     <section id="about" className="about">
-      <div className="about-content">
+      <div className="about-container">
         <div className="about-image">
           <img src="https://images.unsplash.com/photo-1519340241574-2cec6aef0c01?q=80&w=2848&auto=format&fit=crop&ixlib=rb-4.0.3&ixid=M3wxMjA3fDB8MHxwaG90by1wYWdlfHx8fGVufDB8fHx8fA%3D%3D" alt="About Us" />
         </div>
