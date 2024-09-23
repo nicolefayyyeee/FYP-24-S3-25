@@ -209,17 +209,27 @@ def logout():
 def get_game_content():
     try:
         content = GameContent.query.all()
-        pictures = random.sample(content, 5)
+        if len(content) < 5:
+            return jsonify({"error": "Not enough content available to create a game."}), 400
+
+        # Select 5 random pictures from the content
+        pictures = random.sample(content, min(len(content), 5))
         matching_words = [picture.name for picture in pictures]
-        additional_words = random.sample([c.name for c in content if c.name not in matching_words], 5)
+        
+        # Select additional words, ensuring we don't select duplicates
+        additional_words = random.sample(
+            [c.name for c in content if c.name not in matching_words],
+            min(len(content) - len(matching_words), 5)
+        )
+        
         words = matching_words + additional_words
         random.shuffle(words)
 
+        # Prepare the response
         game_data = {
             "pictures": [{"id": p.id, "imageUrl": p.image_url, "name": p.name} for p in pictures],
             "words": words
         }
-
         return jsonify(game_data), 200
 
     except Exception as e:
