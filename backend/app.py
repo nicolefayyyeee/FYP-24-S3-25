@@ -6,6 +6,7 @@ from flask import Flask, request, jsonify, session
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
+from google.cloud.sql.connector import Connector 
 
 # model import
 from model.git_base_model import generate_captions_git_base  # Import from git_large_model.py
@@ -18,12 +19,33 @@ import base64
 import random  # For selecting game content
 
 app = Flask(__name__)
+
+CLOUD_SQL_CONNECTION_NAME = 'seesayai:asia-southeast1:seesay-instance'
+DB_USER = 'root'
+DB_PASSWORD = 'seesay123!'
+DB_NAME = 'seesaydb'
+
+# Connection pooling
+connector = Connector()
+
+def getconn():
+    return connector.connect(
+        CLOUD_SQL_CONNECTION_NAME,
+        'pymysql',
+        user=DB_USER,
+        password=DB_PASSWORD,
+        db=DB_NAME
+    )
+# app.config['SECRET_KEY'] = 'your_secret_key'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///seesay.db'
 app.config['SECRET_KEY'] = 'your_secret_key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///seesay.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://:password@localhost/db_name'
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'creator': getconn
+}
 bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
-
-CORS(app, origins=["http://localhost:3000"], supports_credentials=True)  # Enable CORS for React frontend
+CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
 
 # Image caption function start 
 @st.cache_resource
@@ -71,9 +93,9 @@ class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     profileID = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(150), nullable=False, unique=True)
-    name = db.Column(db.String(), nullable=False)
-    email = db.Column(db.String(), nullable=True, unique=True)
-    password = db.Column(db.String(150), nullable=False)
+    name = db.Column(db.String(255), nullable=False)
+    email = db.Column(db.String(255), nullable=True, unique=True)
+    password = db.Column(db.String(255), nullable=False)
     parentID = db.Column(db.Integer, nullable=True)
     # icon = db.Column(db.String(), nullable=True)
 
@@ -159,7 +181,9 @@ def signup():
 def login():
     # global session_user # temp
     data = request.get_json()
+    print(data)
     user = User.query.filter_by(username=data['username']).first()
+    
     if user and bcrypt.check_password_hash(user.password, data['password']):
         session['user_id'] = user.id
         # session_user = user.id # temp
@@ -277,4 +301,4 @@ def get_user_scores():
         return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
-    app.run(port=5000, debug=True)
+    app.run(host='0.0.0.0', port=5000, debug=True)
