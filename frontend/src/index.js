@@ -14,6 +14,7 @@ import ProfilePage from './routes/ProfilePage'
 import AdminHomePage from './routes/AdminHomePage';
 import ParentHomePage from './routes/ParentHomePage';
 import ChildHomePage from './routes/ChildHomePage';
+import GameSelectionPage from './routes/GameSelectionPage';
 
 ReactDOM.render(
   <BrowserRouter>
@@ -28,6 +29,7 @@ ReactDOM.render(
       <Route path='/adminhome' element={<AdminHomePage />} />
       <Route path='/parenthome' element={<ParentHomePage />} />
       <Route path='/childhome' element={<ChildHomePage />} />
+      <Route path="/games" element={<GameSelectionPage />} />
     </Routes>
   </BrowserRouter>,
   document.getElementById('root')
