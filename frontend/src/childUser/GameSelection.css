@@ -3,16 +3,16 @@
   flex-direction: column;
   justify-content: center;
   align-items: center;
-  min-height: 100vh; /* Full viewport height */
+  min-height: 100vh; 
   text-align: center;
-  background-color: #2b235a; /* Ensure background matches the exact color */
+  background-color: #2b235a; 
 }
 
 .game-selection-header {
   font-size: 2.5rem;
   font-weight: bold;
-  color: white; /* White text for the header */
-  margin-bottom: 40px; /* Space between header and game options */
+  color: white; 
+  margin-bottom: 40px; 
 }
 
 .game-options {
@@ -24,13 +24,13 @@
 .game-option {
   width: 300px;
   padding: 40px;
-  border: 2px solid #4f45c4; /* Match the border color to your previous example */
+  border: 2px solid #4f45c4; 
   border-radius: 15px;
   text-align: center;
   transition: transform 0.3s ease;
   font-family: "Poppins", sans-serif;
-  background-color: #3b3b6d; /* Background color for the game cards */
-  color: white; /* White text inside the cards */
+  background-color: #3b3b6d; 
+  color: white; 
 }
 
 .game-option:hover {
@@ -46,7 +46,7 @@
 .game-option p {
   font-size: 1rem;
   font-weight: 400;
-  color: #a8a8d3; /* Softer white for descriptions */
+  color: #a8a8d3; 
 }
 
 .game-option a {
