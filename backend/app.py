@@ -7,6 +7,7 @@ from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from google.cloud.sql.connector import Connector 
+from datetime import datetime, timezone
 
 # model import
 from model.git_base_model import generate_captions_git_base  # Import from git_large_model.py
@@ -88,15 +89,15 @@ def predict_caption():
 
 # Image caption function end
 
-# User model (for admin + parent accounts)
+# User model
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    profileID = db.Column(db.Integer, nullable=False)
+    profile_id = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(150), nullable=False, unique=True)
     name = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=True, unique=True)
     password = db.Column(db.String(255), nullable=False)
-    parentID = db.Column(db.Integer, nullable=True)
+    parent_id = db.Column(db.Integer, nullable=True)
     # icon = db.Column(db.String(), nullable=True)
 
     # Define relationship
@@ -116,11 +117,22 @@ class UserScores(db.Model):
     time_taken = db.Column(db.String(50), nullable=False)
     date = db.Column(db.DateTime, default=datetime.utcnow)
 
+# Review model
+class Review(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(150), db.ForeignKey('user.username'), nullable=False)
+    content = db.Column(db.Text, nullable=False)
+    rating = db.Column(db.Integer, nullable=False)
+    timestamp = db.Column(db.DateTime, default=datetime.now(timezone.utc), nullable=False)
+    display = db.Column(db.Boolean, default=False)
+
+    user = db.relationship('User', backref=db.backref('reviews', lazy=True))
+
 # Create DB
 with app.app_context():
     db.create_all()
 
-# Fetch all users (for user list)
+# Parent: view all users (by user_id & profile_id)
 @app.route('/get_users', methods=['GET'])
 def get_users():
     # global session_user # temp
@@ -132,12 +144,12 @@ def get_users():
     if not user_id:
         return jsonify({"message": "Login required!"}), 401
     current_user = User.query.filter_by(id=user_id).first()
-    child_users = User.query.filter_by(parentID=user_id).order_by(User.id.desc()).all()
+    child_users = User.query.filter_by(parent_id=user_id).order_by(User.id.desc()).all()
     user_list = [user.name for user in child_users]
     user_list.append(current_user.name)
     return jsonify(user_list), 200
 
-# Add new child user (for user list)
+# Parent: add new child user
 @app.route('/add_child', methods=['POST'])
 def add_child():
     # global session_user # temp
@@ -152,12 +164,12 @@ def add_child():
 
     # Create new user
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    new_user = User(profileID=3, username=data['username'], name=data['name'], password=hashed_password, parentID=user_id)
+    new_user = User(profile_id=3, username=data['username'], name=data['name'], password=hashed_password, parent_id=user_id)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({"message": "User added successfully!"}), 201
 
-# Parent Signup Route
+# Parent: sign up
 @app.route('/signup', methods=['POST'])
 def signup():
     data = request.get_json()
@@ -171,12 +183,12 @@ def signup():
         return jsonify({"message": "Email already exists!"}), 400
     
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    new_user = User(profileID=2, username=data['username'], name=data['name'], email=data['email'], password=hashed_password)
+    new_user = User(profile_id=2, username=data['username'], name=data['name'], email=data['email'], password=hashed_password)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({"message": "User created successfully!"}), 201
 
-# Login Route
+# All: login 
 @app.route('/login', methods=['POST'])
 def login():
     # global session_user # temp
@@ -189,16 +201,16 @@ def login():
         # session_user = user.id # temp
 
         # Check if the user role
-        if user.profileID == 1: # admin
+        if user.profile_id == 1: # admin
             return jsonify({"message": "Admin login successful!", "user_id": user.id, "profile": "admin"}), 200
-        elif user.profileID == 2: # parent
+        elif user.profile_id == 2: # parent
             return jsonify({"message": "Parent login successful!", "user_id": user.id, "profile": "parent"}), 200
-        elif user.profileID == 3: # child
+        elif user.profile_id == 3: # child
             return jsonify({"message": "Child login successful!", "user_id": user.id, "profile": "child"}), 200
    
     return jsonify({"message": "Invalid username or password!"}), 401
 
-# Logout Route
+# All: logout
 @app.route('/logout', methods=['POST'])
 def logout():
     session.pop('user', None)
@@ -297,6 +309,106 @@ def get_user_scores():
             } for score in scores
         ]
         return jsonify({"scores": score_list}), 200
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Parent: add review route
+@app.route('/add_review', methods=['POST'])
+def add_review():
+    data = request.get_json()
+    print(data)
+    username = data.get('username') 
+    if not username:
+        return jsonify({"message": "Login required!"}), 401
+    
+    try:
+        new_review = Review(username=username, content=data['content'], rating=data['rating'])
+        db.session.add(new_review)
+        db.session.commit()
+        return jsonify({"message": "Review added successfully!"}), 201
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Parent: view my reviews (by username)
+@app.route('/my_reviews', methods=['GET'])
+def my_reviews():
+    username = request.args.get('username') 
+    try:
+        if not username:
+            return jsonify({"message": "Login required!"}), 401
+
+        reviews = Review.query.filter_by(username=username).all()
+
+        review_list = [
+            {
+                "username": review.username,
+                "content": review.content,
+                "rating": review.rating,
+                "timestamp": review.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+            } for review in reviews
+        ]
+        return jsonify({"reviews": review_list}), 200
+    
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Admin: view all reviews
+@app.route('/view_all_reviews', methods=['GET'])
+def view_all_reviews():
+    try:
+        reviews = Review.query.all()
+
+        review_list = [
+            {
+                "id": review.id,
+                "username": review.username,
+                "content": review.content,
+                "rating": review.rating,
+                "timestamp": review.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
+                "display": review.display
+            } for review in reviews
+        ]
+
+        return jsonify({"reviews": review_list}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Admin: toggle display for review
+@app.route('/toggle_display/<int:review_id>', methods=['PUT'])
+def toggle_display(review_id):
+    try:
+        review = Review.query.get(review_id)
+        if not review:
+            return jsonify({"error": "Review not found"}), 404
+        
+        # Toggle the display status
+        review.display = not review.display
+        db.session.commit()
+
+        return jsonify({"message": "Display status updated", "display": review.display}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+
+# Guest: view displayed reviews (by display)
+@app.route('/view_reviews', methods=['GET'])
+def view_reviews():
+    try:
+        reviews = Review.query.filter_by(display=True).all()
+
+        review_list = [
+            {
+                "username": review.username,
+                "content": review.content,
+                "rating": review.rating,
+                "timestamp": review.timestamp.strftime('%Y-%m-%d %H:%M:%S')
+            } for review in reviews
+        ]
+        return jsonify({"reviews": review_list}), 200
+    
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
