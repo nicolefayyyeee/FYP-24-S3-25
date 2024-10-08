@@ -8,7 +8,6 @@ const ImageCaptioning = () => {
   const [caption, setCaption] = useState("");
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [selectedModel, setSelectedModel] = useState("");
   const [exampleImages] = useState([
     // example image URLs
     "https://files.worldwildlife.org/wwfcmsprod/images/Tiger_resting_Bandhavgarh_National_Park_India/hero_small/6aofsvaglm_Medium_WW226365.jpg",
@@ -20,12 +19,13 @@ const ImageCaptioning = () => {
   const [selectedImageUrl, setSelectedImageUrl] = useState(null);
   const [useWebcam, setUseWebcam] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
+  
 
   // references functions
   const imageFileRef = useRef(null);
   const imageUrlRef = useRef(null);
   const webcamRef = useRef(null);
-  const modelDropdownRef = useRef(null);
+
 
   // Pop up alert
   const showAlert = (message) => {
@@ -42,16 +42,13 @@ const ImageCaptioning = () => {
     const imageFile = imageFileRef.current.files[0];
     const imageURL = imageUrlRef.current.value || selectedImageUrl;
     const imageBlob = capturedImage;
-
+  
+    const userId = localStorage.getItem('user_id');
+    
     // error handling process
     if (!imageFile && !imageURL && !imageBlob) {
       showAlert("No image selected, please upload an image.");
       return; //stop the process
-    }
-
-    if (!selectedModel) {
-      showAlert("Please select a model.");
-      return;
     }
 
     // append the uploaded image
@@ -63,10 +60,10 @@ const ImageCaptioning = () => {
       formData.append("imageFile", imageBlob, "capturedImage.jpg");
     }
 
-    formData.append("model", selectedModel);
-
+    formData.append("userId", userId);
+    
     //pass the image
-    const response = await fetch("http://localhost:5000/imageCaptioning", {
+    const response = await fetch("http://127.0.0.1:5000/imageCaptioning", {
       method: "POST",
       body: formData,
     });
@@ -123,9 +120,7 @@ const ImageCaptioning = () => {
     imageUrlRef.current.value = "";
     setPreview(null);
     setCaption("");
-    setSelectedModel("");
-    setCapturedImage(null);
-    modelDropdownRef.current.selectedIndex = 0;
+    
   };
 
   // text-to-speech functionality
@@ -255,19 +250,6 @@ const ImageCaptioning = () => {
           >
             Clear Input
           </button>
-          <select
-            name="dropdown-model"
-            id="menu-items"
-            ref={modelDropdownRef}
-            value={selectedModel}
-            onChange={(e) => setSelectedModel(e.target.value)}
-          >
-            <option value="" disabled selected>
-              Select model
-            </option>
-            <option value="J">Pre-Trained</option>
-            <option value="V">Self-Trained</option>
-          </select>
         </div>
       </form>
     </div>

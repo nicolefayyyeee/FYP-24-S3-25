@@ -2,16 +2,16 @@ from datetime import datetime
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
-from flask import Flask, request, jsonify, session
+from flask import Flask, request, jsonify, session, url_for, send_from_directory
 from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from google.cloud.sql.connector import Connector 
 from datetime import datetime, timezone
+from werkzeug.utils import secure_filename
 
 # model import
 from model.git_base_model import generate_captions_git_base  # Import from git_large_model.py
-from model.vinnie.model import get_caption_model, generate_caption
 import streamlit as st
 from PIL import Image
 import requests
@@ -48,47 +48,138 @@ bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
 CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
 
+# Set the upload folder
+UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
+app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'uploads')  # Adjust as necessary
+
+# Create the uploads folder if it doesn't exist
+if not os.path.exists(app.config['UPLOAD_FOLDER']):
+    os.makedirs(app.config['UPLOAD_FOLDER'])
+
 # Image caption function start 
-@st.cache_resource
-def get_model():
-    return get_caption_model()
-
-caption_model = get_model()
-
 @app.route('/imageCaptioning', methods=['POST'])
 def predict_caption():
     generated_caption = None
     image = None
     image2generate = None  # Initialize image2generate
     
+    
+    user_id = request.form.get('userId') 
+    user = User.query.get(user_id)
+    
+    print(f"User ID: {user_id}")
+    
+    if not user_id:
+        return jsonify({"error": "User not found"}), 400
+    
+    
     image_file = request.files.get('imageFile')
     image_url = request.form.get('imageURL')
-    selected_model = request.form.get('model')
-
+    
     if image_file:
-        image2generate = Image.open(image_file)
+        filename = secure_filename(image_file.filename)
+        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+        
+        # Save the uploaded image file
+        image_file.save(file_path)
+        image2generate = Image.open(file_path)  # Open the saved image file
+        
+        if image2generate:
+            generated_caption = generate_captions_git_base(image2generate)
+        else:
+            return jsonify({'error': 'Failed to process image'}), 500  # Return an error if image processing fails
+            
+        # Convert image file to base64 for return
+        image_file.seek(0)  # Reset the file pointer to read from the start
         image = f"data:image/jpeg;base64,{base64.b64encode(image_file.read()).decode('utf-8')}"
+        
+        # Save image metadata to database
+        new_image = ChildImage(filename=filename, filepath=file_path, user_id=user_id, imageCaption=generated_caption)
+        db.session.add(new_image)
+        db.session.commit()
+        
     elif image_url:
-        response = requests.get(image_url)
-        image2generate = Image.open(BytesIO(response.content))
-        image = f"data:image/jpeg;base64,{base64.b64encode(response.content).decode('utf-8')}"
+            response = requests.get(image_url)
+            response.raise_for_status()  # Raise an error for bad responses
+            image2generate = Image.open(BytesIO(response.content))
+            
+            if image2generate:
+                generated_caption = generate_captions_git_base(image2generate)
+            else:
+                return jsonify({'error': 'Failed to process image'}), 500  # Return an error if image processing fails
+                
+            # Prepare for saving the image
+            filename = os.path.basename(image_url)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+
+            with open(file_path, 'wb') as f:
+                f.write(response.content)  # Save the image
+
+            # Save image metadata to database
+            new_image = ChildImage(filename=filename, filepath=file_path, user_id=user_id, imageCaption=generated_caption)
+            db.session.add(new_image)
+            db.session.commit()
+
+            # Convert image content to base64 for return
+            image = f"data:image/jpeg;base64,{base64.b64encode(response.content).decode('utf-8')}"
+
     else:
         return jsonify({'error': 'No image file or URL provided'}), 400  # Return an error if no image is provided
-
-    if image2generate:
-        if selected_model == "J":
-            generated_caption = generate_captions_git_base(image2generate)
-        elif selected_model == "V":
-            generated_caption = generate_caption(image2generate, caption_model)
-        else:
-            return jsonify({'error': 'Invalid model selection'}), 400  # Return error if model is invalid
-    else:
-        return jsonify({'error': 'Failed to process image'}), 500  # Return an error if image processing fails
 
     return jsonify({'caption': generated_caption, 'image': image})
 
 # Image caption function end
 
+# Route to serve uploaded images
+@app.route('/uploads/<filename>')
+def uploaded_file(filename):
+    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
+
+@app.route('/gallery', methods=['GET'])
+def user_gallery():
+    # Fetch the user based on the provided user_id
+    user_id = request.args.get('user_id')
+    user = User.query.get(user_id)
+    print(user_id) #check if get the current user id
+    
+     # Verify if the user exists in the users table
+    user = User.query.filter_by(id=user_id).first()  # Assuming you have a User model
+    
+    # Check if the user exists
+    if not user:
+        return jsonify({"error": "User not found"}), 404
+    
+    # Query images associated with this user
+    images = ChildImage.query.filter_by(user_id=user_id).all()  # Filter images by user_id
+    
+    if not images:
+            return jsonify({'message': 'No images found for this user'}), 404
+    
+    # Create a list of image details
+    image_list = [
+        {
+            "filename": img.filename,
+            "filepath":  f"http://192.168.68.117:5000/uploads/{img.filename}",  # Full image URL,
+            "caption": img.imageCaption,
+        } for img in images
+    ]
+    print(image_list) #check image list
+    
+    # Return the list of images as JSON
+    return jsonify({"images": image_list}), 200
+
+
+# User model for image upload
+class ChildImage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(120), nullable=False)
+    imageCaption = db.Column(db.String(255), nullable=True)
+    filepath = db.Column(db.String(255), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    user = db.relationship('User', backref=db.backref('images', lazy=True))
+    date_uploaded = db.Column(db.DateTime, default=datetime.utcnow)
+
+# end
 # User model
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)

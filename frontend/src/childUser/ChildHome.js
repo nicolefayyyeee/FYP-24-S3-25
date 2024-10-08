@@ -18,7 +18,7 @@ const ChildHome = () => {
           <Link to="/moments">
             <div className="option-card yellow">My Moments</div>
           </Link>
-          <Link to="/gallery">
+          <Link to="/galleryPage">
             <div className="option-card green">Explore the Gallery</div>
           </Link>
           <Link to="/games">
