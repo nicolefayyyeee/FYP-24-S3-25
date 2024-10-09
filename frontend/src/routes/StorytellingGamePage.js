@@ -1,7 +1,7 @@
 import React from 'react';
 import Navbar from '../containers/navbar/Navbar';
 import Footer from '../containers/footer/Footer';
-import StorytellingGame from './childUser/StorytellingGame';
+import StorytellingGame from '../childUser/StorytellingGame';
 
 const StorytellingGamePage = () => {
   return (
