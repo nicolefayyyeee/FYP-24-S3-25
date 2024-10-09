@@ -13,9 +13,9 @@ const categoryMapping = {
     Flowers: ["sunflower", "rose", "daisy", "lily", "tulip", "cherry blossom", "lotus", "lavender", "chrysanthemum", "orchid"],
     Vegetables: ["broccoli", "tomatoes", "cucumber", "potatoes", "onion", "corn", "carrot", "mushroom", "ginger", "cabbage"],
     Fruits: ["cherry", "grape", "strawberry", "apple", "watermelon", "mango", "banana", "durian", "blueberry", "kiwi"],
-    Nationalflag: ["Malaysia flag", "Singapore flag", "Australia flag", "Canada flag", "USA flag", "Korea flag", "Republic of China flag", "United Kingdom flag", "France flag", "Germany flag" ],
+    Nationalflag: ["Malaysia flag", "Singapore flag", "Australia flag", "Canada flag", "USA flag", "Korea flag", "Republic of China flag", "Union flag", "France flag", "Germany flag"],
     Food: ["ice cream", "meat", "cola", "fruit", "cake", "chocolate", "cookies", "vegetables", "burger", "sushi"],
-    Hobbies: ["jogging","dancing", "badminton", "swimming", "singing", "painting", "reading", "camping", "writing", "horse riding"]
+    Hobbies: ["jogging", "dancing", "badminton", "swimming", "singing", "painting", "reading", "camping", "writing", "horse riding"]
 };
 
 const MatchPictureGame = () => {
@@ -35,16 +35,16 @@ const MatchPictureGame = () => {
 
     // Function to randomly select a category 
     const getRandomCategory = () => {
-        const categories = Object.keys(categoryMapping);  
+        const categories = Object.keys(categoryMapping);
         const randomIndex = Math.floor(Math.random() * categories.length);
-        return categories[randomIndex];  
+        return categories[randomIndex];
     };
 
     // Function to randomly select 5 subcategories from the selected category
     const getRandomSubcategories = (category) => {
-        const subcategories = categoryMapping[category];  // Get subcategories for the selected category
-        const shuffled = subcategories.sort(() => 0.5 - Math.random());  // Shuffle the array
-        return shuffled.slice(0, 5);  // Return 5 random subcategories
+        const subcategories = categoryMapping[category];
+        const shuffled = subcategories.sort(() => 0.5 - Math.random()); // Shuffle the array
+        return shuffled.slice(0, 5); // Return 5 random subcategories
     };
 
     // Function to get additional 5 distractor words
@@ -55,7 +55,6 @@ const MatchPictureGame = () => {
         return shuffled.slice(0, 5);  // Get 5 distractor words
     };
 
-    
     // Function to fetch pictures for each selected subcategory
     const fetchPexelsPictures = async () => {
         try {
@@ -72,7 +71,7 @@ const MatchPictureGame = () => {
                     },
                     params: {
                         query: subcategory,
-                        per_page: 1  
+                        per_page: 1  // Fetch 1 picture for each subcategory
                     }
                 });
                 const photo = response.data.photos[0];
@@ -112,8 +111,8 @@ const MatchPictureGame = () => {
     };
 
     const handleCorrectMatch = (matchedPicture) => {
-        setScore(score + 1);
-        setCorrectMatches(correctMatches + 1);
+        setScore((prevScore) => prevScore + 1);
+        setCorrectMatches((prevMatches) => prevMatches + 1);
 
         // Remove the matched picture from the pictures array
         setPictures((prevPictures) => prevPictures.filter((picture) => picture.id !== matchedPicture.id));
@@ -125,7 +124,7 @@ const MatchPictureGame = () => {
     };
 
     const handleIncorrectMatch = () => {
-        setScore(score - 1);
+        setScore((prevScore) => Math.max(prevScore - 1, 0));  // Prevent score from going negative
     };
 
     const handleDragStart = (word) => {
@@ -163,10 +162,11 @@ const MatchPictureGame = () => {
         <div className="game-container">
             <h1>Drag the word to match the pictures</h1>
 
-            <div>
-                <p>Score: {score}</p>
-                <p>Time: {time} seconds</p>
-            </div>
+            <div className="score-timer-container">
+    <p>Score: {Math.max(score, 0)}</p>
+    <p>Time: {time} seconds</p>
+</div>
+
 
             <div className="picture-grid">
                 {pictures.map((picture, index) => (
@@ -197,7 +197,7 @@ const MatchPictureGame = () => {
             <div className={`congrats-popup ${showCongrats ? 'show' : ''}`}>
                 <button className="close-btn" onClick={closeModal}>&times;</button>
                 <h2>Congratulations!</h2>
-                <p>Your total score is: {score}/5</p>
+                <p>Your total score is: {Math.max(score, 0)}/5</p>
                 <p>Total time used: {time} seconds</p>
             </div>
         </div>
