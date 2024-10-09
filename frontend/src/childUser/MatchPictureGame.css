@@ -1,0 +1,186 @@
+body {
+  font-family: 'Poppins', sans-serif;
+  background-color: #1e133c; 
+  text-align: center;
+}
+
+.game-container {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  flex-direction: column;
+  height: 100vh;
+  padding-top: 20px;
+}
+
+h1 {
+  color: #f8f8ff;
+  font-size: 3rem;
+  font-weight: 600;
+  margin-bottom: 30px;
+}
+
+.picture-container {
+  display: inline-block;
+  margin: 0 30px; 
+}
+
+.picture-container img {
+  width: 200px;  
+  height: 200px; 
+  border-radius: 10px; 
+  border: 4px solid #544f79; 
+}
+
+.picture-container p {
+  margin-top: 15px;
+  font-size: 1.4rem;
+  color: #dad9e9;
+}
+
+.word-grid {
+  display: flex;
+  justify-content: center;
+  flex-wrap: wrap;  
+  gap: 20px;      
+  margin-top: 20px;
+  max-width: 1000px; 
+}
+
+.word-container {
+  background-color: #6c63ff;  
+  color: #fff;                
+  border-radius: 10px;        
+  padding: 15px;
+  text-align: center;
+  font-size: 1.2em;
+  width: 180px;                
+  height: 100px;               
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  overflow-wrap: break-word;  
+  box-shadow: 0 6px 10px rgba(0, 0, 0, 0.1); 
+  transition: transform 0.3s ease;
+}
+
+@media only screen and (max-width: 768px) {
+  .word-container {
+    width: 100px; 
+    height: 80px; 
+    padding: 8px; 
+    font-size: 1rem; 
+  }
+}
+
+.word-container:hover {
+  transform: scale(1.05);
+  background-color: #5048c7;  
+}
+
+.word-container p {
+  margin: 0;
+  padding: 0;
+  font-size: 1.1em;
+  line-height: 1.4;           
+  word-wrap: break-word;      
+}
+
+.score-timer-container p {
+  font-size: 1.4rem;
+  color: #eaeaf5;
+  margin-top: 10px;
+}
+
+button {
+  background-color: #5964e5;
+  color: white;
+  padding: 12px 40px;
+  font-size: 1.3rem;
+  border-radius: 10px;
+  border: none;
+  margin-top: 20px;
+  cursor: pointer;
+  transition: all 0.3s ease;
+}
+
+button:hover {
+  background-color: #7e84fa;
+  box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+}
+
+button:active {
+  background-color: #4048ba;
+}
+
+.congrats-popup {
+  position: fixed;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background-color: #2b1a5b; 
+  padding: 40px;
+  border-radius: 15px;
+  text-align: center;
+  box-shadow: 0 10px 30px rgba(0, 0, 0, 0.5); 
+  z-index: 1000; 
+  display: none; 
+}
+
+.congrats-popup.show {
+  display: block; 
+}
+
+.congrats-popup h2 {
+  color: #80d4ff; 
+  font-size: 2.5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  background-color: #2b1a5b; 
+  padding: 20px;
+  border-radius: 8px;
+}
+
+.congrats-popup p {
+  color: #ffffff; 
+  font-size: 1.5rem;
+  margin-bottom: 15px;
+  background-color: #2b1a5b; 
+  padding: 15px;
+  border-radius: 8px;
+}
+
+@keyframes popupFadeIn {
+  0% {
+    opacity: 0;
+    transform: translate(-50%, -55%);
+  }
+  100% {
+    opacity: 1;
+    transform: translate(-50%, -50%);
+  }
+}
+
+.congrats-popup.show {
+  animation: popupFadeIn 0.5s ease-in-out;
+}
+
+.correct-match {
+  background-color: #43a047 !important;
+}
+
+.incorrect-match {
+  background-color: #e53935 !important;
+}
+
+@media only screen and (max-width: 768px) {
+  .picture-container img {
+    width: 120px;
+    height: 120px;
+  }
+
+  .word-container {
+    padding: 10px 15px;
+    font-size: 1.1rem;
+  }
+}
