@@ -15,6 +15,8 @@ import AdminHomePage from './routes/AdminHomePage';
 import ParentHomePage from './routes/ParentHomePage';
 import ChildHomePage from './routes/ChildHomePage';
 import GameSelectionPage from './routes/GameSelectionPage';
+import MatchPictureGamePage from './routes/MatchPictureGamePage'; 
+import StorytellingGamePage from './routes/StorytellingGamePage';
 import GalleryPage from './routes/galleryPage';
 
 ReactDOM.render(
@@ -31,6 +33,8 @@ ReactDOM.render(
       <Route path='/parenthome' element={<ParentHomePage />} />
       <Route path='/childhome' element={<ChildHomePage />} />
       <Route path="/games" element={<GameSelectionPage />} />
+      <Route path="/match-picture" element={<MatchPictureGamePage />} />
+      <Route path="/storytelling-game" element={<StorytellingGamePage />} />
       <Route path='/galleryPage' element={<GalleryPage />} />
     </Routes>
   </BrowserRouter>,
