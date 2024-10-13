@@ -81,24 +81,26 @@ const Navbar = () => {
                 </div>
 
                 <ul className={nav ? 'nav-menu active' : 'nav-menu'}>
-                <li><Link onClick={handleClose} to="/#header">Home</Link></li>                    
-                <li><Link onClick={handleClose} to="/#features">Features</Link></li>
-                <li><Link onClick={handleClose} to="/#about">About</Link></li>
-                <li><Link onClick={handleClose} to="/#faq">FAQ</Link></li>
-                <li><Link onClick={handleClose} to="/#contact">Contact</Link></li>
+                    {!user_id && (
+                        <>
+                            <li><Link onClick={handleClose} to="/#header">Home</Link></li>                    
+                            <li><Link onClick={handleClose} to="/#features">Features</Link></li>
+                            <li><Link onClick={handleClose} to="/#about">About</Link></li>
+                            <li><Link onClick={handleClose} to="/#faq">FAQ</Link></li>
+                            <li><Link onClick={handleClose} to="/#contact">Contact</Link></li>
+                        </>
+                    )}
 
                     {user_id ? (
                         <>
                             {profile === 'admin' ? (
                                 <li>
-                                    {/* change to edit account page */}
                                     <Link to="/" className="profile-link" onClick={handleClose}>
                                         Account
                                     </Link>
                                 </li>
                             ) : profile === 'child' ? (
                                 <li>
-                                    {/* change to customisation page */}
                                     <Link to="/" className="profile-link" onClick={handleClose}>
                                         Customization
                                     </Link>
@@ -127,6 +129,7 @@ const Navbar = () => {
                         </div>
                     </div>
                 </ul>
+
 
                 <div className="hamburger" onClick={handleNav}>
                     {nav ? (<FaTimes size={20} style={{ color: '#ffffff' }} />) : (<FaBars style={{ color: '#ffffff' }} size={20} />)}

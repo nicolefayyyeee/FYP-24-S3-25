@@ -75,8 +75,8 @@
   color: #f6f6f6;
   border: none;
   cursor: pointer;
-  width: 100%; /* Fix width */
-  box-sizing: border-box; /* Ensure padding is included */
+  margin: 0 auto; /* Center the button */
+  display: block; /* Ensure the button behaves as a block element */
   transition: background 0.3s ease;
   text-decoration: none;
 }
