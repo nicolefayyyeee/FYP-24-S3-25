@@ -1,4 +1,5 @@
 from datetime import datetime
+import pytz
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
@@ -56,7 +57,7 @@ app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'uploads')  # Adjust as 
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
 
-# Image caption function start 
+# # Image caption function start 
 @app.route('/imageCaptioning', methods=['POST'])
 def predict_caption():
     generated_caption = None
@@ -211,14 +212,13 @@ class UserScores(db.Model):
 # Review model
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(150), db.ForeignKey('user.username'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     content = db.Column(db.Text, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.now(timezone.utc), nullable=False)
+    timestamp = db.Column(db.DateTime, default=lambda: datetime.now(pytz.timezone('Asia/Singapore')), nullable=False)
     display = db.Column(db.Boolean, default=False)
 
     user = db.relationship('User', backref=db.backref('reviews', lazy=True))
-
 # Create DB
 with app.app_context():
     db.create_all()
@@ -234,10 +234,18 @@ def get_users():
     # print(user_id2)
     if not user_id:
         return jsonify({"message": "Login required!"}), 401
-    current_user = User.query.filter_by(id=user_id).first()
-    child_users = User.query.filter_by(parent_id=user_id).order_by(User.id.desc()).all()
-    user_list = [user.name for user in child_users]
-    user_list.append(current_user.name)
+    # current_user = User.query.filter_by(id=user_id).first()
+    child_users = User.query.filter_by(parent_id=user_id).order_by(User.id.asc()).all()
+    user_list = []
+    for user in child_users:
+        user_info = {
+            "user_id": user.id,
+            "username": user.username, 
+            "name": user.name,
+            "password": user.password 
+        }
+        user_list.append(user_info)
+    # user_list.append(current_user.name)
     return jsonify(user_list), 200
 
 # Parent: add new child user
@@ -408,32 +416,34 @@ def get_user_scores():
 def add_review():
     data = request.get_json()
     print(data)
-    username = data.get('username') 
-    if not username:
-        return jsonify({"message": "Login required!"}), 401
     
+    user_id = data.get('user_id')  
+    if not user_id:
+        return jsonify({"message": "Login required!"}), 401
+
     try:
-        new_review = Review(username=username, content=data['content'], rating=data['rating'])
+        new_review = Review(user_id=user_id, content=data['content'], rating=data['rating'] )
         db.session.add(new_review)
         db.session.commit()
+        
         return jsonify({"message": "Review added successfully!"}), 201
     
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Parent: view my reviews (by username)
+# Parent: view my reviews (by user_id)
 @app.route('/my_reviews', methods=['GET'])
 def my_reviews():
-    username = request.args.get('username') 
+    user_id = request.args.get('user_id')
     try:
-        if not username:
+        if not user_id:
             return jsonify({"message": "Login required!"}), 401
 
-        reviews = Review.query.filter_by(username=username).all()
+        # Fetch reviews by user_id
+        reviews = Review.query.filter_by(user_id=user_id).all()
 
         review_list = [
             {
-                "username": review.username,
                 "content": review.content,
                 "rating": review.rating,
                 "timestamp": review.timestamp.strftime('%Y-%m-%d %H:%M:%S')
@@ -453,7 +463,8 @@ def view_all_reviews():
         review_list = [
             {
                 "id": review.id,
-                "username": review.username,
+                "user_id": review.user_id,
+                "username": review.user.username, 
                 "content": review.content,
                 "rating": review.rating,
                 "timestamp": review.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
@@ -502,6 +513,59 @@ def view_reviews():
     
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+# Parent & Admin: edit my account 
+@app.route('/update_user/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+    data = request.get_json()
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    if 'username' in data:
+        existing_user = User.query.filter_by(username=data['username']).first()
+        if existing_user and existing_user.id != user.id:
+            return jsonify({"message": "Username already taken"}), 400
+        user.username = data['username']
+
+    if 'name' in data:
+        user.name = data['name']
+        
+    if 'email' in data:
+        existing_user = User.query.filter_by(email=data['email']).first()
+        if existing_user and existing_user.id != user.id:
+            return jsonify({"message": "Email already exists!"}), 400
+        user.email = data['email']
+
+    if 'password' in data:
+        user.password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+
+    try:
+        db.session.commit()
+        return jsonify({"message": "User updated successfully!"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+    
+# Parent & Admin: get my account details
+@app.route('/get_user_details/<int:user_id>', methods=['GET'])
+def get_user_details(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    user_info = {
+        "user_id": user.id,
+        "username": user.username,
+        "name": user.name,
+        "email": user.email if user.email else None,
+        "profile_id": user.profile_id,
+        "parent_id": user.parent_id
+    }
+
+    return jsonify(user_info), 200
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
