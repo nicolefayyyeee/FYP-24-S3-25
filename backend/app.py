@@ -184,16 +184,20 @@ class ChildImage(db.Model):
 # User model
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    profile_id = db.Column(db.Integer, nullable=False)
+    profile_id = db.Column(db.Integer, db.ForeignKey('profile.id'), nullable=False)
     username = db.Column(db.String(150), nullable=False, unique=True)
     name = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=True, unique=True)
     password = db.Column(db.String(255), nullable=False)
     parent_id = db.Column(db.Integer, nullable=True)
-    # icon = db.Column(db.String(), nullable=True)
+    suspend = db.Column(db.Boolean, default=False)
 
-    # Define relationship
-    # children = db.relationship('User', backref=db.backref('parent', remote_side=[id]), lazy=True)
+    profile = db.relationship('Profile', backref=db.backref('users', lazy=True))
+
+# Profile model
+class Profile(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    role = db.Column(db.String(255), nullable=False)
 
 # Game Content model
 class GameContent(db.Model):
@@ -565,6 +569,124 @@ def get_user_details(user_id):
     }
 
     return jsonify(user_info), 200
+
+# Admin: create admin user
+@app.route('/create_admin', methods=['POST'])
+def create_admin():
+    data = request.get_json()
+
+    # Check if the user already exists
+    if User.query.filter_by(username=data['username']).first():
+        return jsonify({"message": "Username already exists!"}), 400
+    
+    # Check if the email already exists
+    if User.query.filter_by(email=data['email']).first():
+        return jsonify({"message": "Email already exists!"}), 400
+    
+    hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+    new_user = User(profile_id=1, username=data['username'], name=data['name'], email=data['email'], password=hashed_password)
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify({"message": "User created successfully!"}), 201
+
+# Admin: view all users
+@app.route('/view_all_users', methods=['GET'])
+def view_all_users():
+    try:
+        users = User.query.all()
+
+        user_list = [
+            {
+                "id": user.id,
+                "profile_id": user.profile_id,
+                "username": user.username, 
+                "name": user.name,
+                "email": user.email,
+                "parent_id": user.parent_id,
+                "suspend": user.suspend
+            } for user in users
+        ]
+
+        return jsonify({"users": user_list}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+# Admin: suspend user 
+@app.route('/suspend_account/<int:user_id>', methods=['PUT'])
+def toggle_suspend(user_id):
+    try:
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+        
+        # Toggle the suspension status
+        user.suspend = not user.suspend
+        db.session.commit()
+
+        return jsonify({"message": "Suspension status updated", "suspend": user.suspend}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
+# Admin: create user profile
+@app.route('/create_profile', methods=['POST'])
+def create_profile():
+    data = request.get_json()
+
+    # Check if the role already exists
+    if Profile.query.filter_by(role=data['role']).first():
+        return jsonify({"message": "Role already exists!"}), 400
+    
+    new_profile = Profile(role=data['role'])
+    db.session.add(new_profile)
+    db.session.commit()
+    return jsonify({"message": "Profile created successfully!"}), 201
+
+# Admin: view all profiles
+@app.route('/view_all_profiles', methods=['GET'])
+def view_all_profiles():
+    try:
+        profiles = Profile.query.all()
+
+        profile_list = []
+        for profile in profiles:
+            user_count = User.query.filter_by(profile_id=profile.id).count()
+            suspended_count = User.query.filter_by(profile_id=profile.id, suspend=True).count()
+
+            profile_list.append({
+                "id": profile.id,
+                "role": profile.role,
+                "user_count": user_count, 
+                "suspended_count": suspended_count
+            })
+
+        return jsonify({"profiles": profile_list}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Admin: suspend/unsuspend users (by profile_id)
+@app.route('/suspend_profile/<int:profile_id>', methods=['PUT'])
+def suspend_profile(profile_id):
+    try:
+        suspend = request.json.get('suspend')
+
+        users = User.query.filter_by(profile_id=profile_id).all()
+
+        if not users:
+            return jsonify({"message": "No users found with this profile"}), 400
+
+        for user in users:
+            user.suspend = suspend
+            db.session.commit()
+
+        action = "suspended" if suspend else "unsuspended"
+        return jsonify({"message": f"All users with profile {profile_id} have been {action}."}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 
 if __name__ == "__main__":
