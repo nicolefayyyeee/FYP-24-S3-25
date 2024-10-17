@@ -15,10 +15,10 @@ const AdminHome = () => {
           <button className="profile-btn">Edit Profile</button>
         </div>
         <div className="options-grid">
-          <Link to="/snap">
+          <Link to="/manageAccounts">
             <div className="option-card red">Manage User Accounts</div>
           </Link>
-          <Link to="/moments">
+          <Link to="/manageUserProfiles">
             <div className="option-card yellow">Manage User Profiles</div>
           </Link>
           <Link to="/gallery">
@@ -26,6 +26,9 @@ const AdminHome = () => {
           </Link>
           <Link to="/games">
             <div className="option-card blue">Manage System's Photos</div>
+          </Link>
+          <Link to="/viewAllReviews">
+            <div className="option-card purple">View All Reviews</div>
           </Link>
         </div>
       </div>

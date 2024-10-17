@@ -18,6 +18,15 @@ import GameSelectionPage from './routes/GameSelectionPage';
 import MatchPictureGamePage from './routes/MatchPictureGamePage'; 
 import StorytellingGamePage from './routes/StorytellingGamePage';
 import GalleryPage from './routes/galleryPage';
+import ManageAccountsPage from './routes/ManageAccountsPage';
+import ManageUserProfilesPage from './routes/ManageUserProfilesPage';
+import CreateAdminPage from './routes/CreateAdminPage';
+import CreateProfilePage from './routes/CreateProfilePage';
+import ViewAllAccountsPage from './routes/ViewAllAccountsPage';
+import ViewAllProfilesPage from './routes/ViewAllProfilesPage';
+// import ViewAllReviewsPage from './routes/ViewAllReviewsPage';
+// import SearchAccountPage from './routes/SearchAccountPage';
+// import SearchProfilePage from './routes/SearchProfilePage';
 
 ReactDOM.render(
   <BrowserRouter>
@@ -36,6 +45,15 @@ ReactDOM.render(
       <Route path="/match-picture" element={<MatchPictureGamePage />} />
       <Route path="/storytelling-game" element={<StorytellingGamePage />} />
       <Route path='/galleryPage' element={<GalleryPage />} />
+      <Route path='/manageAccounts' element={<ManageAccountsPage/>} />
+      <Route path='/manageUserProfiles' element={<ManageUserProfilesPage/>} />
+      <Route path='/createAdmin' element={<CreateAdminPage/>} />
+      <Route path='/createProfile' element={<CreateProfilePage/>} />
+      <Route path='/viewAllAccounts' element={<ViewAllAccountsPage/>} />
+      <Route path='/viewAllProfiles' element={<ViewAllProfilesPage/>} />
+      {/* <Route path='/viewAllReviews' element={<ViewAllReviewsPage/>} />
+      <Route path='/searchAccount' element={<SearchAccountPage/>} />
+      <Route path='/searchProfile' element={<SearchProfilePage/>} /> */}
     </Routes>
   </BrowserRouter>,
   document.getElementById('root')

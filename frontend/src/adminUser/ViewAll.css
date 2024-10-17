@@ -1,0 +1,95 @@
+.user-list {
+    list-style-type: none;
+    padding: 0;
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 50px;
+    margin: 30px auto;
+    width: 70%;
+}
+
+.user-card {
+    background-color: rgb(235, 235, 235);
+    border-radius: 10px;
+    padding: 15px;
+    color: white;
+    text-align: center;
+    transition: transform 0.2s ease;
+}
+
+.user-card:hover {
+    transform: scale(1.05);
+    box-shadow: 0 0 20px 3px rgb(150, 150, 150);
+}
+    
+.user-details{
+    margin: 0 20px;
+    color: black;
+}
+
+.user-details p {
+    text-align: left;
+    margin: 5px 0;
+    font-size: 12px;
+}
+
+.user-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.user-header p {
+    font-weight: bold;
+    font-size: 14px;
+}
+
+.profile-body {
+    display: flex;
+    justify-content: space-between;
+    align-items: flex-start;
+}
+
+.suspended {
+    color: #f44336;
+}
+
+.active {
+    color: #4caf50;
+}
+
+.suspend-btn {
+    padding: 12px;
+    border: none;
+    border-radius: 20px;
+    color: white;
+    background-color: #db3d32;
+    cursor: pointer;
+    font-size: 14px;
+    margin-top: 10px;
+    width: 48%;
+}
+
+.suspend-btn.unsuspend {
+    background-color: grey;
+}
+
+.suspend-btn:hover {
+    background-color: #f44336;
+    box-shadow: 0 0;;
+}
+
+.suspend-btn.unsuspend:hover {
+    background-color: rgb(145, 145, 145);
+    box-shadow: 0 0;;
+}
+
+.button-row {
+    display: flex;
+    justify-content: space-between;
+    margin-top: 10px;
+}
+
+button:focus {
+    outline: none; 
+}
