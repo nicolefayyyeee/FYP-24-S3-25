@@ -1,0 +1,48 @@
+.error-msg {
+  margin-bottom: 10px;
+  color: red;
+  font-size: 12px;
+  min-height: 20px;
+}
+
+.form-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  padding: 15px;
+}
+
+.form-field {
+  margin-bottom: 20px;
+  width: 20%;
+}
+
+.form-field label {
+  display: block;
+  font-size: 12px;
+  color: #fff;
+  margin-bottom: 5px; 
+  text-align: left;
+}
+
+.form-field input {
+  width: 100%;
+  padding: 12px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  font-size: 12px;
+}
+
+.submit-btn {
+  width: 8%;
+  padding: 12px;
+  border-radius: 20px;
+  border: none;
+  background-color: #449c46;
+  color: white;
+  font-size: 12px;
+}
+
+.submit-btn:hover {
+  background-color: #4CAF50;
+}

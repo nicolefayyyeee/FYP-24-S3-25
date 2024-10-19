@@ -94,23 +94,18 @@ const Navbar = () => {
                     {user_id ? (
                         <>
                             {profile === 'admin' ? (
-                                <li>
-                                    <Link to="/" className="profile-link" onClick={handleClose}>
-                                        Account
-                                    </Link>
-                                </li>
+                                <>
+                                    <li><Link to="/adminHome" onClick={handleClose}>Home</Link></li>
+                                    <li><Link to="/manageAccounts" onClick={handleClose}>Manage Accounts</Link></li>
+                                    <li><Link to="/manageUserProfiles" onClick={handleClose}>Manage Profiles</Link></li>
+                                    <li><Link to="/viewAllReviews" onClick={handleClose}>Reviews</Link></li>
+                                    <li><Link to="/editAccount" className="profile-link" onClick={handleClose}>My Account</Link></li> 
+                                </>  
+                                
                             ) : profile === 'child' ? (
-                                <li>
-                                    <Link to="/" className="profile-link" onClick={handleClose}>
-                                        Customization
-                                    </Link>
-                                </li>
+                                <li><Link to="/" className="profile-link" onClick={handleClose}>Customization</Link></li>
                             ) : (
-                                <li>
-                                    <Link to="/profile" className="profile-link" onClick={handleClose}>
-                                        Profiles
-                                    </Link>
-                                </li>
+                                <li><Link to="/profile" className="profile-link" onClick={handleClose}>Profiles</Link> </li>
                             )}
                             <li>
                                 <button onClick={handleLogout} className="auth-button">Logout</button>

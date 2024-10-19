@@ -1,4 +1,5 @@
 from datetime import datetime
+import pytz
 import os
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
@@ -307,10 +308,15 @@ class User(db.Model):
     email = db.Column(db.String(255), nullable=True, unique=True)
     password = db.Column(db.String(255), nullable=False)
     parentID = db.Column(db.Integer, nullable=True)
+    # suspend = db.Column(db.Boolean, nullable=False)
     # icon = db.Column(db.String(), nullable=True)
 
-    # Define relationship
-    # children = db.relationship('User', backref=db.backref('parent', remote_side=[id]), lazy=True)
+    # profile = db.relationship('Profile', backref=db.backref('users', lazy=True))
+
+# Profile model
+class Profile(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    role = db.Column(db.String(255), nullable=False)
 
 # Game Content model
 class GameContent(db.Model):
@@ -329,14 +335,13 @@ class UserScores(db.Model):
 # Review model
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    username = db.Column(db.String(150), db.ForeignKey('user.username'), nullable=False)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     content = db.Column(db.Text, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
-    timestamp = db.Column(db.DateTime, default=datetime.now(timezone.utc), nullable=False)
+    timestamp = db.Column(db.DateTime, default=lambda: datetime.now(pytz.timezone('Asia/Singapore')), nullable=False)
     display = db.Column(db.Boolean, default=False)
 
     user = db.relationship('User', backref=db.backref('reviews', lazy=True))
-
 # Create DB
 with app.app_context():
     db.create_all()
@@ -527,32 +532,34 @@ def get_user_scores():
 def add_review():
     data = request.get_json()
     print(data)
-    username = data.get('username') 
-    if not username:
-        return jsonify({"message": "Login required!"}), 401
     
+    user_id = data.get('user_id')  
+    if not user_id:
+        return jsonify({"message": "Login required!"}), 401
+
     try:
-        new_review = Review(username=username, content=data['content'], rating=data['rating'])
+        new_review = Review(user_id=user_id, content=data['content'], rating=data['rating'] )
         db.session.add(new_review)
         db.session.commit()
+        
         return jsonify({"message": "Review added successfully!"}), 201
     
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Parent: view my reviews (by username)
+# Parent: view my reviews (by user_id)
 @app.route('/my_reviews', methods=['GET'])
 def my_reviews():
-    username = request.args.get('username') 
+    user_id = request.args.get('user_id')
     try:
-        if not username:
+        if not user_id:
             return jsonify({"message": "Login required!"}), 401
 
-        reviews = Review.query.filter_by(username=username).all()
+        # Fetch reviews by user_id
+        reviews = Review.query.filter_by(user_id=user_id).all()
 
         review_list = [
             {
-                "username": review.username,
                 "content": review.content,
                 "rating": review.rating,
                 "timestamp": review.timestamp.strftime('%Y-%m-%d %H:%M:%S')
@@ -572,7 +579,8 @@ def view_all_reviews():
         review_list = [
             {
                 "id": review.id,
-                "username": review.username,
+                "user_id": review.user_id,
+                "username": review.user.username, 
                 "content": review.content,
                 "rating": review.rating,
                 "timestamp": review.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
@@ -621,6 +629,177 @@ def view_reviews():
     
     except Exception as e:
         return jsonify({"error": str(e)}), 500
+
+# Parent & Admin: edit my account 
+@app.route('/update_user/<int:user_id>', methods=['PUT'])
+def update_user(user_id):
+    data = request.get_json()
+
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    if 'username' in data:
+        existing_user = User.query.filter_by(username=data['username']).first()
+        if existing_user and existing_user.id != user.id:
+            return jsonify({"message": "Username already taken"}), 400
+        user.username = data['username']
+
+    if 'name' in data:
+        user.name = data['name']
+        
+    if 'email' in data:
+        existing_user = User.query.filter_by(email=data['email']).first()
+        if existing_user and existing_user.id != user.id:
+            return jsonify({"message": "Email already exists!"}), 400
+        user.email = data['email']
+
+    if 'password' in data:
+        user.password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+
+    try:
+        db.session.commit()
+        return jsonify({"message": "User updated successfully!"}), 200
+    except Exception as e:
+        db.session.rollback()
+        return jsonify({"error": str(e)}), 500
+    
+# Parent & Admin: get my account details
+@app.route('/get_user_details/<int:user_id>', methods=['GET'])
+def get_user_details(user_id):
+    user = User.query.get(user_id)
+    if not user:
+        return jsonify({"message": "User not found"}), 404
+
+    user_info = {
+        "user_id": user.id,
+        "username": user.username,
+        "name": user.name,
+        "email": user.email if user.email else None,
+        "profileID": user.profileID,
+        "parentID": user.parentID
+    }
+
+    return jsonify(user_info), 200
+
+# Admin: create admin user
+@app.route('/create_admin', methods=['POST'])
+def create_admin():
+    data = request.get_json()
+
+    # Check if the user already exists
+    if User.query.filter_by(username=data['username']).first():
+        return jsonify({"message": "Username already exists!"}), 400
+    
+    # Check if the email already exists
+    if User.query.filter_by(email=data['email']).first():
+        return jsonify({"message": "Email already exists!"}), 400
+    
+    hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+    new_user = User(profileID=1, username=data['username'], name=data['name'], email=data['email'], password=hashed_password)
+    db.session.add(new_user)
+    db.session.commit()
+    return jsonify({"message": "User created successfully!"}), 201
+
+# Admin: view all users
+@app.route('/view_all_users', methods=['GET'])
+def view_all_users():
+    try:
+        users = User.query.all()
+
+        user_list = [
+            {
+                "id": user.id,
+                "profileID": user.profileID,
+                "username": user.username, 
+                "name": user.name,
+                "email": user.email,
+                "parentID": user.parentID,
+                "suspend": user.suspend
+            } for user in users
+        ]
+
+        return jsonify({"users": user_list}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+# Admin: suspend user 
+@app.route('/suspend_account/<int:user_id>', methods=['PUT'])
+def toggle_suspend(user_id):
+    try:
+        user = User.query.get(user_id)
+        if not user:
+            return jsonify({"error": "User not found"}), 404
+        
+        # Toggle the suspension status
+        user.suspend = not user.suspend
+        db.session.commit()
+
+        return jsonify({"message": "Suspension status updated", "suspend": user.suspend}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
+
+# Admin: create user profile
+@app.route('/create_profile', methods=['POST'])
+def create_profile():
+    data = request.get_json()
+
+    # Check if the role already exists
+    if Profile.query.filter_by(role=data['role']).first():
+        return jsonify({"message": "Role already exists!"}), 400
+    
+    new_profile = Profile(role=data['role'])
+    db.session.add(new_profile)
+    db.session.commit()
+    return jsonify({"message": "Profile created successfully!"}), 201
+
+# Admin: view all profiles
+@app.route('/view_all_profiles', methods=['GET'])
+def view_all_profiles():
+    try:
+        profiles = Profile.query.all()
+
+        profile_list = []
+        for profile in profiles:
+            user_count = User.query.filter_by(profileID=profile.id).count()
+            suspended_count = User.query.filter_by(profileID=profile.id, suspend=True).count()
+
+            profile_list.append({
+                "id": profile.id,
+                "role": profile.role,
+                "user_count": user_count, 
+                "suspended_count": suspended_count
+            })
+
+        return jsonify({"profiles": profile_list}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
+# Admin: suspend/unsuspend users (by profileID)
+@app.route('/suspend_profile/<int:profileID>', methods=['PUT'])
+def suspend_profile(profileID):
+    try:
+        suspend = request.json.get('suspend')
+
+        users = User.query.filter_by(profileID=profileID).all()
+
+        if not users:
+            return jsonify({"message": "No users found with this profile"}), 400
+
+        for user in users:
+            user.suspend = suspend
+            db.session.commit()
+
+        action = "suspended" if suspend else "unsuspended"
+        return jsonify({"message": f"All users with profile {profileID} have been {action}."}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)
