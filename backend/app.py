@@ -22,7 +22,7 @@ import random  # For selecting game content
 
 app = Flask(__name__)
 
-CLOUD_SQL_CONNECTION_NAME = 'seesayai:asia-southeast1:seesay-instance'
+CLOUD_SQL_CONNECTION_NAME = 'seesayai1:asia-southeast1:seesay-instance'
 DB_USER = 'root'
 DB_PASSWORD = 'seesay123!'
 DB_NAME = 'seesaydb'
@@ -39,12 +39,12 @@ def getconn():
         db=DB_NAME
     )
 # app.config['SECRET_KEY'] = 'your_secret_key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///seesay.db'
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///seesay.db'
 app.config['SECRET_KEY'] = 'your_secret_key'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://:password@localhost/db_name'
-# app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-#     'creator': getconn
-# }
+app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://:password@localhost/db_name'
+app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+    'creator': getconn
+}
 bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
 CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
@@ -302,16 +302,15 @@ class AdminImage(db.Model):
 # User model
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    profileID = db.Column(db.Integer, nullable=False)
+    profile_id = db.Column(db.Integer, db.ForeignKey('profile.id'), nullable=False)
     username = db.Column(db.String(150), nullable=False, unique=True)
     name = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=True, unique=True)
     password = db.Column(db.String(255), nullable=False)
-    parentID = db.Column(db.Integer, nullable=True)
-    # suspend = db.Column(db.Boolean, nullable=False)
-    # icon = db.Column(db.String(), nullable=True)
+    parent_id = db.Column(db.Integer, nullable=True)
+    suspend = db.Column(db.Boolean, default=False)
 
-    # profile = db.relationship('Profile', backref=db.backref('users', lazy=True))
+    profile = db.relationship('Profile', backref=db.backref('users', lazy=True))
 
 # Profile model
 class Profile(db.Model):
@@ -346,7 +345,7 @@ class Review(db.Model):
 with app.app_context():
     db.create_all()
 
-# Parent: view all users (by user_id & profileID)
+# Parent: view all users (by user_id & profile_id)
 @app.route('/get_users', methods=['GET'])
 def get_users():
     # global session_user # temp
@@ -357,10 +356,18 @@ def get_users():
     # print(user_id2)
     if not user_id:
         return jsonify({"message": "Login required!"}), 401
-    current_user = User.query.filter_by(id=user_id).first()
-    child_users = User.query.filter_by(parentID=user_id).order_by(User.id.desc()).all()
-    user_list = [user.name for user in child_users]
-    user_list.append(current_user.name)
+    # current_user = User.query.filter_by(id=user_id).first()
+    child_users = User.query.filter_by(parent_id=user_id).order_by(User.id.asc()).all()
+    user_list = []
+    for user in child_users:
+        user_info = {
+            "user_id": user.id,
+            "username": user.username, 
+            "name": user.name,
+            "password": user.password 
+        }
+        user_list.append(user_info)
+    # user_list.append(current_user.name)
     return jsonify(user_list), 200
 
 # Parent: add new child user
@@ -378,7 +385,7 @@ def add_child():
 
     # Create new user
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    new_user = User(profileID=3, username=data['username'], name=data['name'], password=hashed_password, parentID=user_id)
+    new_user = User(profile_id=3, username=data['username'], name=data['name'], password=hashed_password, parent_id=user_id)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({"message": "User added successfully!"}), 201
@@ -397,7 +404,7 @@ def signup():
         return jsonify({"message": "Email already exists!"}), 400
     
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    new_user = User(profileID=2, username=data['username'], name=data['name'], email=data['email'], password=hashed_password)
+    new_user = User(profile_id=2, username=data['username'], name=data['name'], email=data['email'], password=hashed_password)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({"message": "User created successfully!"}), 201
@@ -415,12 +422,11 @@ def login():
         # session_user = user.id # temp
 
         # Check if the user role
-        #I change to profileID Johan
-        if user.profileID == 1: # admin
+        if user.profile_id == 1: # admin
             return jsonify({"message": "Admin login successful!", "user_id": user.id, "profile": "admin"}), 200
-        elif user.profileID == 2: # parent
+        elif user.profile_id == 2: # parent
             return jsonify({"message": "Parent login successful!", "user_id": user.id, "profile": "parent"}), 200
-        elif user.profileID == 3: # child
+        elif user.profile_id == 3: # child
             return jsonify({"message": "Child login successful!", "user_id": user.id, "profile": "child"}), 200
    
     return jsonify({"message": "Invalid username or password!"}), 401
@@ -676,8 +682,8 @@ def get_user_details(user_id):
         "username": user.username,
         "name": user.name,
         "email": user.email if user.email else None,
-        "profileID": user.profileID,
-        "parentID": user.parentID
+        "profile_id": user.profile_id,
+        "parent_id": user.parent_id
     }
 
     return jsonify(user_info), 200
@@ -696,7 +702,7 @@ def create_admin():
         return jsonify({"message": "Email already exists!"}), 400
     
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    new_user = User(profileID=1, username=data['username'], name=data['name'], email=data['email'], password=hashed_password)
+    new_user = User(profile_id=1, username=data['username'], name=data['name'], email=data['email'], password=hashed_password)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({"message": "User created successfully!"}), 201
@@ -710,11 +716,11 @@ def view_all_users():
         user_list = [
             {
                 "id": user.id,
-                "profileID": user.profileID,
+                "profile_id": user.profile_id,
                 "username": user.username, 
                 "name": user.name,
                 "email": user.email,
-                "parentID": user.parentID,
+                "parent_id": user.parent_id,
                 "suspend": user.suspend
             } for user in users
         ]
@@ -764,8 +770,8 @@ def view_all_profiles():
 
         profile_list = []
         for profile in profiles:
-            user_count = User.query.filter_by(profileID=profile.id).count()
-            suspended_count = User.query.filter_by(profileID=profile.id, suspend=True).count()
+            user_count = User.query.filter_by(profile_id=profile.id).count()
+            suspended_count = User.query.filter_by(profile_id=profile.id, suspend=True).count()
 
             profile_list.append({
                 "id": profile.id,
@@ -779,13 +785,13 @@ def view_all_profiles():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Admin: suspend/unsuspend users (by profileID)
-@app.route('/suspend_profile/<int:profileID>', methods=['PUT'])
-def suspend_profile(profileID):
+# Admin: suspend/unsuspend users (by profile_id)
+@app.route('/suspend_profile/<int:profile_id>', methods=['PUT'])
+def suspend_profile(profile_id):
     try:
         suspend = request.json.get('suspend')
 
-        users = User.query.filter_by(profileID=profileID).all()
+        users = User.query.filter_by(profile_id=profile_id).all()
 
         if not users:
             return jsonify({"message": "No users found with this profile"}), 400
@@ -795,7 +801,7 @@ def suspend_profile(profileID):
             db.session.commit()
 
         action = "suspended" if suspend else "unsuspended"
-        return jsonify({"message": f"All users with profile {profileID} have been {action}."}), 200
+        return jsonify({"message": f"All users with profile {profile_id} have been {action}."}), 200
 
     except Exception as e:
         return jsonify({"error": str(e)}), 500
