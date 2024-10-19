@@ -38,22 +38,58 @@ const ViewAllProfiles = () => {
         const confirmation = window.confirm(
             `Are you sure you want to ${shouldSuspend ? "suspend" : "unsuspend"} all users in this profile?`
         );
+
         if (confirmation) {
+            setProfiles((prevProfiles) =>
+                prevProfiles.map((profile) =>
+                    profile.id === profileId
+                        ? {
+                              ...profile,
+                              suspended_count: shouldSuspend ? userCount : 0,
+                          }
+                        : profile
+                )
+            );
+
             try {
                 const response = await fetch(`http://localhost:5000/suspend_profile/${profileId}`, {
                     method: "PUT",
                     body: JSON.stringify({ suspend: shouldSuspend }),
-                    headers: { "Content-Type": "application/json" }
+                    headers: { "Content-Type": "application/json" },
                 });
                 const data = await response.json();
                 if (response.ok) {
-                    fetchProfiles();
+                    setProfiles((prevProfiles) =>
+                        prevProfiles.map((profile) =>
+                            profile.id === profileId
+                                ? {
+                                      ...profile,
+                                      suspended_count: shouldSuspend ? userCount : 0,
+                                  }
+                                : profile
+                        )
+                    );
                     alert(`All users ${shouldSuspend ? "suspended" : "unsuspended"} successfully`);
                 } else {
                     alert(data.message || "Error updating profile suspend status");
+                    setProfiles((prevProfiles) =>
+                        prevProfiles.map((profile) =>
+                            profile.id === profileId
+                                ? {
+                                      ...profile,
+                                      suspended_count: shouldSuspend ? 0 : suspendedCount,
+                                  }
+                                : profile
+                        )
+                    );
                 }
             } catch (error) {
                 console.error("Error updating profile suspend status:", error);
+                setProfiles((prevProfiles) =>
+                    prevProfiles.map((profile) =>
+                        profile.id === profileId ? { ...profile, suspended_count: suspendedCount } : profile
+                    )
+                );
             }
         }
     };
@@ -92,18 +128,34 @@ const ViewAllProfiles = () => {
                                 </div>
                                 <div className="profile-body">
                                     <p>ID: {profile.id}</p>
-                                    <p style={{color: "red", fontWeight: "bold"}}>Suspended Users: {profile.suspended_count}</p>
+                                    <p style={{ color: "red", fontWeight: "bold" }}>
+                                        Suspended Users: {profile.suspended_count}
+                                    </p>
                                 </div>
                                 <div className="button-row">
                                     <button
                                         className="suspend-btn suspend"
-                                        onClick={() => handleSuspendProfile(profile.id, true, profile.suspended_count, profile.user_count)}
+                                        onClick={() =>
+                                            handleSuspendProfile(
+                                                profile.id,
+                                                true,
+                                                profile.suspended_count,
+                                                profile.user_count
+                                            )
+                                        }
                                     >
                                         Suspend All
                                     </button>
                                     <button
                                         className="suspend-btn unsuspend"
-                                        onClick={() => handleSuspendProfile(profile.id, false, profile.suspended_count, profile.user_count)}
+                                        onClick={() =>
+                                            handleSuspendProfile(
+                                                profile.id,
+                                                false,
+                                                profile.suspended_count,
+                                                profile.user_count
+                                            )
+                                        }
                                     >
                                         Unsuspend All
                                     </button>

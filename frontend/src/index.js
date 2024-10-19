@@ -26,7 +26,7 @@ import CreateAdminPage from './routes/CreateAdminPage';
 import CreateProfilePage from './routes/CreateProfilePage';
 import ViewAllAccountsPage from './routes/ViewAllAccountsPage';
 import ViewAllProfilesPage from './routes/ViewAllProfilesPage';
-// import ViewAllReviewsPage from './routes/ViewAllReviewsPage';
+import ViewAllReviewsPage from './routes/ViewAllReviewsPage';
 // import SearchAccountPage from './routes/SearchAccountPage';
 // import SearchProfilePage from './routes/SearchProfilePage';
 
@@ -55,8 +55,8 @@ ReactDOM.render(
       <Route path='/createProfile' element={<CreateProfilePage/>} />
       <Route path='/viewAllAccounts' element={<ViewAllAccountsPage/>} />
       <Route path='/viewAllProfiles' element={<ViewAllProfilesPage/>} />
-      {/* <Route path='/viewAllReviews' element={<ViewAllReviewsPage/>} /> 
-      <Route path='/searchAccount' element={<SearchAccountPage/>} />
+      <Route path='/viewAllReviews' element={<ViewAllReviewsPage/>} /> 
+      {/* <Route path='/searchAccount' element={<SearchAccountPage/>} />
       <Route path='/searchProfile' element={<SearchProfilePage/>} />  */}
     </Routes>
   </BrowserRouter>,

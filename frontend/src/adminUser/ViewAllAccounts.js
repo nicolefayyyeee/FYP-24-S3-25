@@ -31,19 +31,39 @@ const ViewAllAccounts = () => {
         );
 
         if (confirmation) {
+            setUsers((prevUsers) =>
+                prevUsers.map((user) =>
+                    user.id === userId ? { ...user, suspend: !currentStatus } : user
+                )
+            );
+
             try {
                 const response = await fetch(`http://localhost:5000/suspend_account/${userId}`, {
                     method: "PUT",
                 });
                 const data = await response.json();
                 if (response.ok) {
-                    fetchUsers();
+                    setUsers((prevUsers) =>
+                        prevUsers.map((user) =>
+                            user.id === userId ? { ...user, suspend: data.suspend } : user
+                        )
+                    );
+                    alert(`Suspend status updated successfully`);
                 } else {
                     alert(data.message || "Error updating user suspend status");
+                    setUsers((prevUsers) =>
+                        prevUsers.map((user) =>
+                            user.id === userId ? { ...user, suspend: currentStatus } : user
+                        )
+                    );
                 }
-                
             } catch (error) {
                 console.error("Error updating user suspend status:", error);
+                setUsers((prevUsers) =>
+                    prevUsers.map((user) =>
+                        user.id === userId ? { ...user, suspend: currentStatus } : user
+                    )
+                );
             }
         }
     };
@@ -75,7 +95,7 @@ const ViewAllAccounts = () => {
                                 <div className="user-header">
                                     <p>Username: {user.username}</p>
                                     <p className={`${user.suspend ? "suspended" : "active"}`}>
-                                    {user.suspend ? "Suspended" : "Active"}
+                                        {user.suspend ? "Suspended" : "Active"}
                                     </p>
                                 </div>
                                 <p><strong>ID:</strong> {user.id}</p>
