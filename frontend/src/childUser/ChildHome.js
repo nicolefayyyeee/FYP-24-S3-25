@@ -15,10 +15,10 @@ const ChildHome = () => {
           <Link to="/imageCaptioning">
             <div className="option-card red">Snap a Memory</div>
           </Link>
-          <Link to="/moments">
+          <Link to="/galleryPage">
             <div className="option-card yellow">My Moments</div>
           </Link>
-          <Link to="/galleryPage">
+          <Link to="/explorePage">
             <div className="option-card green">Explore the Gallery</div>
           </Link>
           <Link to="/games">

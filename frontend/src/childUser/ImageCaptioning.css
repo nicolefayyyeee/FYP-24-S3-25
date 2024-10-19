@@ -2,14 +2,6 @@
 @import 'slick-carousel/slick/slick-theme.css';
 
 
-/* General styling */
-/* body {
-  margin: 0;
-  font-family: 'Arial', sans-serif;
-  background-color: #1c0c43;
-  color: #fff;
-} */
-
 /* Container styling */
 .container-imageCaptioning {
     max-width: 1500px;
@@ -51,12 +43,12 @@ p {
   margin-bottom: 20px;
 }
 
-.btn {
-  padding: 10px 20px;
+.container-imageCaptioning .btn {
+  padding: 10px 30px;
   font-size: 16px;
   margin-right: 10px;
   border: none;
-  border-radius: 5px;
+  border-radius: 10px;
   cursor: pointer;
 }
 

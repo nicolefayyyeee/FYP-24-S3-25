@@ -113,7 +113,7 @@ h1 {
   border-color: #c9ada7;
 }
 
-button {
+.game-container button {
   background-color: #5964e5;
   color: white;
   padding: 12px 40px;

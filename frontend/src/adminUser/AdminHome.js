@@ -24,7 +24,7 @@ const AdminHome = () => {
           <Link to="/gallery">
             <div className="option-card green">View Data Metrics</div>
           </Link>
-          <Link to="/games">
+          <Link to="/adminUpload">
             <div className="option-card blue">Manage System's Photos</div>
           </Link>
         </div>

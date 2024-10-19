@@ -1,0 +1,160 @@
+/* Main container styling */
+.admin-dashboard {
+    max-width: 1000px;
+    margin: 0 auto;
+    padding: 20px;
+    min-height: 100vh;
+  }
+  
+  .admin-dashboard h2{
+    text-align: center;
+    color: #fffdfd;
+  }
+
+  .admin-dashboard h3{
+    text-align: center;
+    color: #fff6f6;
+  }
+
+  .action-button{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 20px;
+    padding: 10px 20px;
+  }
+
+  .choose-btn-wrapper {
+    position: relative;
+    overflow: hidden;
+    display: inline-flex;
+    margin: 10px;
+  }
+  
+  .choose-btn-wrapper input[type=file] {
+    font-size: 100px;
+    position: absolute;
+    left: 0;
+    top: 0;
+    opacity: 0;
+  }
+
+  .btn-clear{
+    background-color: #88888f;
+    color: #fff;
+    margin: 10px;
+    
+  }
+
+  /* Form Styling */
+  form button {
+    padding: 10px 30px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 10px;
+    cursor: pointer;
+    
+  }
+  
+  /* Image Preview */
+  .image-preview {
+    margin-top: 10px;
+  }
+  
+  .image-preview img {
+    border: px solid #ddd;
+    padding: 5px;
+    border-radius: 8px;
+  }
+  
+  /* Table Styling */
+  .gallery {
+    margin-top: 10px;
+  }
+  
+  .admin-dashboard table {
+    width: 100%;
+    border-collapse: collapse;
+  }
+
+  .admin-dashboard td{
+    color: #ffffff;
+  }
+  
+  .admin-dashboard th, td {
+    padding: 12px;
+    text-align: center;
+    border-bottom: 1px solid #ddd;
+  }
+  
+  .admin-dashboard th {
+    background-color: #007bff;
+    color: #ffffff;
+    font-weight: bold;
+  }
+  
+  .admin-dashboard td img {
+    border-radius: 5px;
+  }
+  
+  /* Button Styling */
+  .admin-dashboard button.delete-btn {
+    background-color: #dc3545;
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    cursor: pointer;
+    border-radius: 4px;
+  }
+  
+  .admin-dashboard button.delete-btn:hover {
+    background-color: #c82333;
+  }
+  
+  .admin-dashboard button.page-btn {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 8px 12px;
+    cursor: pointer;
+    margin: 0 4px;
+    border-radius: 4px;
+  }
+  
+  .admin-dashboard button.page-btn.active {
+    background-color: #0056b3;
+  }
+  
+  .admin-dashboard button.page-btn:hover {
+    background-color: #0056b3;
+  }
+  
+  /* Pagination Styling */
+  .admin-dashboard .pagination {
+    display: flex;
+    justify-content: center;
+    margin-top: 20px;
+  }
+  
+  /* Media Query for Smaller Screens */
+  @media (max-width: 768px) {
+    table, th, td {
+      font-size: 14px;
+    }
+  
+    button.page-btn, button.delete-btn {
+      padding: 6px 10px;
+    }
+  }
+  
+  Footer styling
+  .admin-dashboard footer {
+  background-color: #2a1d59;
+  color: #fff;
+  text-align: center;
+  padding: 20px;
+  position: absolute;
+  height: -100px;
+  margin-top: auto;
+  width: 100%;
+}

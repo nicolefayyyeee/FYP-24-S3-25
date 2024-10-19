@@ -1,30 +1,30 @@
-import React, { useState, useRef } from "react";
+import React, { useState, useRef, useEffect } from "react";
+import axios from 'axios';
 import Slider from "react-slick"; // image slider
 import Webcam from "react-webcam"; // web cam
-import "./ImageCaptioning.css";
+import './ImageCaptioning.css';
 
 const ImageCaptioning = () => {
   //state functions (self explanatory)
   const [caption, setCaption] = useState("");
   const [preview, setPreview] = useState(null);
   const [loading, setLoading] = useState(false);
-  const [exampleImages] = useState([
-    // example image URLs
-    "https://files.worldwildlife.org/wwfcmsprod/images/Tiger_resting_Bandhavgarh_National_Park_India/hero_small/6aofsvaglm_Medium_WW226365.jpg",
-    "https://s3.amazonaws.com/cdn-origin-etr.akc.org/wp-content/uploads/2018/07/17235840/golden-retriever-diving-to-bottom-of-pool-lg.jpg",
-    "https://ichef.bbci.co.uk/news/976/cpsprodpb/16CD7/production/_132299339_bb76bca9-78b6-432b-b118-7f181762e443.jpg",
-    "https://miro.medium.com/v2/resize:fit:1024/1*YMJ1POyhsHklGVmFBLfW_A.jpeg",
-    "https://i.guim.co.uk/img/media/b95bf2911302acf8f7cee71b51e7fef401026824/228_1262_2374_1423/master/2374.jpg?width=1200&height=900&quality=85&auto=format&fit=crop&s=9fdd7512072b8a51074a30e1f5880776",
-  ]);
+  const [exampleImages, setImages] = useState([]);
   const [selectedImageUrl, setSelectedImageUrl] = useState(null);
   const [useWebcam, setUseWebcam] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
-  
 
+  
   // references functions
   const imageFileRef = useRef(null);
   const imageUrlRef = useRef(null);
   const webcamRef = useRef(null);
+
+  const generateUniqueFilename = (userId) => {
+    const timestamp = Date.now(); // Current timestamp
+    const randomString = Math.random().toString(36).substring(2, 8); // Generate a random string
+    return `ChildImage_${userId}_${timestamp}_${randomString}.jpg`; // Combine user ID, timestamp, and random string for uniqueness
+  };
 
 
   // Pop up alert
@@ -32,6 +32,16 @@ const ImageCaptioning = () => {
     alert(message);
     setLoading(false);
   };
+
+  // Fetch the explore page images
+  const fetchGallery = async () => {
+    const response = await axios.get('http://localhost:5000/explorePage');
+    setImages(response.data.images);
+  };
+
+  useEffect(() => {
+    fetchGallery();
+  }, []);
 
   // main handle -> submit image(file or url or webcam image) -> flask(app.py) for generating image
   const handleSubmit = async (event) => {
@@ -44,6 +54,7 @@ const ImageCaptioning = () => {
     const imageBlob = capturedImage;
   
     const userId = localStorage.getItem('user_id');
+
     
     // error handling process
     if (!imageFile && !imageURL && !imageBlob) {
@@ -51,17 +62,20 @@ const ImageCaptioning = () => {
       return; //stop the process
     }
 
+    const uniqueFilename = generateUniqueFilename(userId);
+
     // append the uploaded image
     if (imageFile) {
-      formData.append("imageFile", imageFile);
+      formData.append("imageFile", imageFile, uniqueFilename);
     } else if (imageURL) {
-      formData.append("imageURL", imageURL);
+      formData.append("imageURL", imageURL, );
+      formData.append("imageFilename", uniqueFilename);
     } else if (imageBlob) {
-      formData.append("imageFile", imageBlob, "capturedImage.jpg");
+      formData.append("imageFile", imageBlob, uniqueFilename);
     }
 
     formData.append("userId", userId);
-    
+
     //pass the image
     const response = await fetch("http://127.0.0.1:5000/imageCaptioning", {
       method: "POST",
@@ -170,6 +184,7 @@ const ImageCaptioning = () => {
             {useWebcam ? "Close Webcam" : "Capture Image"}
           </button>
           <input
+          className="btn-url"
             type="text"
             ref={imageUrlRef}
             placeholder="Enter Image URL"
@@ -228,10 +243,9 @@ const ImageCaptioning = () => {
           <h2>Example Images</h2>
           <Slider {...settings}>
             {exampleImages.map((image, index) => (
-              <div key={index} onClick={() => handleImageClick(image)}>
+              <div key={index} onClick={() => handleImageClick(image.filepath)}>
                 <img
-                  src={image}
-                  alt={`Example ${index}`}
+                  src={image.filepath}
                   className="slider-image"
                 />
               </div>

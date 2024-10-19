@@ -38,12 +38,12 @@ def getconn():
         db=DB_NAME
     )
 # app.config['SECRET_KEY'] = 'your_secret_key'
-# app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///seesay.db'
+app.config['SQLALCHEMY_DATABASE_URI'] = 'sqlite:///seesay.db'
 app.config['SECRET_KEY'] = 'your_secret_key'
-app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://:password@localhost/db_name'
-app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
-    'creator': getconn
-}
+# app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://:password@localhost/db_name'
+# app.config['SQLALCHEMY_ENGINE_OPTIONS'] = {
+#     'creator': getconn
+# }
 bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
 CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
@@ -56,7 +56,7 @@ app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'uploads')  # Adjust as 
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
 
-# Image caption function start 
+# Image caption function start & upload user image to their own gallery
 @app.route('/imageCaptioning', methods=['POST'])
 def predict_caption():
     generated_caption = None
@@ -75,6 +75,7 @@ def predict_caption():
     
     image_file = request.files.get('imageFile')
     image_url = request.form.get('imageURL')
+    image_filename = request.form.get('imageFilename')
     
     if image_file:
         filename = secure_filename(image_file.filename)
@@ -110,13 +111,13 @@ def predict_caption():
                 
             # Prepare for saving the image
             filename = os.path.basename(image_url)
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+            file_path = os.path.join(app.config['UPLOAD_FOLDER'], image_filename)
 
             with open(file_path, 'wb') as f:
                 f.write(response.content)  # Save the image
 
             # Save image metadata to database
-            new_image = ChildImage(filename=filename, filepath=file_path, user_id=user_id, imageCaption=generated_caption)
+            new_image = ChildImage(filename=image_filename, filepath=file_path, user_id=user_id, imageCaption=generated_caption)
             db.session.add(new_image)
             db.session.commit()
 
@@ -130,11 +131,12 @@ def predict_caption():
 
 # Image caption function end
 
-# Route to serve uploaded images
+# Route to serve uploaded images 
 @app.route('/uploads/<filename>')
 def uploaded_file(filename):
     return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
+# Child User gallery
 @app.route('/gallery', methods=['GET'])
 def user_gallery():
     # Fetch the user based on the provided user_id
@@ -158,9 +160,11 @@ def user_gallery():
     # Create a list of image details
     image_list = [
         {
+            "image_id": img.id,
             "filename": img.filename,
-            "filepath":  f"http://192.168.68.117:5000/uploads/{img.filename}",  # Full image URL,
+            "filepath":  f"http://192.168.18.13:5000/uploads/{img.filename}",  # Full image URL,
             "caption": img.imageCaption,
+            "is_favorite": img.is_favorite,
         } for img in images
     ]
     print(image_list) #check image list
@@ -169,6 +173,110 @@ def user_gallery():
     return jsonify({"images": image_list}), 200
 
 
+# Route for Admin to upload images
+@app.route('/admin/upload', methods=['POST'])
+def upload_image():
+    if 'file' not in request.files:
+        return jsonify({"error": "No file part"}), 400
+    
+    file = request.files['file']
+    if file.filename == '':
+        return jsonify({"error": "No selected file"}), 400
+
+    
+    # Save the file
+    filename = secure_filename(file.filename)
+    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
+    file.save(filepath)
+    
+    print(file.filename)
+    print(file)
+    
+    new_image = AdminImage(
+            filename=filename,  # Use the secure filename
+            imageCaption=request.form.get('caption'),  # Assuming a caption is provided
+            filepath=filepath,
+            date_uploaded=datetime.now()
+        )
+
+    db.session.add(new_image)
+    db.session.commit()
+    print(new_image)
+    
+    return jsonify({"message": "Image uploaded successfully"}), 201
+
+@app.route('/favorite', methods=['POST'])
+def favorite_image():
+    data = request.get_json()
+    user_id = data.get('user_id')
+    image_id = data.get('image_id')
+    is_favorite = data.get('is_favorite')
+    
+    print(data)
+
+    
+    # Query the image by id and user_id
+    image = ChildImage.query.filter_by(id=image_id, user_id=user_id).first()
+
+    if not image:
+        return jsonify({"error": "Image not found or does not belong to the user."}), 404
+
+    # Update the is_favorite status
+    image.is_favorite = is_favorite
+
+    # Commit the changes to the database
+    db.session.commit()
+
+    return jsonify({"message": "Favorite status updated successfully."}), 200
+
+    
+
+#Route for child to delete images 
+@app.route('/delete/<int:image_id>', methods=['DELETE'])
+def child_delete_image(image_id):
+    image = ChildImage.query.get(image_id)
+    
+    if not image:
+        return jsonify({"error": "Image not found"}), 404
+
+    os.remove(image.filepath)  
+    db.session.delete(image)
+    db.session.commit()
+
+    return jsonify({"message": "Image deleted successfully"}), 200
+
+# Route for Admin to delete images
+@app.route('/admin/delete/<int:image_id>', methods=['DELETE'])
+def delete_image(image_id):
+    image = AdminImage.query.get(image_id)
+    
+    if not image:
+        return jsonify({"error": "Image not found"}), 404
+
+    os.remove(image.filepath) 
+    db.session.delete(image)
+    db.session.commit()
+
+    return jsonify({"message": "Image deleted successfully"}), 200
+
+# Route to fetch the gallery for child users
+@app.route('/explorePage', methods=['GET'])
+def view_gallery():
+    images = AdminImage.query.all()
+    
+     # Create a list of image details
+    image_list = [
+        {
+            "id": img.id,
+            "filename": img.filename,
+            "filepath":  f"http://192.168.18.13:5000/uploads/{img.filename}",  # Full image URL,
+        } for img in images
+    ]
+    print(image_list) #check image list
+    
+    return jsonify({"images": image_list}), 200
+
+#Images db start
 # User model for image upload
 class ChildImage(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -178,17 +286,27 @@ class ChildImage(db.Model):
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     user = db.relationship('User', backref=db.backref('images', lazy=True))
     date_uploaded = db.Column(db.DateTime, default=datetime.utcnow)
-
+    is_favorite = db.Column(db.Boolean, default=False, nullable=False)
+    
+    
+# User model for image upload
+class AdminImage(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    filename = db.Column(db.String(120), nullable=False)
+    imageCaption = db.Column(db.String(255), nullable=True)
+    filepath = db.Column(db.String(255), nullable=False)
+    date_uploaded = db.Column(db.DateTime, default=datetime.utcnow)
 # end
+
 # User model
 class User(db.Model):
     id = db.Column(db.Integer, primary_key=True)
-    profile_id = db.Column(db.Integer, nullable=False)
+    profileID = db.Column(db.Integer, nullable=False)
     username = db.Column(db.String(150), nullable=False, unique=True)
     name = db.Column(db.String(255), nullable=False)
     email = db.Column(db.String(255), nullable=True, unique=True)
     password = db.Column(db.String(255), nullable=False)
-    parent_id = db.Column(db.Integer, nullable=True)
+    parentID = db.Column(db.Integer, nullable=True)
     # icon = db.Column(db.String(), nullable=True)
 
     # Define relationship
@@ -223,7 +341,7 @@ class Review(db.Model):
 with app.app_context():
     db.create_all()
 
-# Parent: view all users (by user_id & profile_id)
+# Parent: view all users (by user_id & profileID)
 @app.route('/get_users', methods=['GET'])
 def get_users():
     # global session_user # temp
@@ -235,7 +353,7 @@ def get_users():
     if not user_id:
         return jsonify({"message": "Login required!"}), 401
     current_user = User.query.filter_by(id=user_id).first()
-    child_users = User.query.filter_by(parent_id=user_id).order_by(User.id.desc()).all()
+    child_users = User.query.filter_by(parentID=user_id).order_by(User.id.desc()).all()
     user_list = [user.name for user in child_users]
     user_list.append(current_user.name)
     return jsonify(user_list), 200
@@ -255,7 +373,7 @@ def add_child():
 
     # Create new user
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    new_user = User(profile_id=3, username=data['username'], name=data['name'], password=hashed_password, parent_id=user_id)
+    new_user = User(profileID=3, username=data['username'], name=data['name'], password=hashed_password, parentID=user_id)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({"message": "User added successfully!"}), 201
@@ -274,7 +392,7 @@ def signup():
         return jsonify({"message": "Email already exists!"}), 400
     
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    new_user = User(profile_id=2, username=data['username'], name=data['name'], email=data['email'], password=hashed_password)
+    new_user = User(profileID=2, username=data['username'], name=data['name'], email=data['email'], password=hashed_password)
     db.session.add(new_user)
     db.session.commit()
     return jsonify({"message": "User created successfully!"}), 201
@@ -292,11 +410,12 @@ def login():
         # session_user = user.id # temp
 
         # Check if the user role
-        if user.profile_id == 1: # admin
+        #I change to profileID Johan
+        if user.profileID == 1: # admin
             return jsonify({"message": "Admin login successful!", "user_id": user.id, "profile": "admin"}), 200
-        elif user.profile_id == 2: # parent
+        elif user.profileID == 2: # parent
             return jsonify({"message": "Parent login successful!", "user_id": user.id, "profile": "parent"}), 200
-        elif user.profile_id == 3: # child
+        elif user.profileID == 3: # child
             return jsonify({"message": "Child login successful!", "user_id": user.id, "profile": "child"}), 200
    
     return jsonify({"message": "Invalid username or password!"}), 401
@@ -321,11 +440,11 @@ def logout():
 #     parent = Users.query.filter_by(email=parent_email).first()
 
 #     # Check if the child name already exists under this parent
-#     if Users.query.filter_by(name=user_name, parent_id=parent.id).first():
+#     if Users.query.filter_by(name=user_name, parentID=parent.id).first():
 #         return jsonify({"message": "Child profile already exists"}), 400
 
 #     # Create the child profile
-#     new_child = Users(name=user_name, email=f"{user_name}@example.com", password='default', parent_id=parent.id)
+#     new_child = Users(name=user_name, email=f"{user_name}@example.com", password='default', parentID=parent.id)
 #     db.session.add(new_child)
 #     db.session.commit()
 

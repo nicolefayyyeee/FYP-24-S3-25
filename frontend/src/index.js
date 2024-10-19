@@ -18,6 +18,8 @@ import GameSelectionPage from './routes/GameSelectionPage';
 import MatchPictureGamePage from './routes/MatchPictureGamePage'; 
 import StorytellingGamePage from './routes/StorytellingGamePage';
 import GalleryPage from './routes/galleryPage';
+import AdminUploadImg from './routes/AdminUploadPage'
+import ChildExplorePage from './routes/ChildExplorePage'
 
 ReactDOM.render(
   <BrowserRouter>
@@ -36,6 +38,8 @@ ReactDOM.render(
       <Route path="/match-picture" element={<MatchPictureGamePage />} />
       <Route path="/storytelling-game" element={<StorytellingGamePage />} />
       <Route path='/galleryPage' element={<GalleryPage />} />
+      <Route path='/adminUpload' element={<AdminUploadImg />} />
+      <Route path='/explorePage' element={<ChildExplorePage />} />
     </Routes>
   </BrowserRouter>,
   document.getElementById('root')
