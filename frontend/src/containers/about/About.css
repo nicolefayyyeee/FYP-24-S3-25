@@ -1,69 +1,91 @@
 .about {
-  width: 100%;
-  min-height: 100vh;
   background-color: #f9f9f9;
-  padding: 2rem 0;
 }
+
+.wave-container {
+  width: 100%;
+  overflow: hidden; /* Prevent overflow from affecting layout */
+  margin: 0; /* Remove any margin */
+  padding: 0; /* Remove any padding */
+}
+
+.reviews-title {
+  font-size: 5rem; /* Font size */
+  background: linear-gradient(120deg, #b57bee, #c53a94); /* Gradient background */
+  -webkit-background-clip: text; /* Clip the background to the text for Safari */
+  background-clip: text; /* Standard property for other browsers */
+  color: transparent; /* Make text color transparent */
+}
+
 
 .about-container {
   display: flex;
   flex-direction: column;
   align-items: center;
-  justify-content: center;
-  text-align: center;
-  max-width: 1000px;
-  margin: 0 auto;
-  padding: 2rem;
+  margin-bottom: 40px;
 }
 
-.about-image img {
-  max-width: 100%;
-  height: auto;
-  border-radius: 10px;
-}
-
-.about-text {
-  margin-top: 2rem;
-}
-
-.about-text h2 {
-  font-size: 2.5rem;
-  color: #333;
-  margin-bottom: 1.5rem;
-}
-
-.about-text p {
-  color: #666;
-  font-size: 1.1rem;
-  line-height: 1.6;
-  margin-bottom: 1rem;
-}
-
-.about-gallery {
+.reviews-section {
   display: flex;
-  flex-direction: row;
-  justify-content: space-around;
-  flex-wrap: wrap;
-  padding: 2rem 0;
-  max-width: 1200px;
-  margin: 0 auto;
+  align-items: center; /* Center align items vertically */
+  margin: 50px 0;
+  width: 100%; /* Make sure it takes full width */
+  padding: 0 250px; /* Add left and right padding */
 }
 
-.gallery-item {
-  flex: 1;
-  margin: 1rem;
-  max-width: 500px;
-  text-align: center;
+.reviews-content {
+  display: flex; /* Display reviews in a row */
+  flex-wrap: nowrap; /* No wrapping */
+  justify-content: center;
+  gap: 20px; /* Space between reviews */
+  width: 100%; /* Ensure it takes full width */
 }
 
-.gallery-item img {
-  width: 100%;
-  height: auto;
+.review-item {
+  background-color: rgba(255, 255, 255, 0.9);
+  padding: 20px;
   border-radius: 10px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  flex: 0 0 calc(33.33% - 20px); /* 3 items per row */
+  text-align: center; /* Center text for the review item */
 }
 
-.gallery-item p {
-  margin-top: 1rem;
-  font-size: 1rem;
-  color: #444;
+.stars-container {
+  margin-bottom: 10px; /* Space between stars and text */
+}
+
+.review-text {
+  font-style: italic;
+  font-size: 1.5rem;
+  color: #333;
+}
+
+.review-author {
+  text-align: right;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #666;
+}
+
+.star-rating {
+  display: flex; /* Use flexbox for centering */
+  justify-content: center; /* Center stars horizontally */
+  margin-bottom: 10px; /* Space between stars and text */
+}
+
+.nav-button {
+  background: none;
+  border: none;
+  cursor: pointer;
+  color: 2b235a;
+  font-size: 24px; /* Increase button size */
+  margin: 0 20px; /* Space between button and reviews */
+}
+
+.star {
+  color: #ccc; /* Default star color */
+}
+
+.star.filled {
+  color: #ffd700; /* Gold color for filled stars */
 }

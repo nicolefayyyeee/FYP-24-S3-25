@@ -1,0 +1,91 @@
+@import url('https://fonts.googleapis.com/css2?family=Poppins:wght@400;600&display=swap');
+
+.contact {
+    width: 100%;
+    background-color: #2b235a;
+}   
+
+.contact .container {
+    width: 100%;
+    height: 100vh;
+    display: flex;
+    flex-direction: column;
+    justify-content: center; /* Change from space-between to center for vertical centering */
+    align-items: center;
+}
+
+.contact h1 {
+    font-size: 5rem; /* Font size */
+    background: linear-gradient(120deg, #f74c06, #f9bc2c); /* Gradient background */
+    -webkit-background-clip: text; /* Clip the background to the text for Safari */
+    background-clip: text; /* Standard property for other browsers */
+    color: transparent; /* Make text color transparent */
+
+    margin-bottom: 1rem; /* Adjust this value to control the gap size */
+}
+
+.contact p {
+    font-size: 1.5rem;
+    color: white;
+    padding: 0rem;
+    margin-bottom: 0rem; /* Remove top margin if any, adjust as needed */
+  }
+
+.contact form {
+    margin-top: 4rem;
+    max-width: 600px;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    align-items: center; /* Center the form horizontally */
+}
+
+.contact .bottom {
+    display: flex;
+    justify-content: center;
+    width: 30%;
+    margin-top: 2rem; /* Add margin to create space at the bottom */
+}
+
+.contact .bottom .btn {
+    background: linear-gradient(135deg, #ea5459, #f89b29); /* Gradient background */
+    font-size: 1vw; /* Adjust font size */
+    color: white; /* Text color */
+    border: none; /* No border */
+    padding: 0.8rem 2rem; /* Padding */
+    cursor: pointer; /* Change cursor on hover */
+    border-radius: 5px; /* Rounded corners */
+    position: relative; /* Positioning */
+    z-index: 3; /* Above any pseudo-elements */
+}
+
+.contact .bottom .btn:hover {
+    background-color: #1a0038; /* Darker shade on hover */
+}
+
+.contact form div {
+    width: 100%; /* Ensure input fields and labels are full width */
+    display: flex;
+    flex-direction: column;
+    margin: .5rem 0; /* Adjust margin for consistency */
+}
+
+.contact form input,
+textarea {
+    margin: .5rem 0;
+    padding: 1rem 2rem;
+    background: white; /* Keep the background white */
+    border: none;
+    border-radius: 25px;
+    color: #333; /* Change text color to dark gray for visibility */
+    font-size: 1.2rem;
+    outline: none;
+    width: 100%; /* Ensure inputs span the full width */
+}
+
+.contact form label {
+    color: #fff; /* Change label color to white */
+    font-size: 1.3rem;
+    font-weight: 900;
+    font-family: "Poppins", sans-serif; /* You can change this to 'Poppins' if desired */
+}

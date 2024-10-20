@@ -1,12 +1,14 @@
 import React from 'react'
-import './ContactStyles.css'
+import './Contact.css'
 
 const Contact = () => {
     return (
         <div id='contact' className='contact'>
             <div className="container">
                 <div className="top">
-                    <h1>Contact</h1>
+                    <h1>Contact Us</h1>
+                    <p>Have more queries?</p>
+                    <p>Drop us a message and we'll get back to you!</p>
                 </div>
 
                 <form>

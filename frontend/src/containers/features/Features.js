@@ -26,11 +26,15 @@ const Features = () => {
         <div className="text-content">
           <h1>Discover and Describe</h1>
           <p className="text-description">
-            Encourage your child to describe their world and uncover new insights through creative exploration and observation.
+            With SeeSay Moments, your child embarks on <strong>an exciting to explore the world of image captioning </strong> 
+            where they are able to enhance their descriptive skills.
           </p>
-          <div className="button-container">
-            <button className="discover-button">Learn More</button>
-          </div>
+          <p className="text-description">
+            Through <strong>engaging games </strong>, SeeSay Moments aims to deliver meaningful learning experiences that inspire imagination and build confidence. 
+          </p>
+          <p className="text-description">
+            Join us in turning playtime into a <strong>fun-filled adventure of exploration and expression!</strong>
+          </p>
         </div>
         <div className="slider-container">
           <div className="slider-content">
@@ -41,25 +45,32 @@ const Features = () => {
         </div>
       </div>
       <div className="features-grid">
-        <div className="feature-item">
-          <div className="star">⭐</div>
-          <h3>Capture and Describe the World</h3>
-          <p>Let your child be the storyteller by capturing their favorite moments and adding their own voice to describe the scenes, making every photo a unique expression of their creativity.</p>
+        <div className="feature-item red">
+          <div className="icon">📸</div>
+            <h3>Capture and Cherish Every Moment</h3>
+            <p>
+            Every photo becomes a fun and educational experience, 
+            helping your child develop observation and creativity skills as they build their own gallery.
+            </p>
+          </div>
+        <div className="feature-item green">
+            <div className="icon">🎮</div>
+            <h3>Fun Learning Through Interactive Games</h3>
+            <p>
+              Immerse your child in fun educational games like matching pictures to words and reading stories from images!
+            </p>
+          </div>
+        <div className="feature-item blue">
+            <div className="icon">🛡️</div>
+            <h3>A Safe, Family-Friendly Platform</h3>
+            <p>
+              Designed with your child’s safety in mind, SeeSay Moments provides a secure space for exploration and creativity..
+            </p>
         </div>
-        <div className="feature-item">
-          <div className="star">⭐</div>
-          <h3>Interactive Games for Learning</h3>
-          <p>Engage your child with fun, educational games that enhance creativity and reinforce learning outcomes, all within a safe and enjoyable environment.</p>
-        </div>
-        <div className="feature-item">
-          <div className="star">⭐</div>
-          <h3>Safe and Family-Friendly</h3>
-          <p>Designed with young users in mind, SeeSay Moments offers a secure platform where kids can explore and create with confidence, while parents can monitor their progress.</p>
-        </div>
-        <div className="feature-item">
-          <div className="star">⭐</div>
-          <h3>Personalized Experience</h3>
-          <p>Tailor the app experience to your child’s interests. Whether it’s their favorite activities or interactive games, SeeSay Moments adapts to their preferences, making it a truly personalized experience.</p>
+        <div className="feature-item pink">
+            <div className="icon">✨</div>
+            <h3>Personalized Experiences</h3>
+            <p>Customize the app to suit your child’s interests! SeeSay Moments adapts to their preferences for a unique and personal experience.</p>
         </div>
       </div>
     </div>

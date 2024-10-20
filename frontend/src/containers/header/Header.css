@@ -22,21 +22,26 @@
 
 .header h1 {
     margin: 0;
-    font-size: 6vw;
+    font-size: 10rem;
     font-weight: 900;
-    text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
+    background: linear-gradient(120deg, #ffcf67, #EE821A, #ea5459); /* Gradient background */
+    -webkit-background-clip: text; /* Clip the background to the text */
+    background-clip: text; /* Standard property for other browsers */
+    color: transparent; /* Set the text color to transparent */
     padding: calc(25vh + 5rem) 0 1rem 0;
     line-height: 1.0;
     position: relative; /* Ensure it is above the ::before element */
     z-index: 2; /* Higher than the ::before element */
 }
 
+
+
 .header p {
     margin: 0;
     font-size: 2vw;
     padding: 1rem 0 2rem 0;
     position: relative; /* Ensure it is above the ::before element */
-    z-index: 2; /* Higher than the ::before element */
+    z-index: 3; /* Higher than the ::before element */
 }
 
 .header button {
@@ -48,7 +53,7 @@
     cursor: pointer;
     border-radius: 5px;
     position: relative; /* Ensure it is above the ::before element */
-    z-index: 2; /* Higher than the ::before element */
+    z-index: 3; /* Higher than the ::before element */
 }
 
 .header button:hover {

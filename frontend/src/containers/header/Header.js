@@ -5,11 +5,13 @@ import '../header/Header.css';
 const Header = () => {
   return (
     <div id="header" className="header">
-      <h1>Every snapshot holds a <br />world of discovery</h1>
-      <p>Capture. Cherish. Learn.</p>
+      <header>
+        <h1>Every snapshot holds a <br />world of discovery</h1>
+        <p>Capture. Cherish. Learn.</p>
+      </header>
       <br />
       <Link to="/login">
-        <button>Get Started Now</button>
+        <button aria-label="Get started with the app">Get Started Now</button>
       </Link>
     </div>
   );

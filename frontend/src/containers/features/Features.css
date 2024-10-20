@@ -1,6 +1,6 @@
 .features-container {
   padding: 50px 0;
-  background-color: #f9f9f9;
+  background-color: #2b235a;
 }
 
 .text-slider-container {
@@ -17,33 +17,25 @@
   padding-right: 30px;
 }
 
-.text-content h1 {
-  font-size: 2.5rem;
-  color: #333;
+.text-content h1 { 
+  font-size: 5rem;
+  background: linear-gradient(120deg, #60efff, #f292ed, #ea5459); /* Define the gradient background */
+  -webkit-background-clip: text; /* Clip the background to the text */
+  background-clip: text; /* Standard property for other browsers */
+  color: transparent; /* Set the text color to transparent */
+  padding-top: 50px;
 }
 
 .text-description {
-  font-size: 1.2rem;
-  color: #555;
-  margin: 20px 0;
-}
-
-.button-container {
-  margin-top: 20px;
-}
-
-.discover-button {
-  padding: 10px 20px;
-  font-size: 1.2rem;
-  background-color: var(--primary-color);
+  font-size: 2rem;
   color: white;
-  border: none;
-  border-radius: 5px;
-  cursor: pointer;
+  margin: 20px 0;
+  font-weight: 100;
 }
 
-.discover-button:hover {
-  background-color: #555;
+.text-description strong {
+  font-weight: 1000; /* Adjust the number for desired boldness (higher is bolder) */
+  color: var(--primary-color); /* Optional: Change color if desired */
 }
 
 .slider-container {
@@ -90,7 +82,7 @@
 /* Feature Grid Layout */
 .features-grid {
   display: grid;
-  grid-template-columns: repeat(2, 1fr);
+  grid-template-columns: repeat(4, 1fr);
   gap: 30px;
   margin: 50px auto;
   width: 90%;
@@ -105,21 +97,23 @@
   text-align: center;
 }
 
-.feature-item .star {
-  font-size: 2rem;
+.feature-item .icon {
+  font-size: 3rem;
   color: var(--primary-color);
   margin-bottom: 10px;
 }
 
 .feature-item h3 {
-  font-size: 1.5rem;
-  color: #333;
-  margin-bottom: 10px;
+  font-size: 2rem;
+  color: white;
+  margin-bottom: 20px;
+  font-weight: 900;
 }
 
 .feature-item p {
-  font-size: 1rem;
-  color: #666;
+  font-size: 1.5rem;
+  color: white;
+  font-weight: 100;
 }
 
 @media screen and (max-width: 768px) {
@@ -136,4 +130,22 @@
     grid-template-columns: 1fr;
     width: 95%;
   }
+}
+
+
+/* Feature Grid Background Colours */
+.red {
+  background: linear-gradient(135deg, #ea5459, #f89b29);
+}
+
+.green {
+  background: linear-gradient(135deg, #7ef29d, #0f68a9);
+}
+
+.blue {
+  background: linear-gradient(135deg, #0061ff, #60efff);
+}
+
+.pink {
+  background: linear-gradient(135deg, #f292ed, #ea5459);
 }

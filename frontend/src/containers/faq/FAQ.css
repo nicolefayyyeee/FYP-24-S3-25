@@ -1,6 +1,6 @@
 .faq {
-  padding: 50px 0;
-  background-color: #f9f9f9;
+  padding: 50px;
+  background-color: #2b235a;
 }
 
 .faq-container {
@@ -19,12 +19,15 @@
 }
 
 .faq-title {
-  font-size: 2.5rem;
-  color: #333;
+  font-size: 5rem;
+  background: linear-gradient(120deg, #7ef29d, #2178dd); /* Define the gradient background */
+  -webkit-background-clip: text; /* Clip the background to the text */
+  background-clip: text; /* Standard property for other browsers */
+  color: transparent; /* Set the text color to transparent */
 }
 
 .faq-subtitle {
-  font-size: 1.2rem;
+  font-size: 1.5rem;
   color: #666;
 }
 
@@ -37,17 +40,29 @@
 .faq-item {
   padding: 20px;
   border-bottom: 1px solid #ddd;
+  cursor: pointer;
 }
 
 .faq-question {
   font-size: 1.5rem;
+  font-weight: 900;
   color: #333;
-  margin-bottom: 10px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.faq-icon {
+  font-size: 1.5rem;
+  color: #666;
 }
 
 .faq-answer {
-  font-size: 1rem;
+  font-size: 1.5rem;
   color: #555;
+  margin-top: 10px;
+  padding-left: 1rem;
+  border-left: 2px solid #ddd;
 }
 
 @media screen and (max-width: 768px) {
@@ -72,4 +87,18 @@
   .faq-container {
     padding: 20px;
   }
+}
+
+.star-rating {
+  display: flex;
+}
+
+.star {
+  font-size: 24px; /* Adjust the size as needed */
+  color: lightgray; /* Default color for empty stars */
+  margin-right: 5px;
+}
+
+.star.filled {
+  color: gold; /* Color for filled stars */
 }

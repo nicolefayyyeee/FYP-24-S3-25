@@ -59,19 +59,10 @@
 }
 
 .nav-menu li a, .auth-button {
-  color: #f6f6f6;
-  font-size: 1rem;
-  font-weight: 600;
-  background: none;
-  border: none;
-  cursor: pointer;
-}
-
-.auth-button {
   padding: 0.7rem;
   font-size: 1.2rem;
-  border-radius: 25px;
-  background: rgba(255, 255, 255, 0.3);
+  font-weight: 600;
+  border-radius: 15px;
   color: #f6f6f6;
   border: none;
   cursor: pointer;
@@ -79,10 +70,11 @@
   display: block; /* Ensure the button behaves as a block element */
   transition: background 0.3s ease;
   text-decoration: none;
+  background-color: transparent; /* Set default background to transparent */
 }
 
-.auth-button:hover {
-  background: rgba(255, 255, 255, 0.1); /* Only change background on hover */
+.nav-menu li a:hover, .auth-button:hover {
+  background: rgba(255, 255, 255, 0.2); /* Only change background on hover */
 }
 
 /* Mobile view (for screens below 940px) */
