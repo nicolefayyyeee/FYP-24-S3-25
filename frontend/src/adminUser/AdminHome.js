@@ -1,8 +1,11 @@
 import React from "react";
 import { Link } from "react-router-dom";
+import { useNavigate } from "react-router-dom";
 import "./AdminHome.css"; // Custom styles for the home page
 
 const AdminHome = () => {
+  const navigate = useNavigate(); 
+
   return (
     <>
       <div className="adminHome">
@@ -12,7 +15,7 @@ const AdminHome = () => {
             Effortlessly manage, oversee and optimize your system - all from one
             powerful dashboard
           </p>
-          <button className="profile-btn">Edit Profile</button>
+          <button className="profile-btn" onClick={() => navigate("/editAccount")}>Edit Profile</button>
         </div>
         <div className="options-grid">
           <Link to="/manageAccounts">

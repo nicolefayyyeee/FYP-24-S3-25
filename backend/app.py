@@ -625,7 +625,8 @@ def view_reviews():
 
         review_list = [
             {
-                "username": review.username,
+                "user_id": review.user_id,
+                "username": review.user.username,
                 "content": review.content,
                 "rating": review.rating,
                 "timestamp": review.timestamp.strftime('%Y-%m-%d %H:%M:%S')
