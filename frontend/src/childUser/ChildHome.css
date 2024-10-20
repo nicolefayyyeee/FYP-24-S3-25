@@ -7,11 +7,12 @@ body {
   .childHome {
     display: flex;
     flex-direction: column;
-    min-height: 100vh;
+    min-height: 80vh; /* Set the minimum height to 80% of the viewport height */
     background-color: #2b235a;
     color: white;
     text-align: center;
     text-decoration: none;
+    padding-bottom: 2.5rem; /* Adjust according to your footer height */
   }
   
   .welcome-header {

@@ -1,6 +1,20 @@
-footer {
-    background-color: #1b0041; /* Footer background color */
-    color: white;
-    padding: 1rem;
-    text-align: center;
+/* Footer.css */
+.footer {
+    width: 100%; /* Full width */
+    height: 80px; /* Fixed height for the footer */
+    display: flex; /* Enable Flexbox layout */
+    flex-direction: column; /* Stack items vertically */
+    justify-content: center; /* Center items vertically */
+    align-items: center; /* Center items horizontally */
+    padding: 0; /* Remove padding for vertical centering */
+    text-align: center; /* Center text */
+    background-color: #1b0041; /* Set footer background color */
+    z-index: 100; /* Ensure the footer is on top of all elements */
+}
+
+.footer-quote {
+    font-size: 1.5rem; /* Adjust the font size as needed */
+    margin: 30px 0 0; /* Add top margin */
+    margin-bottom: 0.5rem; /* Set bottom margin */
+    font-weight: bold; /* Make the quote bold */
 }
