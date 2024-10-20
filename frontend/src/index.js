@@ -11,6 +11,8 @@ import ContactPage from './routes/ContactPage'
 import LoginPage from './routes/LoginPage'
 import ImageCaptionPage from "./routes/ImageCaptionPage";
 import ProfilePage from './routes/ProfilePage'
+import CreateChildPage from './routes/CreateChildPage';
+import EditChildPage from './routes/EditChildPage';
 import AdminHomePage from './routes/AdminHomePage';
 import ParentHomePage from './routes/ParentHomePage';
 import ChildHomePage from './routes/ChildHomePage';
@@ -29,6 +31,8 @@ import ViewAllProfilesPage from './routes/ViewAllProfilesPage';
 import ViewAllReviewsPage from './routes/ViewAllReviewsPage';
 // import SearchAccountPage from './routes/SearchAccountPage';
 // import SearchProfilePage from './routes/SearchProfilePage';
+// import EditUserProfilePage from './routes/EditUserProfilePage';
+import EditAccountPage from './routes/EditAccountPage';
 
 ReactDOM.render(
   <BrowserRouter>
@@ -40,6 +44,8 @@ ReactDOM.render(
       <Route path='/login' element={<LoginPage />} />
       <Route path="/imageCaptioning" element={<ImageCaptionPage />} />
       <Route path='/profile' element={<ProfilePage />} />
+      <Route path='/createChild' element={<CreateChildPage />} />
+      <Route path='/editChild' element={<EditChildPage />} />
       <Route path='/adminhome' element={<AdminHomePage />} />
       <Route path='/parenthome' element={<ParentHomePage />} />
       <Route path='/childhome' element={<ChildHomePage />} />
@@ -56,8 +62,10 @@ ReactDOM.render(
       <Route path='/viewAllAccounts' element={<ViewAllAccountsPage/>} />
       <Route path='/viewAllProfiles' element={<ViewAllProfilesPage/>} />
       <Route path='/viewAllReviews' element={<ViewAllReviewsPage/>} /> 
-      {/* <Route path='/searchAccount' element={<SearchAccountPage/>} />
-      <Route path='/searchProfile' element={<SearchProfilePage/>} />  */}
+      {/* <Route path='/searchAccount' element={<SearchAccountPage/>} /> */}
+      {/* <Route path='/searchProfile' element={<SearchProfilePage/>} /> */}
+      {/* <Route path='/editUserProfile' element={<EditUserProfilePage/>} />  */}
+      <Route path='/editAccount' element={<EditAccountPage/>} /> 
     </Routes>
   </BrowserRouter>,
   document.getElementById('root')

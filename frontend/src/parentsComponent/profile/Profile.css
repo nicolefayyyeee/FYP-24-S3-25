@@ -52,30 +52,30 @@ html {
   border: none;
   outline: none;
   margin-top: 4rem;
-  margin-right: 3.5rem;
+  /* margin-right: 3.5rem; */
   position: relative;
   cursor: pointer;
   background-repeat: no-repeat;
   background-size: cover;
 }
 
-.memberDiv .btn:nth-child(1) {
+.memberDiv .btn-1 {
   background-image: url("../../images/user1.png");
 }
 
-.memberDiv .btn:nth-child(2) {
+.memberDiv .btn-2 {
   background-image: url("../../images/user2.png");
 }
 
-.memberDiv .btn:nth-child(3) {
+.memberDiv .btn-3 {
   background-image: url("../../images/user3.png");
 }
 
-.memberDiv .btn:nth-child(4) {
+.memberDiv .btn-4 {
   background-image: url("../../images/user4.png");
 }
 
-.memberDiv .btn:nth-child(5) {
+.memberDiv .btn-5 {
   background-image: url("../../images/user5.png");
 }
 
@@ -138,4 +138,40 @@ html {
     background-position: center;
     cursor: pointer;
     margin-right: 1rem;
+}
+
+.edit-icon-overlay {
+  position: absolute;
+  top: 5px;
+  background-color: rgba(20, 20, 20, 0.5);
+  border-color: transparent;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  padding: 0;
+}
+
+.edit-icon-overlay:hover {
+  background-color: rgba(20, 20, 20, 0.5);
+  border: 3px solid grey;
+}
+
+.edit-icon-overlay svg {
+  color: white;
+  font-size: 35px;
+}
+
+.profile-item {
+  margin: 10px;
+  position: relative;
+}
+
+.profile-item button {
+  height: 100%;
+  width: 100%;
+}
+
+.btn:disabled {
+  cursor: not-allowed; 
+  pointer-events: none; 
 }

@@ -1,68 +1,102 @@
 import React, { useState, useEffect } from 'react';
 import './Profile.css';
-import { FontAwesomeIcon } from '@fortawesome/react-fontawesome'
-import { faPlusCircle } from '@fortawesome/fontawesome-free-solid'
-
+import { FontAwesomeIcon } from '@fortawesome/react-fontawesome';
+import { faPlusCircle, faPencilAlt } from '@fortawesome/fontawesome-free-solid';
+import { useNavigate } from 'react-router-dom';
 
 const Profile = () => {
   const [users, setUsers] = useState([]);
+  const [loading, setLoading] = useState(true);
+  const [error, setError] = useState(null);
+  const [manageMode, setManageMode] = useState(false); 
+  const navigate = useNavigate();
 
-  useEffect(() => {
-    const fetchUsers = async () => {
+  const fetchUsers = async () => {
+    try {
       const userId = localStorage.getItem('user_id');
       const response = await fetch(`http://localhost:5000/get_users?user_id=${userId}`);
       const data = await response.json();
-      setUsers(data.reverse()); 
-    };
+      setUsers(data);
+    } catch (error) {
+      console.error('Error fetching users:', error);
+      setError('Error fetching user profiles.');
+    } finally {
+      setLoading(false);
+    }
+  };
 
+  useEffect(() => {
     fetchUsers();
   }, []);
 
-  const addUser = async () => {
-    let username = prompt('Please enter your username');
-    if (username === null) return; 
-
-    let name = prompt('Please enter your name');
-    if (name === null) return; 
-
-    let password = prompt('Please enter your password');
-    if (password === null) return; 
-
-    const userId = localStorage.getItem('user_id'); 
-
-    const response = await fetch('http://localhost:5000/add_child', {
-      method: 'POST',
-      credentials: 'include',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({ username, name, password, user_id: userId }),
-    });
-
-    const data = await response.json();
-
-    if (response.status === 201) {
-      setUsers((prevUsers) => [...prevUsers, name]);
-    } else {
-      alert(data.message);
-    }
+  const handleChildLogin = async (user) => {
+    try {
+      localStorage.removeItem('user_id');
     
+      localStorage.setItem('user_id', user.user_id);
+      localStorage.setItem('profile', "child");
+
+      navigate('/childHome');
+    } catch (error) {
+      console.error('Failed to log in with child profile:', error);
+    }
   };
+
+  const handleEditProfile = (childUserId) => {
+    navigate('/editChild', { state: { childUserId } });
+  };
+
+  const toggleManageMode = () => {
+    setManageMode((prevMode) => !prevMode);
+  };
+
+  if (loading) {
+    return <p>Loading...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
 
   return (
     <div className="whoIsWatching">
-
       <div className="main-div">
         <h1>Who's playing?</h1>
         <div className="memberDiv">
-          {users.map((user, index) => (
-            <button key={index} className="btn">
-              <span>{user}</span>
-            </button>
-          ))}
-          <button className="addIcon" onClick={addUser}>
-            <FontAwesomeIcon icon={faPlusCircle} /><span>Add Profile</span>
+          {users.length === 0 ? (
+            <p>No profiles available</p>
+          ) : (
+            users.map((user, index) => (
+              <div key={index} className="profile-item">
+                <button
+                  className={`btn btn-${index + 1}`}
+                  onClick={() => handleChildLogin(user)}
+                  disabled={manageMode} 
+                >
+                  <span>{user.username}</span>
+                </button>
+                {manageMode && ( 
+                  <button
+                    className="edit-icon-overlay"
+                    onClick={(e) => {
+                      e.stopPropagation();
+                      handleEditProfile(user.user_id);
+                    }}
+                  >
+                    <FontAwesomeIcon icon={faPencilAlt} />
+                  </button>
+                )}
+              </div>
+            ))
+          )}
+          <button className="addIcon" onClick={() => navigate('/createChild')}>
+            <FontAwesomeIcon icon={faPlusCircle} />
+            <span>Add Profile</span>
           </button>
         </div>
-        <button className="manageProfile">Manage Profile</button>
+        <button className="manageProfile" onClick={toggleManageMode}>
+          {manageMode ? 'Done' : 'Manage Profile'}
+        </button>
       </div>
     </div>
   );
