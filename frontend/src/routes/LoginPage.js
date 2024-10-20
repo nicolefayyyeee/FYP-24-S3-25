@@ -6,7 +6,7 @@ import Footer from '../containers/footer/Footer'
 const AppContainer = styled.div`
   width: 100%;
   height: calc(100vh - 60px);
-  background-color: #94a8d1;
+  background-color: #2b235a;
   padding: 10rem;
   position: relative;
   display: flex;
