@@ -8,7 +8,7 @@ body {
     display: flex;
     flex-direction: column;
     min-height: 100vh;
-    background-color: #1b0041;
+    background-color: #2b235a;
     color: white;
     text-align: center;
     text-decoration: none;
@@ -43,7 +43,7 @@ body {
   
   .options-grid {
     display: grid;
-    grid-template-columns: repeat(3, 1fr);
+    grid-template-columns: repeat(2, 1fr);
     grid-gap: 20px;
     justify-content: center;
     margin: 50px auto;
@@ -58,48 +58,47 @@ body {
   
   .option-card {
     display: flex;
+    flex-direction: column; /* Stack the icon and text vertically */
     justify-content: center;
     align-items: center;
     height: 300px;
     color: white;
-    font-size: 1.5rem;
-    font-weight: bold;
+    font-size: 3rem; /* Larger text */
+    font-weight: bolder;
     border-radius: 10px;
     transition: transform 0.3s ease, box-shadow 0.3s ease;
     cursor: pointer;
 }
   
-  
   .option-card a {
     color: white;
     text-decoration: none;
-  }
-  
-  .red {
-    background-color: #e75858;
-  }
-  
-  .yellow {
-    background-color: #f6b93b;
-  }
-  
-  .green {
-    background-color: #4cd137;
-  }
-  
-  .blue {
-    background-color: #42a7f5;
-  }
-  
-  .purple {
-    background-color: #8e44ad;
-  }
-  
-  .pink {
-    background-color: #f368e0;
   }
 
   .option-card:hover {
     transform: scale(1.05);
     box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
+
+.option-icon {
+  font-size: 6rem; /* Increase the size of the icon */
+  margin-bottom: 20px; /* Add more space between the icon and the text */
+}
+  
+  .red {
+    background: linear-gradient(135deg, #ea5459, #f89b29);
+}
+
+.green {
+    background: linear-gradient(135deg, #7ef29d, #0f68a9);
+}
+
+.blue {
+    background: linear-gradient(135deg, #0061ff, #60efff);
+}
+
+.pink {
+    background: linear-gradient(135deg, #f292ed, #ea5459);
+}
+
+
