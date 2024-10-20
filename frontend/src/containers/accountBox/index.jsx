@@ -38,11 +38,7 @@ const BackDrop = styled(motion.div)`
   top: -290px;
   left: -70px;
   background: rgb(241, 196, 15);
-  background: linear-gradient(
-    58deg,
-    rgba(241, 196, 15, 1) 20%,
-    rgba(243, 172, 18, 1) 100%
-  );
+  background: linear-gradient(58deg, #f9bc2c, #EE821A);
 `;
 
 const HeaderContainer = styled.div`
@@ -62,12 +58,13 @@ const HeaderText = styled.h2`
 
 const SmallText = styled.h5`
   color: #fff;
-  font-weight: 500;
+  font-weight: 200;
   font-size: 14px;
   z-index: 10;
   margin: 0;
   margin-top: 7px;
   margin-bottom: 40px;
+  font-family: Poppins;
 `;
 
 const InnerContainer = styled.div`

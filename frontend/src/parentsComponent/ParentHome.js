@@ -10,23 +10,23 @@ const ParentHome = () => {
     <>
       <div className="parentHome">
         <div className="welcome-header">
-          <h2>Welcome, Parent!</h2>
+          <h2>Welcome, insert Parent name!</h2>
           <p>Start your child's learning journey with us!</p>
           <button className="profile-btn" onClick={() => navigate("/editAccount")}>Edit Profile</button>
         </div>
         <div className="options-grid">
-          <Link to="/profile">
+          <Link to="/createAndManageChild">
             <div className="option-card red">
               Create and Manage Child Account
             </div>
           </Link>
-          <Link to="/moments">
-            <div className="option-card yellow">
+          <Link to="/achievementsAndActivity">
+            <div className="option-card blue">
               View Child's Achievements and Activity
             </div>
           </Link>
-          <Link to="/gallery">
-            <div className="option-card blue">View Subscription Plans</div>
+          <Link to="/subscriptionPlans">
+            <div className="option-card pink">View Subscription Plans</div>
           </Link>
         </div>
       </div>

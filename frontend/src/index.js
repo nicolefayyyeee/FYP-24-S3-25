@@ -5,23 +5,34 @@ import App from './App';
 
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
 
+// Main Home Pages
 import OurApp from './routes/OurAppPage'
 import AboutPage from './routes/AboutPage'
 import ContactPage from './routes/ContactPage'
 import LoginPage from './routes/LoginPage'
 import ImageCaptionPage from "./routes/ImageCaptionPage";
 import ProfilePage from './routes/ProfilePage'
-import CreateChildPage from './routes/CreateChildPage';
-import EditChildPage from './routes/EditChildPage';
-import AdminHomePage from './routes/AdminHomePage';
-import ParentHomePage from './routes/ParentHomePage';
+
+// Child Pages
 import ChildHomePage from './routes/ChildHomePage';
 import GameSelectionPage from './routes/GameSelectionPage';
 import MatchPictureGamePage from './routes/MatchPictureGamePage'; 
 import StorytellingGamePage from './routes/StorytellingGamePage';
 import GalleryPage from './routes/galleryPage';
-import AdminUploadImg from './routes/AdminUploadPage'
 import ChildExplorePage from './routes/ChildExplorePage'
+
+// Parent Pages
+import CreateAndManageChildPage from './routes/CreateAndManageChildPage';
+import SubscriptionPlansPage from './routes/SubscriptionPlansPage';
+import AchievementsAndActivityPage from './routes/AchievementsAndActivityPage';
+import ParentHomePage from './routes/ParentHomePage';
+
+import CreateChildPage from './routes/CreateChildPage';
+import EditChildPage from './routes/EditChildPage';
+
+// Admin Pages
+import AdminHomePage from './routes/AdminHomePage';
+import AdminUploadImg from './routes/AdminUploadPage'
 import ManageAccountsPage from './routes/ManageAccountsPage';
 import ManageUserProfilesPage from './routes/ManageUserProfilesPage';
 import CreateAdminPage from './routes/CreateAdminPage';
@@ -34,27 +45,42 @@ import ViewAllReviewsPage from './routes/ViewAllReviewsPage';
 // import EditUserProfilePage from './routes/EditUserProfilePage';
 import EditAccountPage from './routes/EditAccountPage';
 
+
+
 ReactDOM.render(
   <BrowserRouter>
     <Routes>
       <Route path='/' element={<App />} />
+
+      {/* Main Home Routes */}
       <Route path='/ourApp' element={<OurApp />} />
       <Route path='/about' element={<AboutPage />} />
       <Route path='/contact' element={<ContactPage />} />
       <Route path='/login' element={<LoginPage />} />
       <Route path="/imageCaptioning" element={<ImageCaptionPage />} />
       <Route path='/profile' element={<ProfilePage />} />
-      <Route path='/createChild' element={<CreateChildPage />} />
-      <Route path='/editChild' element={<EditChildPage />} />
-      <Route path='/adminhome' element={<AdminHomePage />} />
-      <Route path='/parenthome' element={<ParentHomePage />} />
+      
+      
+
+      {/* Child Routes */}
       <Route path='/childhome' element={<ChildHomePage />} />
       <Route path="/games" element={<GameSelectionPage />} />
       <Route path="/match-picture" element={<MatchPictureGamePage />} />
       <Route path="/storytelling-game" element={<StorytellingGamePage />} />
       <Route path='/galleryPage' element={<GalleryPage />} />
-      <Route path='/adminUpload' element={<AdminUploadImg />} />
       <Route path='/explorePage' element={<ChildExplorePage />} />
+
+      {/* Parent Routes */}
+      <Route path='/parenthome' element={<ParentHomePage />} />
+      <Route path='/createAndManageChild' element={<CreateAndManageChildPage/>} />
+      <Route path='/subscriptionPlans' element={<SubscriptionPlansPage/>} />
+      <Route path='/achievementsAndActivity' element={<AchievementsAndActivityPage/>} /> 
+      <Route path='/createChild' element={<CreateChildPage />} />
+      <Route path='/editChild' element={<EditChildPage />} />
+
+      {/* Admin Routes */}
+      <Route path='/adminhome' element={<AdminHomePage />} />
+      <Route path='/adminUpload' element={<AdminUploadImg />} />
       <Route path='/manageAccounts' element={<ManageAccountsPage/>} />
       <Route path='/manageUserProfiles' element={<ManageUserProfilesPage/>} />
       <Route path='/createAdmin' element={<CreateAdminPage/>} />
@@ -66,6 +92,7 @@ ReactDOM.render(
       {/* <Route path='/searchProfile' element={<SearchProfilePage/>} /> */}
       {/* <Route path='/editUserProfile' element={<EditUserProfilePage/>} />  */}
       <Route path='/editAccount' element={<EditAccountPage/>} /> 
+
     </Routes>
   </BrowserRouter>,
   document.getElementById('root')

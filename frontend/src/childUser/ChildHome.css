@@ -1,105 +1,100 @@
 body {
-    margin: 0;
-    font-family: 'Arial', sans-serif;
-    
-  }
-
-  .childHome {
-    display: flex;
-    flex-direction: column;
-    min-height: 80vh; /* Set the minimum height to 80% of the viewport height */
-    background-color: #2b235a;
-    color: white;
-    text-align: center;
-    text-decoration: none;
-    padding-bottom: 2.5rem; /* Adjust according to your footer height */
-  }
-  
-  .welcome-header {
-    margin-top: 20px;
-    padding: 20px 0; /* Optional: Add some controlled padding */
-  }
-  
-  .welcome-header h2 {
-    font-size: 2.5em;
-  }
-  
-  .welcome-header p {
-    font-size: 1.2em;
-  }
-  
-  .profile-btn {
-    background-color: #4a4a7d;
-    border: none;
-    padding: 10px 20px;
-    color: white;
-    font-size: 1.1em;
-    border-radius: 5px;
-    cursor: pointer;
-  }
-  
-  .profile-btn:hover {
-    background-color: #5a5aa0;
-  }
-  
-  .options-grid {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    grid-gap: 20px;
-    justify-content: center;
-    margin: 50px auto;
-    width: 90%;
-    max-width: 1200px;
-    padding-bottom: 50%;
-  }
-
-  .options-grid a:hover {
-    text-decoration: none; /* Ensure no underline appears even on hover */
-}
-  
-  .option-card {
-    display: flex;
-    flex-direction: column; /* Stack the icon and text vertically */
-    justify-content: center;
-    align-items: center;
-    height: 300px;
-    color: white;
-    font-size: 3rem; /* Larger text */
-    font-weight: bolder;
-    border-radius: 10px;
-    transition: transform 0.3s ease, box-shadow 0.3s ease;
-    cursor: pointer;
-}
-  
-  .option-card a {
-    color: white;
-    text-decoration: none;
-  }
-
-  .option-card:hover {
-    transform: scale(1.05);
-    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+  font-family: 'Poppins', sans-serif; /* Ensure to include a fallback font */
 }
 
-.option-icon {
+.childHome {
+  display: flex;
+  flex-direction: column;
+  background-color: #2b235a;
+  text-align: center;
+  text-decoration: none;
+}
+
+.welcome-header h2{
+  font-size: 5rem;
+  background: linear-gradient(120deg, #60efff, #f292ed, #ea5459); /* Define the gradient background */
+  -webkit-background-clip: text; /* Clip the background to the text */
+  background-clip: text; /* Standard property for other browsers */
+  color: transparent; /* Set the text color to transparent */
+  padding-top: 50px;
+}
+
+.welcome-header p {
+  font-size: 2rem;
+  color: white;
+}
+
+.profile-btn {
+  background-color: #4a4a7d;
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  font-size: 1.3em;
+  border-radius: 5px;
+  cursor: pointer;
+}
+
+.profile-btn:hover {
+  background-color: #5a5aa0;
+}
+
+.options-grid {
+  display: grid;
+  grid-template-columns: repeat(2, 1fr);
+  grid-gap: 20px;
+  justify-content: center;
+  margin: 50px auto;
+  width: 90%;
+  max-width: 1200px;
+  padding-bottom: 50%;
+}
+
+.options-grid a:hover {
+  text-decoration: none; /* Ensure no underline appears even on hover */
+}
+
+.option-card {
+  display: flex;
+  flex-direction: column; /* Stack the icon and text vertically */
+  justify-content: center;
+  align-items: center;
+  height: 300px;
+  color: white;
+  font-size: 3rem; /* Larger text */
+  font-weight: 600;
+  border-radius: 10px;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
+  cursor: pointer;
+  font-family: 'Poppins', sans-serif; /* Set Poppins for option cards */
+}
+
+.option-card a {
+  color: white;
+  text-decoration: none;
+}
+
+.option-card:hover {
+  transform: scale(1.05);
+  box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
+}
+
+.icon {
   font-size: 6rem; /* Increase the size of the icon */
   margin-bottom: 20px; /* Add more space between the icon and the text */
 }
-  
-  .red {
-    background: linear-gradient(135deg, #ea5459, #f89b29);
+
+.red {
+  background: linear-gradient(135deg, #ea5459, #f89b29);
 }
 
 .green {
-    background: linear-gradient(135deg, #7ef29d, #0f68a9);
+  background: linear-gradient(135deg, #7ef29d, #0f68a9);
 }
 
 .blue {
-    background: linear-gradient(135deg, #0061ff, #60efff);
+  background: linear-gradient(135deg, #0061ff, #60efff);
 }
 
 .pink {
-    background: linear-gradient(135deg, #f292ed, #ea5459);
+  background: linear-gradient(135deg, #f292ed, #ea5459);
 }
-
-
