@@ -1,6 +1,7 @@
 import styled from "styled-components";
 import { AccountBox } from "../containers/accountBox"; 
 import Navbar from '../containers/navbar/Navbar'
+import Footer from '../containers/footer/Footer'
 
 const AppContainer = styled.div`
   width: 100%;
@@ -21,6 +22,7 @@ function LoginPage() {
       <AppContainer>
         <AccountBox/>
       </AppContainer>
+      <Footer />
     </>
   );
 }

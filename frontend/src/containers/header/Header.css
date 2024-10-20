@@ -1,7 +1,6 @@
 .header {
     position: relative; /* Ensure positioning context for absolute child elements */
     background-image: url('../../images/header-image.jpeg');
-
     background-size: cover; /* Make the background cover the entire header */
     background-position: center; /* Center the background image */
     padding: 2rem;
@@ -26,7 +25,7 @@
     font-size: 6vw;
     font-weight: 900;
     text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.7);
-    padding: calc(25vh + 1rem) 0 1rem 0;
+    padding: calc(25vh + 5rem) 0 1rem 0;
     line-height: 1.0;
     position: relative; /* Ensure it is above the ::before element */
     z-index: 2; /* Higher than the ::before element */
@@ -41,7 +40,7 @@
 }
 
 .header button {
-    background-color: #892A42;
+    background: linear-gradient(135deg, #ea5459, #f89b29);
     font-size: 1vw;
     color: white;
     border: none;
@@ -50,4 +49,8 @@
     border-radius: 5px;
     position: relative; /* Ensure it is above the ::before element */
     z-index: 2; /* Higher than the ::before element */
+}
+
+.header button:hover {
+    background-color: #1a0038; /* Darker shade on hover */
 }

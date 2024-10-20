@@ -2,6 +2,10 @@ import React, { useState, useEffect } from 'react';
 import { Link, useLocation, useNavigate } from 'react-router-dom';
 import { FaBars, FaTimes, FaFacebook, FaInstagram } from 'react-icons/fa';
 import './Navbar.css';
+import logoSmall from '../../images/logo-small.png'; 
+import logoWord from '../../images/logo-word.png'; 
+
+
 
 const Navbar = () => {
     const [nav, setNav] = useState(false);
@@ -75,8 +79,9 @@ const Navbar = () => {
         <div className={`navbar ${isNonStickyPage ? '' : 'sticky'}`}>
             <div className='container'>
                 <div className={slide ? 'logo slide-right' : 'logo'}>
-                    <Link to={getHomeLink()} style={{ color: "white"}}>
-                    <h3>SeeSay Moments.</h3>
+                    <Link to={getHomeLink()} style={{ display: 'flex', alignItems: 'center', color: 'white' }}>
+                        <img src={logoSmall} alt="Logo Small" style={{ height: '50px', marginRight: '8px' }} /> {/* Icon image */}
+                        <img src={logoWord} alt="Logo Word" style={{ height: '70px' }} /> {/* Word image */}
                     </Link>
                 </div>
 
