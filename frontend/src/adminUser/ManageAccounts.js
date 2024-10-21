@@ -9,29 +9,29 @@ const ManageAccounts = () => {
     return (
         <>
             <div className="adminHome">
-                <div className="welcome-header">
+                <div className="admin-welcome-header">
                     <h2>Manage User Accounts</h2>
                     <p>
                         Select an option below to manage user accounts
                     </p>                    
                     <div style={{ display: 'flex', gap: '10px', justifyContent: 'center'}}>
-                        <button className="profile-btn" onClick={() => navigate("/manageUserProfiles")}>
+                        <button className="admin-profile-btn" onClick={() => navigate("/manageUserProfiles")}>
                             Manage User Profiles
                         </button>
-                        <button className="profile-btn" onClick={() => navigate("/adminHome")}>
+                        <button className="admin-profile-btn" onClick={() => navigate("/adminHome")}>
                             Back to Home
                         </button>
                     </div>
                 </div>
-                <div className="options-grid">
+                <div className="admin-options-grid">
                     <Link to="/createAdmin">
-                        <div className="option-card red">Create Admin Account</div>
+                        <div className="admin-option-card red">Create Admin Account</div>
                     </Link>
                     <Link to="/viewAllAccounts">
-                        <div className="option-card yellow">View All Accounts</div>
+                        <div className="admin-option-card yellow">View All Accounts</div>
                     </Link>
                     <Link to="/searchAccount">
-                        <div className="option-card green">Search User Account</div>
+                        <div className="admin-option-card green">Search User Account</div>
                     </Link>
                 </div>
             </div>

@@ -78,10 +78,10 @@ const ViewAllAccounts = () => {
 
     return (
         <div className="adminHome">
-            <div className="welcome-header">
+            <div className="admin-welcome-header">
                 <h2>View All User Accounts</h2>
                 <p>Click the suspend/unsuspend button to update the account status</p>
-                <button className="profile-btn" onClick={() => navigate("/manageAccounts")}>
+                <button className="admin-profile-btn" onClick={() => navigate("/manageAccounts")}>
                     Back to Manage User Accounts
                 </button>
             </div>

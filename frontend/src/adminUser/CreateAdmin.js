@@ -59,10 +59,10 @@ const CreateAdmin = () => {
 
     return (
         <div className="adminHome">
-            <div className="welcome-header">
+            <div className="admin-welcome-header">
                 <h2>Create Admin Account</h2>
                 <p>Fill in the form below to create a new admin account</p>
-                <button className="profile-btn" onClick={() => navigate("/manageAccounts")}>
+                <button className="admin-profile-btn" onClick={() => navigate("/manageAccounts")}>
                         Back to Manage User Accounts
                 </button>
             </div>

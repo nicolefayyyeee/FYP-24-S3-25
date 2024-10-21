@@ -71,10 +71,10 @@ const ViewReviews = () => {
     
     return (
         <div className="adminHome">
-            <div className="welcome-header">
+            <div className="admin-welcome-header">
                 <h2>View All Reviews</h2>
                 <p>Click the button to update the review's display status</p>
-                <button className="profile-btn" onClick={() => navigate("/adminHome")}>
+                <button className="admin-profile-btn" onClick={() => navigate("/adminHome")}>
                     Back to Home
                 </button>
             </div>

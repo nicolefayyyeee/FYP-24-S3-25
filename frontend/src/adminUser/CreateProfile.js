@@ -47,10 +47,10 @@ const CreateProfile = () => {
 
     return (
         <div className="adminHome">
-            <div className="welcome-header">
+            <div className="admin-welcome-header">
                 <h2>Create User Profile</h2>
                 <p>Fill in the form below to create a new user profile</p>
-                <button className="profile-btn" onClick={() => navigate("/manageUserProfiles")}>
+                <button className="admin-profile-btn" onClick={() => navigate("/manageUserProfiles")}>
                         Back to Manage User Profiles
                 </button>
             </div>
