@@ -43,6 +43,7 @@
   width: 60%;
   max-width: 600px;
   height: 400px;
+  padding-top: 30px;
 }
 
 .slider-content {
@@ -63,11 +64,11 @@
   position: absolute;
   top: 50%;
   transform: translateY(-50%);
-  font-size: 2rem;
+  font-size: 24px;
   color: white;
-  background-color: rgba(0, 0, 0, 0.3);
+  background: none;
   padding: 10px;
-  border-radius: 50%;
+  border: none;
   cursor: pointer;
 }
 

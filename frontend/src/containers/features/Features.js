@@ -39,8 +39,8 @@ const Features = () => {
         <div className="slider-container">
           <div className="slider-content">
             <div className="slide" style={slideStyles}></div>
-            <div className="left-arrow" onClick={() => setCurrentIndex(currentIndex === 0 ? slides.length - 1 : currentIndex - 1)}>❰</div>
-            <div className="right-arrow" onClick={() => setCurrentIndex(currentIndex === slides.length - 1 ? 0 : currentIndex + 1)}>❱</div>
+            <div className="left-arrow" onClick={() => setCurrentIndex(currentIndex === 0 ? slides.length - 1 : currentIndex - 1)}>◀</div>
+            <div className="right-arrow" onClick={() => setCurrentIndex(currentIndex === slides.length - 1 ? 0 : currentIndex + 1)}>▶</div>
           </div>
         </div>
       </div>
@@ -64,7 +64,8 @@ const Features = () => {
             <div className="icon">🛡️</div>
             <h3>A Safe, Family-Friendly Platform</h3>
             <p>
-              Designed with your child’s safety in mind, SeeSay Moments provides a secure space for exploration and creativity..
+              Designed with your child’s safety in mind, 
+              SeeSay Moments provides a secure space for exploration and creativity.
             </p>
         </div>
         <div className="feature-item pink">

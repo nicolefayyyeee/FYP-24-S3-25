@@ -1,7 +1,5 @@
 import React, { useState } from 'react';
 import axios from 'axios';
-import Navbar from '../containers/navbar/Navbar';
-import Footer from '../containers/footer/Footer';
 import './StorytellingGame.css';
 
 // Use the environment variable for the Pexels API key

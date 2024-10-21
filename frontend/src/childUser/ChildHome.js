@@ -10,7 +10,7 @@ const ChildHome = () => {
     <>
       <div className="childHome">
         <div className="child-welcome-header">
-          <h2>Welcome, {username} here!</h2>
+          <h2>Welcome back, {username}!</h2>
           <p>Let's capture your world and bring your moments to life!</p>
           <button className="child-avatar-btn">Edit Avatar</button>
         </div>
