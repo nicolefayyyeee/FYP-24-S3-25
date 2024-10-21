@@ -90,7 +90,6 @@ const Navbar = () => {
                         <>
                             <li><Link onClick={handleClose} to="/#header">Home</Link></li>                    
                             <li><Link onClick={handleClose} to="/#features">Features</Link></li>
-                            <li><Link onClick={handleClose} to="/#about">About</Link></li>
                             <li><Link onClick={handleClose} to="/#faq">FAQ</Link></li>
                             <li><Link onClick={handleClose} to="/#contact">Contact</Link></li>
                         </>
@@ -109,8 +108,7 @@ const Navbar = () => {
                                 
                             ) : profile === 'parent' ? (
                                 <>
-                                <li><Link to="/profile" className="profile-link" onClick={handleClose}>Profiles</Link> </li>
-                                <li><Link to="/editAccount" className="profile-link" onClick={handleClose}>My Account</Link></li> 
+                                <li><Link to="/profile" className="profile-link" onClick={handleClose}>Child Profiles</Link> </li>
                                 </>
                             ) : null}
                             <li>

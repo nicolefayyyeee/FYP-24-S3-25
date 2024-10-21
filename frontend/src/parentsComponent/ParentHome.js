@@ -16,24 +16,29 @@ const ParentHome = () => {
           <button className="profile-btn" onClick={() => navigate("/editAccount")}>Edit Profile</button>
         </div>
         <div className="parent-options-grid">
-          <Link to="/createAndManageChild">
-            <div className="parent-option-card red">
-              Create and Manage Child Account
-            </div>
-          </Link>
           <Link to="/achievementsAndActivity">
-            <div className="parent-option-card yellow">
+            <div className="parent-option-card red">
+              <div className="parent-icon">🏆</div>
               View Child's Achievements and Activity
             </div>
           </Link>
+          <Link to="/subscriptionPlans">
+            <div className="parent-option-card pink">
+              <div className="parent-icon">💳</div>
+              View Subscription Plans
+            </div>
+          </Link>
           <Link to="/addReview">
-            <div className="parent-option-card green">Leave a Review</div>
+            <div className="parent-option-card green">
+              <div className="parent-icon">💬</div>
+              Leave a Review
+              </div>
           </Link>
           <Link to="/myReviews">
-            <div className="parent-option-card blue">View My Reviews</div>
-          </Link>
-          <Link to="/subscriptionPlans">
-            <div className="parent-option-card purple">View Subscription Plans</div>
+            <div className="parent-option-card blue">
+              <div className="parent-icon">📝</div>
+              View My Reviews
+            </div>
           </Link>
         </div>
       </div>

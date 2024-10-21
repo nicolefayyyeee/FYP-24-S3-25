@@ -24,7 +24,7 @@ body {
   color: white;
 }
 
-.child-avatar-btn {
+.child-profile-btn {
   background-color: #4a4a7d;
   border: none;
   padding: 10px 20px;
@@ -60,7 +60,7 @@ body {
   align-items: center;
   height: 350px;
   color: white;
-  font-size: 4rem; /* Larger text */
+  font-size: 3.5rem; /* Larger text */
   font-weight: 700;
   border-radius: 10px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
