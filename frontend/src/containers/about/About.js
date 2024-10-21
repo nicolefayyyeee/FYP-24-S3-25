@@ -1,43 +1,68 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import './About.css';
 
 const About = () => {
-  // Sample reviews data with star ratings
-  const reviews = [
-    {
-      name: 'Alice',
-      text: 'My kids absolutely love SeeSay Moments! It has transformed the way they explore and learn.',
-      rating: 5,
-    },
-    {
-      name: 'Bob',
-      text: 'A fantastic app! It encourages my children to be creative and express themselves.',
-      rating: 4,
-    },
-    {
-      name: 'Charlie',
-      text: 'SeeSay Moments is a game-changer for our family. Highly recommend it!',
-      rating: 5,
-    },
-    {
-      name: 'Diana',
-      text: 'An amazing tool for kids to learn and have fun at the same time.',
-      rating: 4,
-    },
-    {
-      name: 'Ethan',
-      text: 'My kids are always excited to use this app and share their experiences!',
-      rating: 5,
-    },
-    {
-      name: 'Frank',
-      text: 'An excellent resource for children to learn while playing.',
-      rating: 4,
-    },
-  ];
+  // Sample reviews data with star ratings (will input these in db later -kj)
+  // const reviews = [
+  //   {
+  //     name: 'Alice',
+  //     text: 'My kids absolutely love SeeSay Moments! It has transformed the way they explore and learn.',
+  //     rating: 5,
+  //   },
+  //   {
+  //     name: 'Bob',
+  //     text: 'A fantastic app! It encourages my children to be creative and express themselves.',
+  //     rating: 4,
+  //   },
+  //   {
+  //     name: 'Charlie',
+  //     text: 'SeeSay Moments is a game-changer for our family. Highly recommend it!',
+  //     rating: 5,
+  //   },
+  //   {
+  //     name: 'Diana',
+  //     text: 'An amazing tool for kids to learn and have fun at the same time.',
+  //     rating: 4,
+  //   },
+  //   {
+  //     name: 'Ethan',
+  //     text: 'My kids are always excited to use this app and share their experiences!',
+  //     rating: 5,
+  //   },
+  //   {
+  //     name: 'Frank',
+  //     text: 'An excellent resource for children to learn while playing.',
+  //     rating: 4,
+  //   },
+  // ];
 
-  // State to track the current review index
-  const [currentIndex, setCurrentIndex] = useState(0);
+
+  const [currentIndex, setCurrentIndex] = useState(0); // State to track current review index  
+  const [reviews, setReviews] = useState([]); 
+  const [loading, setLoading] = useState(false);
+  const [error, setError] = useState("");
+
+  useEffect(() => {
+    const fetchReviews = async () => {
+      setLoading(true);
+      try {
+        const response = await fetch('http://localhost:5000/view_reviews'); 
+        const data = await response.json();
+
+        if (response.ok) {
+          setReviews(data.reviews);
+        } else {
+          setError("Failed to fetch reviews.");
+        }
+      } catch (error) {
+        setError("Error fetching reviews");
+      } finally {
+        setLoading(false);
+      }
+    };
+
+    fetchReviews();
+  }, []);
 
   // Function to go to the next set of reviews
   const nextReview = () => {
@@ -71,12 +96,20 @@ const About = () => {
         <div className="stars-container">
           {renderStars(review.rating)}
         </div>
-        <p className="review-text">"{review.text}"</p>
+        <p className="review-text">"{review.content}"</p>
         <p className="review-author">- {review.name}</p>
       </div>
     ));
   };
 
+  if (loading) {
+    return <p>Loading reviews...</p>;
+  }
+
+  if (error) {
+    return <p>{error}</p>;
+  }
+  
   return (
     <section id="about" className="about">
       {/* Top Wavy Section */}

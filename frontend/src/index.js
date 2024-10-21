@@ -29,6 +29,8 @@ import ParentHomePage from './routes/ParentHomePage';
 
 import CreateChildPage from './routes/CreateChildPage';
 import EditChildPage from './routes/EditChildPage';
+import AddReviewPage from './routes/AddReviewPage';
+import MyReviewsPage from './routes/MyReviewsPage';
 
 // Admin Pages
 import AdminHomePage from './routes/AdminHomePage';
@@ -37,15 +39,14 @@ import ManageAccountsPage from './routes/ManageAccountsPage';
 import ManageUserProfilesPage from './routes/ManageUserProfilesPage';
 import CreateAdminPage from './routes/CreateAdminPage';
 import CreateProfilePage from './routes/CreateProfilePage';
+// import EditUserProfilePage from './routes/EditUserProfilePage';
 import ViewAllAccountsPage from './routes/ViewAllAccountsPage';
 import ViewAllProfilesPage from './routes/ViewAllProfilesPage';
 import ViewAllReviewsPage from './routes/ViewAllReviewsPage';
 // import SearchAccountPage from './routes/SearchAccountPage';
 // import SearchProfilePage from './routes/SearchProfilePage';
-// import EditUserProfilePage from './routes/EditUserProfilePage';
+
 import EditAccountPage from './routes/EditAccountPage';
-
-
 
 ReactDOM.render(
   <BrowserRouter>
@@ -77,6 +78,8 @@ ReactDOM.render(
       <Route path='/achievementsAndActivity' element={<AchievementsAndActivityPage/>} /> 
       <Route path='/createChild' element={<CreateChildPage />} />
       <Route path='/editChild' element={<EditChildPage />} />
+      <Route path='/addReview' element={<AddReviewPage />} />
+      <Route path='/myReviews' element={<MyReviewsPage />} />
 
       {/* Admin Routes */}
       <Route path='/adminhome' element={<AdminHomePage />} />
@@ -85,12 +88,13 @@ ReactDOM.render(
       <Route path='/manageUserProfiles' element={<ManageUserProfilesPage/>} />
       <Route path='/createAdmin' element={<CreateAdminPage/>} />
       <Route path='/createProfile' element={<CreateProfilePage/>} />
+      {/* <Route path='/editUserProfile' element={<EditUserProfilePage/>} />  */}
       <Route path='/viewAllAccounts' element={<ViewAllAccountsPage/>} />
       <Route path='/viewAllProfiles' element={<ViewAllProfilesPage/>} />
       <Route path='/viewAllReviews' element={<ViewAllReviewsPage/>} /> 
       {/* <Route path='/searchAccount' element={<SearchAccountPage/>} /> */}
       {/* <Route path='/searchProfile' element={<SearchProfilePage/>} /> */}
-      {/* <Route path='/editUserProfile' element={<EditUserProfilePage/>} />  */}
+
       <Route path='/editAccount' element={<EditAccountPage/>} /> 
 
     </Routes>
