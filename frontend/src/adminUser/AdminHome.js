@@ -5,12 +5,13 @@ import "./AdminHome.css"; // Custom styles for the home page
 
 const AdminHome = () => {
   const navigate = useNavigate(); 
+  const username = localStorage.getItem('username');
 
   return (
     <>
       <div className="adminHome">
         <div className="welcome-header">
-          <h2>Welcome, Admin!</h2>
+          <h2>Welcome, {username}!</h2>
           <p>
             Effortlessly manage, oversee and optimize your system - all from one
             powerful dashboard
