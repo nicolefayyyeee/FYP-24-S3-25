@@ -10,29 +10,29 @@ const AdminHome = () => {
   return (
     <>
       <div className="adminHome">
-        <div className="welcome-header">
+        <div className="admin-welcome-header">
           <h2>Welcome, {username}!</h2>
           <p>
             Effortlessly manage, oversee and optimize your system - all from one
             powerful dashboard
           </p>
-          <button className="profile-btn" onClick={() => navigate("/editAccount")}>Edit Profile</button>
+          <button className="admin-profile-btn" onClick={() => navigate("/editAccount")}>Edit Profile</button>
         </div>
-        <div className="options-grid">
+        <div className="admin-options-grid">
           <Link to="/manageAccounts">
-            <div className="option-card red">Manage User Accounts</div>
+            <div className="admin-option-card red">Manage User Accounts</div>
           </Link>
           <Link to="/manageUserProfiles">
-            <div className="option-card yellow">Manage User Profiles</div>
+            <div className="admin-option-card yellow">Manage User Profiles</div>
           </Link>
           <Link to="/gallery">
-            <div className="option-card green">View Data Metrics</div>
+            <div className="admin-option-card green">View Data Metrics</div>
           </Link>
           <Link to="/adminUpload">
-            <div className="option-card blue">Manage System's Photos</div>
+            <div className="admin-option-card blue">Manage System's Photos</div>
           </Link>
           <Link to="/viewAllReviews">
-            <div className="option-card purple">View All Reviews</div>
+            <div className="admin-option-card purple">View All Reviews</div>
           </Link>
         </div>
       </div>

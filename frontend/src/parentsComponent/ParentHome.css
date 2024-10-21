@@ -13,7 +13,7 @@ body {
 }
 
 .parent-welcome-header h2{
-  font-size: 5rem;
+  font-size: 2.5rem;
   background: linear-gradient(120deg, #60efff, #f292ed, #ea5459); /* Define the gradient background */
   -webkit-background-clip: text; /* Clip the background to the text */
   background-clip: text; /* Standard property for other browsers */
@@ -22,7 +22,7 @@ body {
 }
 
 .parent-welcome-header p {
-  font-size: 2rem;
+  font-size: 1.5rem;
   color: white;
 }
 
