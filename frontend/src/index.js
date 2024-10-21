@@ -22,11 +22,9 @@ import GalleryPage from './routes/galleryPage';
 import ChildExplorePage from './routes/ChildExplorePage'
 
 // Parent Pages
-import CreateAndManageChildPage from './routes/CreateAndManageChildPage';
 import SubscriptionPlansPage from './routes/SubscriptionPlansPage';
 import AchievementsAndActivityPage from './routes/AchievementsAndActivityPage';
 import ParentHomePage from './routes/ParentHomePage';
-
 import CreateChildPage from './routes/CreateChildPage';
 import EditChildPage from './routes/EditChildPage';
 import AddReviewPage from './routes/AddReviewPage';
@@ -61,8 +59,6 @@ ReactDOM.render(
       <Route path="/imageCaptioning" element={<ImageCaptionPage />} />
       <Route path='/profile' element={<ProfilePage />} />
       
-      
-
       {/* Child Routes */}
       <Route path='/childhome' element={<ChildHomePage />} />
       <Route path="/games" element={<GameSelectionPage />} />
@@ -73,7 +69,6 @@ ReactDOM.render(
 
       {/* Parent Routes */}
       <Route path='/parenthome' element={<ParentHomePage />} />
-      <Route path='/createAndManageChild' element={<CreateAndManageChildPage/>} />
       <Route path='/subscriptionPlans' element={<SubscriptionPlansPage/>} />
       <Route path='/achievementsAndActivity' element={<AchievementsAndActivityPage/>} /> 
       <Route path='/createChild' element={<CreateChildPage />} />
