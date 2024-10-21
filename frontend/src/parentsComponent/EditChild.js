@@ -76,11 +76,11 @@ const EditChild = () => {
 
     return (
         <div className="parentHome">
-            <div className="welcome-header">
+            <div className="parent-welcome-header">
                 <h2>Edit Child Profile</h2>
                 {/* <p>Fill in the form below to update {form.username} profile</p> */}
                 <p>Fill in the form below to update child profile</p>
-                <button className="profile-btn" onClick={() => navigate("/profile")}>
+                <button className="parent-profile-btn" onClick={() => navigate("/profile")}>
                     Back to Profiles
                 </button>
             </div>

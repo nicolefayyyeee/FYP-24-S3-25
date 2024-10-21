@@ -57,10 +57,10 @@ const CreateChild = () => {
 
     return (
         <div className="parentHome">
-            <div className="welcome-header">
+            <div className="parent-welcome-header">
                 <h2>Add New Child Profile</h2>
                 <p>Fill in the form below to create a new child profile</p>
-                <button className="profile-btn" onClick={() => navigate("/profile")}>
+                <button className="parent-profile-btn" onClick={() => navigate("/profile")}>
                         Back to Profiles
                 </button>
             </div>

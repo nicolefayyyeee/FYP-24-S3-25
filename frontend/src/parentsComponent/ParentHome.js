@@ -10,30 +10,30 @@ const ParentHome = () => {
   return (
     <>
       <div className="parentHome">
-        <div className="welcome-header">
+        <div className="parent-welcome-header">
           <h2>Welcome, {username}!</h2>
           <p>Start your child's learning journey with us!</p>
           <button className="profile-btn" onClick={() => navigate("/editAccount")}>Edit Profile</button>
         </div>
-        <div className="options-grid">
-          <Link to="/profile">
-            <div className="option-card red">
+        <div className="parent-options-grid">
+          <Link to="/createAndManageChild">
+            <div className="parent-option-card red">
               Create and Manage Child Account
             </div>
           </Link>
           <Link to="/achievementsAndActivity">
-            <div className="option-card yellow">
+            <div className="parent-option-card yellow">
               View Child's Achievements and Activity
             </div>
           </Link>
-          <Link to="/subscriptionPlans">
-            <div className="option-card green">View Subscription Plans</div>
-          </Link>
           <Link to="/addReview">
-            <div className="option-card blue">Leave a Review</div>
+            <div className="parent-option-card green">Leave a Review</div>
           </Link>
           <Link to="/myReviews">
-            <div className="option-card purple">View My Reviews</div>
+            <div className="parent-option-card blue">View My Reviews</div>
+          </Link>
+          <Link to="/subscriptionPlans">
+            <div className="parent-option-card purple">View Subscription Plans</div>
           </Link>
         </div>
       </div>

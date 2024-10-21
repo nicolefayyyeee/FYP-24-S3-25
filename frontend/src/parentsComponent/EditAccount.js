@@ -101,10 +101,10 @@ const EditAccount = () => {
 
     return (
         <div className="parentHome">
-            <div className="welcome-header">
+            <div className="parent-welcome-header">
                 <h2>My Account</h2>
                 <p>Fill in the form below to update your account</p>
-                <button className="profile-btn"  onClick={() => navigate(getHomeLink())}>
+                <button className="parent-profile-btn"  onClick={() => navigate(getHomeLink())}>
                     Back to Home
                 </button>
             </div>

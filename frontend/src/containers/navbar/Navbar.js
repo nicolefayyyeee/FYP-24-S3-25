@@ -107,14 +107,12 @@ const Navbar = () => {
                                     <li><Link to="/editAccount" className="profile-link" onClick={handleClose}>My Account</Link></li> 
                                 </>  
                                 
-                            ) : profile === 'child' ? (
-                                <li><Link to="/" className="profile-link" onClick={handleClose}>Customization</Link></li>
-                            ) : (
+                            ) : profile === 'parent' ? (
                                 <>
                                 <li><Link to="/profile" className="profile-link" onClick={handleClose}>Profiles</Link> </li>
                                 <li><Link to="/editAccount" className="profile-link" onClick={handleClose}>My Account</Link></li> 
                                 </>
-                            )}
+                            ) : null}
                             <li>
                                 <button onClick={handleLogout} className="auth-button">Logout</button>
                             </li>

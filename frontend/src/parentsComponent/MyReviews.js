@@ -52,10 +52,10 @@ const MyReviews = () => {
     
     return (
         <div className="adminHome">
-            <div className="welcome-header">
+            <div className="parent-welcome-header">
                 <h2>My Reviews</h2>
                 <p>Here are all the reviews made by you</p>
-                <button className="profile-btn" onClick={() => navigate("/parentHome")}>
+                <button className="parent-profile-btn" onClick={() => navigate("/parentHome")}>
                     Back to Home
                 </button>
             </div>
