@@ -1,10 +1,8 @@
-@import url("https://fonts.googleapis.com/css2?family=Open+Sans:wght@300;400;600&display=swap");
-
 * {
   margin: 0;
   padding: 0;
   box-sizing: border-box;
-  font-family: "Open Sans", sans-serif;
+  font-family: "Poppins", sans-serif;
 }
 
 html {
@@ -14,7 +12,7 @@ html {
 .whoIsWatching {
   width: 100vw;
   min-height: 100vh;
-  background-color: #141414;
+  background-color: #2b235a;
 }
 
 .main-div {
@@ -28,7 +26,7 @@ html {
 }
 
 .main-div h1 {
-  font-size: 6.5rem;
+  font-size: 7rem;
   letter-spacing: 0.2rem;
   font-size: 600;
 }
@@ -52,7 +50,6 @@ html {
   border: none;
   outline: none;
   margin-top: 4rem;
-  /* margin-right: 3.5rem; */
   position: relative;
   cursor: pointer;
   background-repeat: no-repeat;
@@ -90,13 +87,13 @@ html {
   bottom: -3.5rem;
   left: 0;
   text-transform: capitalize;
-  color: rgb(153, 153, 153);
+  color: white;
   font-size: 2rem;
 }
 
 .fa-plus-circle {
   font-size: 7vw;
-  color: grey;
+  color: white;
   opacity: 0.8;
 }
 
@@ -105,7 +102,7 @@ html {
 }
 
 .addIcon:hover {
-  background-color: #fff;
+  box-shadow: inset 0 0 0 5px rgba(255, 255, 255, 0.9);
 }
 
 .addicon:hover > .fa-plus-circle {
@@ -113,14 +110,13 @@ html {
 }
 
 .manageProfile {
-  border: 1px solid grey;
-  color: grey;
-  text-transform: uppercase;
-  padding: 0.8rem 2.6rem;
-  letter-spacing: 0.5rem;
-  font-size: 2.5rem;
-  margin-top: 12rem;
-  background-color: transparent;
+  background-color: #4a4a7d;
+  border: none;
+  padding: 10px 20px;
+  color: white;
+  font-size: 2em;
+  border-radius: 5px;
+  margin-top: 10rem;
   cursor: pointer;
 }
 .manageProfile:hover {

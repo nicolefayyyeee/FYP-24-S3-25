@@ -96,7 +96,7 @@ const Profile = () => {
           </button>
         </div>
         <button className="manageProfile" onClick={toggleManageMode}>
-          {manageMode ? 'Done' : 'Manage Profile'}
+          {manageMode ? 'Done' : 'Manage Profiles'}
         </button>
       </div>
     </div>

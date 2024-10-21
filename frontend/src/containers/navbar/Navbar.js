@@ -99,7 +99,6 @@ const Navbar = () => {
                         <>
                             {profile === 'admin' ? (
                                 <>
-                                    <li><Link to="/adminHome" onClick={handleClose}>Home</Link></li>
                                     <li><Link to="/manageAccounts" onClick={handleClose}>Manage Accounts</Link></li>
                                     <li><Link to="/manageUserProfiles" onClick={handleClose}>Manage Profiles</Link></li>
                                     <li><Link to="/viewAllReviews" onClick={handleClose}>Reviews</Link></li>
@@ -109,6 +108,7 @@ const Navbar = () => {
                             ) : profile === 'parent' ? (
                                 <>
                                 <li><Link to="/profile" className="profile-link" onClick={handleClose}>Child Profiles</Link> </li>
+                                <li><Link to="/editAccount" className="profile-link" onClick={handleClose}>My Account</Link></li>
                                 </>
                             ) : null}
                             <li>
