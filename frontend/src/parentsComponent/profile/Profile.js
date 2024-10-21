@@ -35,6 +35,7 @@ const Profile = () => {
     
       localStorage.setItem('user_id', user.user_id);
       localStorage.setItem('profile', "child");
+      localStorage.setItem('username', user.username);
 
       navigate('/childHome');
     } catch (error) {

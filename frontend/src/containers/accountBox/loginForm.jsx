@@ -39,7 +39,7 @@ export function LoginForm(props) {
     const data = await response.json();
 
     if (response.ok) {
-      // localStorage.setItem('username', username);
+      localStorage.setItem('username', username);
       localStorage.setItem('user_id', data.user_id);
       localStorage.setItem('profile', data.profile);
 
