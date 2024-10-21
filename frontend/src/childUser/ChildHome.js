@@ -10,7 +10,7 @@ const ChildHome = () => {
         <div className="child-welcome-header">
           <h2>Welcome, insert childname here!</h2>
           <p>Let's capture your world and bring your moments to life!</p>
-          <button className="child-profile-btn">Edit Profile</button>
+          <button className="child-avatar-btn">Edit Avatar</button>
         </div>
         <div className="child-options-grid">
           <Link to="/imageCaptioning">

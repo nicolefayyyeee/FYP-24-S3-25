@@ -24,7 +24,7 @@ body {
   color: white;
 }
 
-.child-profile-btn {
+.child-avatar-btn {
   background-color: #4a4a7d;
   border: none;
   padding: 10px 20px;
@@ -60,8 +60,8 @@ body {
   align-items: center;
   height: 350px;
   color: white;
-  font-size: 3rem; /* Larger text */
-  font-weight: 600;
+  font-size: 4rem; /* Larger text */
+  font-weight: 700;
   border-radius: 10px;
   transition: transform 0.3s ease, box-shadow 0.3s ease;
   cursor: pointer;
@@ -78,9 +78,8 @@ body {
   box-shadow: 0 10px 20px rgba(0, 0, 0, 0.2);
 }
 
-.icon {
-  font-size: 6rem; /* Increase the size of the icon */
-  margin-bottom: 20px; /* Add more space between the icon and the text */
+.child-icon {
+  font-size: 7rem; /* Increase the size of the icon */
 }
 
 .red {

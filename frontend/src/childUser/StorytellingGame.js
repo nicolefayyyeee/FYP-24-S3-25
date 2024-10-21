@@ -481,7 +481,6 @@ if (category === "Birds") {
 
     return (
         <>
-            <Navbar />
 <div className="storytelling-game-container">
     <h1>Storytelling Game</h1>
 
@@ -507,7 +506,7 @@ if (category === "Birds") {
     {/* Step 2: Display Fetched Images */}
     {selectedCategory && !selectedPicture && (
         <div>
-            <h3>Images from {selectedCategory} category</h3>
+            <h3 className="pictures-text">Choose images from the {selectedCategory} category to get started!</h3>
             <div className="pictures-grid">
                 {images.map((picture) => (
                     <div 
@@ -530,13 +529,13 @@ if (category === "Birds") {
                 <img src={selectedPicture.src.medium} alt={selectedPicture.alt} />
             </div>
             <div className="story-display">
-                <h3>Story:</h3>
+                <h3>A story just for you:</h3>
                 <p>{generatedStory}</p>
+                
             </div>
         </div>
     )}
 </div>
-<Footer />
 
         </>
     );

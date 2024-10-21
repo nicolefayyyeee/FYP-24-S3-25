@@ -9,10 +9,13 @@
 }
 
 .game-selection-header {
-  font-size: 2.5rem;
+  font-size: 5rem;
   font-weight: bold;
-  color: white; 
-  margin-bottom: 40px; 
+  margin-bottom: 40px;
+  background: linear-gradient(120deg, #f3a46c, #fdf1cb, #aed1ef); /* Gradient background */
+    -webkit-background-clip: text; /* Clip the background to the text */
+    background-clip: text; /* Standard property for other browsers */
+    color: transparent; /* Set the text color to transparent */ 
 }
 
 .game-options {
@@ -22,34 +25,49 @@
 }
 
 .game-option {
-  width: 300px;
+  width: 500px;
+  height: 400px;
   padding: 40px;
-  border: 2px solid #4f45c4; 
   border-radius: 15px;
   text-align: center;
   transition: transform 0.3s ease;
   font-family: "Poppins", sans-serif;
-  background-color: #3b3b6d; 
   color: white; 
+  
 }
 
 .game-option:hover {
   transform: scale(1.05);
 }
 
+.game-option h1 {
+  font-size: 10rem;
+  font-weight: 700;
+  margin-top: 35px;
+  margin-bottom: 15px;
+}
+
 .game-option h2 {
-  font-size: 1.5rem;
-  font-weight: 600;
+  font-size: 3rem;
+  font-weight: 700;
   margin-bottom: 15px;
 }
 
 .game-option p {
-  font-size: 1rem;
+  font-size: 1.7rem;
   font-weight: 400;
-  color: #a8a8d3; 
+  color: white; 
 }
 
 .game-option a {
   text-decoration: none;
   color: inherit;
+}
+
+.pink-purple {
+  background: linear-gradient(135deg, #cb4288, #ea5459);
+}
+
+.dark-blue {
+  background: linear-gradient(135deg, #0968e5, #28b8d5);
 }
