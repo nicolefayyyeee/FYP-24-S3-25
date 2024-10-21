@@ -7,33 +7,33 @@ const ChildHome = () => {
   return (
     <>
       <div className="childHome">
-        <div className="welcome-header">
+        <div className="child-welcome-header">
           <h2>Welcome, insert childname here!</h2>
           <p>Let's capture your world and bring your moments to life!</p>
-          <button className="profile-btn">Edit Profile</button>
+          <button className="child-profile-btn">Edit Profile</button>
         </div>
-        <div className="options-grid">
+        <div className="child-options-grid">
           <Link to="/imageCaptioning">
-            <div className="option-card red">
-              <div className="icon">📸</div> {/* Camera emoji on a separate line */}
+            <div className="child-option-card red">
+              <div className="child-icon">📸</div> {/* Camera emoji on a separate line */}
               Snap a Memory
             </div>
           </Link>
           <Link to="/galleryPage">
-            <div className="option-card blue">
-              <div className="icon">🖼️</div> {/* Framed picture emoji on a separate line */}
+            <div className="child-option-card blue">
+              <div className="child-icon">🖼️</div> {/* Framed picture emoji on a separate line */}
               My Moments
             </div>
           </Link>
           <Link to="/explorePage">
-            <div className="option-card green">
-              <div className="icon">🌐</div> {/* Globe emoji on a separate line */}
+            <div className="child-option-card green">
+              <div className="child-icon">🌐</div> {/* Globe emoji on a separate line */}
               Explore the Gallery
             </div>
           </Link>
           <Link to="/games">
-            <div className="option-card pink">
-              <div className="icon">🎮</div> {/* Video game emoji on a separate line */}
+            <div className="child-option-card pink">
+              <div className="child-icon">🎮</div> {/* Video game emoji on a separate line */}
               Games
             </div>
           </Link>

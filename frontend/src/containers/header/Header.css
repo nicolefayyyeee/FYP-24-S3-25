@@ -38,7 +38,8 @@
 
 .header p {
     margin: 0;
-    font-size: 2vw;
+    font-size: 3rem;
+    font-weight: 500;
     padding: 1rem 0 2rem 0;
     position: relative; /* Ensure it is above the ::before element */
     z-index: 3; /* Higher than the ::before element */
