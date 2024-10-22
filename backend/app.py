@@ -72,7 +72,6 @@ def delete_from_gcs(file, bucket_name,filename):
     bucket = storage_client.bucket(bucket_name)
     blob = bucket.blob(filename)
     
-    # blob_name = file.filepath.split('/o/')[1].split('?')[0]
     blob = bucket.blob(filename)
     blob.delete()
 
@@ -249,8 +248,9 @@ def child_delete_image(image_id):
     
     if not image:
         return jsonify({"error": "Image not found"}), 404
+    
+    delete_from_gcs(image, GOOGLE_CLOUD_STORAGE_BUCKET, image.filename)
 
-    os.remove(image.filepath)  
     db.session.delete(image)
     db.session.commit()
 
@@ -260,14 +260,12 @@ def child_delete_image(image_id):
 @app.route('/admin/delete/<int:image_id>', methods=['DELETE'])
 def delete_image(image_id):
     image = AdminImage.query.get(image_id)
-    print(image.filename)
-    print(image.filepath)
-    delete_from_gcs(image, GOOGLE_CLOUD_STORAGE_BUCKET, image.filepath)
     
     if not image:
         return jsonify({"error": "Image not found"}), 404
     
-    # os.remove(image.filepath) 
+    delete_from_gcs(image, GOOGLE_CLOUD_STORAGE_BUCKET, image.filename)
+    
     db.session.delete(image)
     db.session.commit()
 

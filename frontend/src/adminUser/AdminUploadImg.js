@@ -21,9 +21,17 @@ const AdminUploadImg = () => {
   }, []);
 
   const generateUniqueFilename = (userId) => {
-    const timestamp = Date.now(); // Current timestamp
+    const now = new Date();
+    
+    // Format the date as ddmmyyyy
+    const day = String(now.getDate()).padStart(2, '0');
+    const month = String(now.getMonth() + 1).padStart(2, '0'); // getMonth() is zero-indexed
+    const year = now.getFullYear();
+    const formattedDate = `${day}${month}${year}`;
+    
     const randomString = Math.random().toString(36).substring(2, 8); // Generate a random string
-    return `AdminImage_${userId}_${timestamp}_${randomString}.jpg`; // Combine user ID, timestamp, and random string for uniqueness
+    
+    return `AdminImage_${userId}_${formattedDate}_${randomString}.jpg`; // Combine user ID, formatted date, and random string
   };
 
   // Handle image upload
