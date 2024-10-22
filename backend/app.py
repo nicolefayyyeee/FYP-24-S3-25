@@ -8,6 +8,7 @@ from flask_bcrypt import Bcrypt
 from flask_sqlalchemy import SQLAlchemy
 from flask_cors import CORS
 from google.cloud.sql.connector import Connector 
+from google.cloud import storage 
 from datetime import datetime, timezone
 from werkzeug.utils import secure_filename
 
@@ -21,7 +22,7 @@ import base64
 import random  # For selecting game content
 
 app = Flask(__name__)
-
+GOOGLE_CLOUD_STORAGE_BUCKET = "image-upload-seesayai"
 CLOUD_SQL_CONNECTION_NAME = 'seesayai1:asia-southeast1:seesay-instance'
 DB_USER = 'root'
 DB_PASSWORD = 'seesay123!'
@@ -56,6 +57,24 @@ app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'uploads')  # Adjust as 
 # Create the uploads folder if it doesn't exist
 if not os.path.exists(app.config['UPLOAD_FOLDER']):
     os.makedirs(app.config['UPLOAD_FOLDER'])
+    
+def upload_to_gcs(file, bucket_name, filename):
+    """Uploads a file to the Google Cloud Storage bucket."""
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(filename)
+    blob.upload_from_file(file)
+    blob.make_public()  # Make the file public
+    return blob.public_url
+
+def delete_from_gcs(file, bucket_name,filename):
+    storage_client = storage.Client()
+    bucket = storage_client.bucket(bucket_name)
+    blob = bucket.blob(filename)
+    
+    # blob_name = file.filepath.split('/o/')[1].split('?')[0]
+    blob = bucket.blob(filename)
+    blob.delete()
 
 # Image caption function start & upload user image to their own gallery
 @app.route('/imageCaptioning', methods=['POST'])
@@ -63,8 +82,7 @@ def predict_caption():
     generated_caption = None
     image = None
     image2generate = None  # Initialize image2generate
-    
-    
+        
     user_id = request.form.get('userId') 
     user = User.query.get(user_id)
     
@@ -80,62 +98,56 @@ def predict_caption():
     
     if image_file:
         filename = secure_filename(image_file.filename)
-        file_path = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-        
-        # Save the uploaded image file
-        image_file.save(file_path)
-        image2generate = Image.open(file_path)  # Open the saved image file
-        
+
+        # Upload the file to Google Cloud Storage
+        gcs_url = upload_to_gcs(image_file, GOOGLE_CLOUD_STORAGE_BUCKET, filename)
+
+        # Use the file from GCS to generate the caption
+        image2generate = Image.open(image_file)  # Keep image_file open for local use
+
         if image2generate:
             generated_caption = generate_captions_git_base(image2generate)
         else:
-            return jsonify({'error': 'Failed to process image'}), 500  # Return an error if image processing fails
-            
-        # Convert image file to base64 for return
-        image_file.seek(0)  # Reset the file pointer to read from the start
-        image = f"data:image/jpeg;base64,{base64.b64encode(image_file.read()).decode('utf-8')}"
-        
-        # Save image metadata to database
-        new_image = ChildImage(filename=filename, filepath=file_path, user_id=user_id, imageCaption=generated_caption)
+            return jsonify({'error': 'Failed to process image'}), 500
+
+        # Save image metadata to the database with the GCS URL
+        new_image = ChildImage(filename=filename, filepath=gcs_url, user_id=user_id, imageCaption=generated_caption)
         db.session.add(new_image)
         db.session.commit()
-        
+
+        # Prepare image data for the response (you can remove this if not necessary)
+        image_file.seek(0)
+        image = f"data:image/jpeg;base64,{base64.b64encode(image_file.read()).decode('utf-8')}"
+
     elif image_url:
-            response = requests.get(image_url)
-            response.raise_for_status()  # Raise an error for bad responses
-            image2generate = Image.open(BytesIO(response.content))
-            
-            if image2generate:
-                generated_caption = generate_captions_git_base(image2generate)
-            else:
-                return jsonify({'error': 'Failed to process image'}), 500  # Return an error if image processing fails
-                
-            # Prepare for saving the image
-            filename = os.path.basename(image_url)
-            file_path = os.path.join(app.config['UPLOAD_FOLDER'], image_filename)
+        response = requests.get(image_url)
+        response.raise_for_status()
+        image2generate = Image.open(BytesIO(response.content))
 
-            with open(file_path, 'wb') as f:
-                f.write(response.content)  # Save the image
+        if image2generate:
+            generated_caption = generate_captions_git_base(image2generate)
+        else:
+            return jsonify({'error': 'Failed to process image'}), 500
 
-            # Save image metadata to database
-            new_image = ChildImage(filename=image_filename, filepath=file_path, user_id=user_id, imageCaption=generated_caption)
-            db.session.add(new_image)
-            db.session.commit()
+        # Upload the image from the URL to GCS
+        filename = os.path.basename(image_url)
+        file_bytes = BytesIO(response.content)
+        gcs_url = upload_to_gcs(file_bytes, GOOGLE_CLOUD_STORAGE_BUCKET, image_filename)
 
-            # Convert image content to base64 for return
-            image = f"data:image/jpeg;base64,{base64.b64encode(response.content).decode('utf-8')}"
+        # Save image metadata to the database
+        new_image = ChildImage(filename=image_filename, filepath=gcs_url, user_id=user_id, imageCaption=generated_caption)
+        db.session.add(new_image)
+        db.session.commit()
+
+        image = f"data:image/jpeg;base64,{base64.b64encode(response.content).decode('utf-8')}"
 
     else:
-        return jsonify({'error': 'No image file or URL provided'}), 400  # Return an error if no image is provided
+        return jsonify({'error': 'No image file or URL provided'}), 400
 
     return jsonify({'caption': generated_caption, 'image': image})
 
 # Image caption function end
 
-# Route to serve uploaded images 
-@app.route('/uploads/<filename>')
-def uploaded_file(filename):
-    return send_from_directory(app.config['UPLOAD_FOLDER'], filename)
 
 # Child User gallery
 @app.route('/gallery', methods=['GET'])
@@ -163,7 +175,7 @@ def user_gallery():
         {
             "image_id": img.id,
             "filename": img.filename,
-            "filepath":  f"http://192.168.18.13:5000/uploads/{img.filename}",  # Full image URL,
+            "filepath":  img.filepath,  # Full image URL,
             "caption": img.imageCaption,
             "is_favorite": img.is_favorite,
         } for img in images
@@ -187,16 +199,14 @@ def upload_image():
     
     # Save the file
     filename = secure_filename(file.filename)
-    filepath = os.path.join(app.config['UPLOAD_FOLDER'], filename)
-    file.save(filepath)
+    gcs_url = upload_to_gcs(file, GOOGLE_CLOUD_STORAGE_BUCKET, filename)
     
     print(file.filename)
     print(file)
     
     new_image = AdminImage(
             filename=filename,  # Use the secure filename
-            imageCaption=request.form.get('caption'),  # Assuming a caption is provided
-            filepath=filepath,
+            filepath=gcs_url,
             date_uploaded=datetime.now()
         )
 
@@ -250,11 +260,14 @@ def child_delete_image(image_id):
 @app.route('/admin/delete/<int:image_id>', methods=['DELETE'])
 def delete_image(image_id):
     image = AdminImage.query.get(image_id)
+    print(image.filename)
+    print(image.filepath)
+    delete_from_gcs(image, GOOGLE_CLOUD_STORAGE_BUCKET, image.filepath)
     
     if not image:
         return jsonify({"error": "Image not found"}), 404
-
-    os.remove(image.filepath) 
+    
+    # os.remove(image.filepath) 
     db.session.delete(image)
     db.session.commit()
 
@@ -270,7 +283,7 @@ def view_gallery():
         {
             "id": img.id,
             "filename": img.filename,
-            "filepath":  f"http://192.168.18.13:5000/uploads/{img.filename}",  # Full image URL,
+            "filepath":  img.filepath,  # Full image URL,
         } for img in images
     ]
     print(image_list) #check image list
