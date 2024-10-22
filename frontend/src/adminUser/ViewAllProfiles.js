@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaSearch } from "react-icons/fa";
 import "./ViewAll.css";
 import "./AdminHome.css";
 
@@ -8,6 +9,7 @@ const ViewAllProfiles = () => {
     const [loading, setLoading] = useState(true);
     const [profiles, setProfiles] = useState([]);
     const [error, setError] = useState(null);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const fetchProfiles = async () => {
         setLoading(true);
@@ -94,6 +96,10 @@ const ViewAllProfiles = () => {
         }
     };
 
+    const filteredProfiles = profiles.filter((profile) =>
+        profile.role.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     useEffect(() => {
         fetchProfiles();
     }, []);
@@ -115,11 +121,21 @@ const ViewAllProfiles = () => {
                     Back to Manage User Profiles
                 </button>
             </div>
-            {profiles.length === 0 ? (
+            <div className="search-container">
+                <input
+                    type="text"
+                    placeholder="Search by Role Name"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="search-bar"
+                />
+                <FaSearch className="search-icon" />
+            </div>
+            {filteredProfiles.length === 0 ? (
                 <p>No profiles found.</p>
             ) : (
                 <ul className="user-list">
-                    {profiles.map((profile) => (
+                    {filteredProfiles.map((profile) => (
                         <li key={profile.id} className="user-card">
                             <div className="user-details">
                                 <div className="user-header">

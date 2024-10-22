@@ -1,5 +1,6 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import { FaSearch } from "react-icons/fa";
 import "./ViewAll.css";
 import "./AdminHome.css";
 
@@ -7,6 +8,7 @@ const ViewAllAccounts = () => {
     const navigate = useNavigate();
     const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState([]);
+    const [searchQuery, setSearchQuery] = useState("");
 
     const fetchUsers = async () => {
         setLoading(true);
@@ -68,6 +70,10 @@ const ViewAllAccounts = () => {
         }
     };
 
+    const filteredUsers = users.filter((user) =>
+        user.username.toLowerCase().includes(searchQuery.toLowerCase())
+    );
+
     useEffect(() => {
         fetchUsers();
     }, []);
@@ -85,11 +91,21 @@ const ViewAllAccounts = () => {
                     Back to Manage User Accounts
                 </button>
             </div>
-            {users.length === 0 ? (
+            <div className="search-container">
+                <input
+                    type="text"
+                    placeholder="Search by Username"
+                    value={searchQuery}
+                    onChange={(e) => setSearchQuery(e.target.value)}
+                    className="search-bar"
+                />
+                <FaSearch className="search-icon" />
+            </div>
+            {filteredUsers.length === 0 ? (
                 <p>No users found.</p>
             ) : (
                 <ul className="user-list">
-                    {users.map((user) => (
+                    {filteredUsers.map((user) => (
                         <li key={user.id} className="user-card">
                             <div className="user-details">
                                 <div className="user-header">
