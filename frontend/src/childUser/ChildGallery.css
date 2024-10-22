@@ -1,96 +1,111 @@
-/* Gallery Container */
+/* ExplorePage Styles */
 .gallery-container {
-    display: flex;
-    flex-direction: column;
-    justify-content: center;
-    align-items: center;
-    min-height: 100vh;
-    box-sizing: border-box;
-    background-color: #1c0c43;
-    color: #fff;
-  }
-  
-  .error {
-    color: red;
-    text-align: center;
-  }
-  
-  /* Gallery Grid */
-  .gallery-grid {
-    display: grid;
-    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
-    gap: 30px;
-    margin-top: 10px;
-  }
-  
-  .gallery-item {
-    display: flex;
-    width: 100%;
-    flex-direction: column;
-    align-items: center;
-    
+  padding: 50px;
+  text-align: center;
+  background-color: #1c0c43;
+  min-height: 100vh;
+}
+
+.gallery-title{
+  font-size: 32px;
+  font-weight: 600;
+  color: #fff;
+  margin-bottom: 30px;
+}
+
+/* Gallery Styles */
+.gallery-container .gallery {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive grid */
+  gap: 30px;
+  padding: 20px;
+  background-color: #1c0c43;
+  justify-items: center;
+}
+
+.gallery-container .gallery-item {
+  position: relative;
+  overflow: hidden;
+  border-radius: 12px;
+  box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
+  transition: transform 0.3s ease-in-out;
+  background-color: #311f60;
+}
+
+.gallery-container .gallery-item:hover {
+  transform: scale(1.05);
+}
+
+.gallery-container .gallery-image {
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  border-radius: 12px;
+}
+
+/* Gallery actions (Favorite and Delete buttons) */
+.gallery-container .gallery-actions {
+  position: absolute;
+  top: 10px;
+  left: 10px;
+  right: 10px;
+  display: flex;
+  justify-content: space-between;
+}
+
+ .gallery-container .delete-btn {
+  background: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius: 50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.gallery-container .favorite-btn{
+  background: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
+  color: white;
+  border: none;
+  padding: 8px;
+  border-radius:50%;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.gallery-container .favorite-btn.favorited {
+  background: rgba(255, 215, 0, 0.9); /* Gold background for favorited items */
+}
+
+.gallery-container .favorite-btn:hover, .gallery-container .delete-btn:hover {
+  background: rgba(0, 0, 0, 0.8); /* Darker background on hover */
+}
+
+/* Caption below each image */
+.gallery-container .gallery-caption {
+  text-align: center;
+  margin-top: 10px;
+  font-size: 14px;
+  color: #fff;
+}
+
+/* Responsive Design */
+@media (max-width: 768px) {
+  .gallery-container .gallery {
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
   }
 
-  .gallery-item img {
-    width: 100%;
-    height: 100%;
-    object-fit: fill;
-    border-radius: 8px;
-    transition: transform 0.3s;
+  .gallery-container .gallery-title{
+    font-size: 28px;
   }
-  
-  .gallery-image:hover {
-    transform: scale(1.05);
+}
+
+@media (max-width: 576px) {
+  .gallery-container .gallery {
+    grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
   }
-  
-  .gallery-item p {
-    margin-top: 20px;
-    text-align: center;
-    color: #ffffff;
+
+  .gallery-container .gallery-title{
+    font-size: 24px;
   }
-  
-  /* Favorite and Delete Buttons */
-  .gallery-actions {
-    display: flex;
-    justify-content: space-between;
-    width: 100%;
-    margin-top: 10px;
-  }
-  
-  .favorite-btn, .delete-btn {
-    padding: 5px 10px;
-    border: none;
-    cursor: pointer;
-    border-radius: 5px;
-  }
-  
-  .favorite-btn {
-    background-color: #007bff;
-    color: white;
-  }
-  
-  .favorite-btn.favorited {
-    background-color: #ffc107;
-  }
-  
-  .favorite-btn:hover, .delete-btn:hover {
-    opacity: 0.9;
-  }
-  
-  .delete-btn {
-    background-color: #dc3545;
-    color: white;
-  }
-  
-  /* Footer styling */
-.footer {
-    background-color: #2a1d59;
-    color: #fff;
-    text-align: center;
-    padding: 20px;
-    position: absolute;
-    height: -100px;
-    margin-top: auto;
-    width: 100%;
-  }
-  
+}

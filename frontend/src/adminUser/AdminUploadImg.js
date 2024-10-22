@@ -7,6 +7,7 @@ const AdminUploadImg = () => {
   const [file, setFile] = useState(null);
   const [imagePreview, setImagePreview] = useState(null);
   const [currentPage, setCurrentPage] = useState(1);
+  const [uploading, setUploading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null); // For image enlargement
   const imagesPerPage = 5; // Set images per page
 
@@ -40,6 +41,7 @@ const AdminUploadImg = () => {
     const formData = new FormData();
     const userId = localStorage.getItem('user_id');
     const uniqueFilename = generateUniqueFilename(userId);
+    setUploading(true);
 
     formData.append('file', file, uniqueFilename);
 
@@ -50,6 +52,7 @@ const AdminUploadImg = () => {
     });
     setImagePreview(null); // Clear image preview after upload
     setFile(null); // Reset file input
+    setUploading(false);
     fetchGallery();  // Refresh gallery after upload
   };
 
@@ -117,7 +120,9 @@ const AdminUploadImg = () => {
             <button className='btn-choose'>Choose Image</button>
             <input type="file" onChange={handleFileChange}/>
           </div>
-          <button type="submit" disabled={!file} className='btn-upload' >Upload Image</button>
+          <button type="submit" disabled={!file || uploading} className='btn-upload'>
+            {uploading ? 'Uploading...' : 'Upload Image'}
+          </button>
           <button type="button" onClick={handleClearInputs} className='btn-clear'> Clear Input </button>
           <div>
             {imagePreview && (

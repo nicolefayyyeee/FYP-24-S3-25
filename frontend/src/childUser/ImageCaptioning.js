@@ -2,6 +2,7 @@ import React, { useState, useRef, useEffect } from "react";
 import axios from 'axios';
 import Slider from "react-slick"; // image slider
 import Webcam from "react-webcam"; // web cam
+import { useLocation } from "react-router-dom";  // Import useLocation
 import './ImageCaptioning.css';
 
 const ImageCaptioning = () => {
@@ -13,6 +14,11 @@ const ImageCaptioning = () => {
   const [selectedImageUrl, setSelectedImageUrl] = useState(null);
   const [useWebcam, setUseWebcam] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
+
+  //explore page 
+  const explorePageLocation = useLocation();
+  const { selectedImage } = explorePageLocation.state || {};
+
 
   
   // references functions
@@ -34,8 +40,6 @@ const ImageCaptioning = () => {
     return `ChildImage_${userId}_${formattedDate}_${randomString}.jpg`; // Combine user ID, formatted date, and random string
   };
   
-
-
   // Pop up alert
   const showAlert = (message) => {
     alert(message);
@@ -96,6 +100,14 @@ const ImageCaptioning = () => {
     setCaption(data.caption);
     setLoading(false);
   };
+
+    // Set the selected image from the explore page as the preview
+    useEffect(() => {
+      if (selectedImage) {
+        setPreview(selectedImage);
+        setSelectedImageUrl(selectedImage);
+      }
+    }, [selectedImage]);
 
   //preview image uploaded
   const previewImage = (event) => {

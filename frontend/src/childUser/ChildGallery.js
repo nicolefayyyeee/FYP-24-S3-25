@@ -55,27 +55,28 @@ const ChildGallery = () => {
 
   return (
     <div className="gallery-container">
-      <h1>Your Gallery</h1>
+      <h1 className="gallery-title">Your Gallery</h1>
       {error && <p className="error">{error}</p>}
-      <div className="gallery-grid">
+      <div className="gallery">
         {gallery.length > 0 ? (
           gallery.map((item, index) => (
             <div key={index} className="gallery-item">
-              <img src={item.filepath} alt={`Uploaded ${index}`} className="gallery-image" />
-              <p className="gallery-caption">{item.caption}</p>
-              
-              {/* Favorite and Delete buttons */}
-              <div className="gallery-actions">
-                <button
-                  className={`favorite-btn ${item.is_favorite ? 'favorited' : ''}`}
-                  onClick={() => handleFavorite(item.image_id, item.is_favorite)}
-                >
-                  {item.is_favorite ? '★ Unfavorite' : '☆ Favorite'}
-                </button>
-                <button className="delete-btn" onClick={() => handleDelete(item.image_id)}>
-                  🗑️ Delete {item.is_favorite}
-                </button>
+              <div className="image-container">
+                <img src={item.filepath} alt={`Uploaded ${index}`} className="gallery-image" />
+                {/* Favorite and Delete buttons */}
+                <div className="gallery-actions">
+                  <button
+                    className={`favorite-btn ${item.is_favorite ? 'favorited' : ''}`}
+                    onClick={() => handleFavorite(item.image_id, item.is_favorite)}
+                  >
+                    {item.is_favorite ? '❤️' : '🤍'}
+                  </button>
+                  <button className="delete-btn" onClick={() => handleDelete(item.image_id)}>
+                    🗑️
+                  </button>
+                </div>
               </div>
+              <p className="gallery-caption">{item.caption}</p>
             </div>
           ))
         ) : (

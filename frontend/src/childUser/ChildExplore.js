@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
 import axios from 'axios';
+import { useNavigate } from 'react-router-dom';  // To navigate to caption generator
 import './ExplorePage.css';  // Import the CSS file
 
 const ExplorePage = () => {
   const [images, setImages] = useState([]);
+  const navigate = useNavigate();  // Initialize navigation
 
   // Fetch the gallery images
   const fetchGallery = async () => {
@@ -14,6 +16,11 @@ const ExplorePage = () => {
   useEffect(() => {
     fetchGallery();
   }, []);
+
+  // Redirect to the image caption generator page with selected image
+  const handleGenerateCaption = (image) => {
+    navigate(`/imageCaptioning`, { state: { selectedImage: image.filepath } });  // Pass the selected image
+  };
 
   return (
     <div className="explore-page">
@@ -26,6 +33,12 @@ const ExplorePage = () => {
               alt="" 
               className="gallery-image"
             />
+            {/* Caption Generator Button - Appears on hover */}
+            <div className="overlay">
+              <button className="generate-caption-btn" onClick={() => handleGenerateCaption(image)}>
+                Generate Caption
+              </button>
+            </div>
           </div>
         ))}
       </div>
