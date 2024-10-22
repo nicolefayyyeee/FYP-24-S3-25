@@ -818,6 +818,29 @@ def suspend_profile(profile_id):
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# Admin: update profile role
+@app.route('/update_role/<int:profile_id>', methods=['PUT'])
+def update_role(profile_id):
+    try:
+        data = request.get_json()
+        new_role = data.get('role')
+
+        # Check if the profile exists
+        profile = Profile.query.get(profile_id)
+        if not profile:
+            return jsonify({"message": "Profile not found!"}), 404
+
+        # Check if the new role already exists
+        if Profile.query.filter_by(role=new_role).first():
+            return jsonify({"message": "Role already exists!"}), 400
+
+        profile.role = new_role
+        db.session.commit()
+
+        return jsonify({"message": "Profile role updated successfully!"}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 if __name__ == "__main__":
     app.run(host='0.0.0.0', port=5000, debug=True)

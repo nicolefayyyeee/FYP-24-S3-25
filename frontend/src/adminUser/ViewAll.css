@@ -194,3 +194,30 @@ input:checked+.slider:before {
     color: #aaa;
     pointer-events: none;
 }
+
+/* Edit Profile Role Name */
+.role-name{
+    display: flex;
+}
+
+.role-name p {
+    display: inline;
+}
+
+.edit-icon, .save-icon {
+    margin: auto;
+    padding-left: 4px;
+    padding-bottom: 2px;
+    cursor: pointer;
+    font-size: 16px;
+}
+
+.edit-role-input {
+    font-size: 14px;
+    margin-left: 2px;
+    border-radius: 5px;
+    border: 1px solid #ccc;
+    outline: none;
+    width: 100px;
+    margin-top: 4px;
+}
