@@ -1,6 +1,6 @@
-import React, { useState, useEffect } from 'react';
-import axios from 'axios';
-import './AdminUpload.css'; // Import the CSS file
+import React, { useState, useEffect } from "react";
+import axios from "axios";
+import "./AdminUpload.css"; // Import the CSS file
 
 const AdminUploadImg = () => {
   const [images, setImages] = useState([]);
@@ -13,7 +13,7 @@ const AdminUploadImg = () => {
 
   // Fetch the gallery images
   const fetchGallery = async () => {
-    const response = await axios.get('http://localhost:5000/explorePage');
+    const response = await axios.get("http://localhost:5000/explorePage");
     setImages(response.data.images);
   };
 
@@ -23,15 +23,15 @@ const AdminUploadImg = () => {
 
   const generateUniqueFilename = (userId) => {
     const now = new Date();
-    
+
     // Format the date as ddmmyyyy
-    const day = String(now.getDate()).padStart(2, '0');
-    const month = String(now.getMonth() + 1).padStart(2, '0'); // getMonth() is zero-indexed
+    const day = String(now.getDate()).padStart(2, "0");
+    const month = String(now.getMonth() + 1).padStart(2, "0"); // getMonth() is zero-indexed
     const year = now.getFullYear();
     const formattedDate = `${day}${month}${year}`;
-    
+
     const randomString = Math.random().toString(36).substring(2, 8); // Generate a random string
-    
+
     return `AdminImage_${userId}_${formattedDate}_${randomString}.jpg`; // Combine user ID, formatted date, and random string
   };
 
@@ -39,29 +39,31 @@ const AdminUploadImg = () => {
   const handleUpload = async (e) => {
     e.preventDefault();
     const formData = new FormData();
-    const userId = localStorage.getItem('user_id');
+    const userId = localStorage.getItem("user_id");
     const uniqueFilename = generateUniqueFilename(userId);
     setUploading(true);
 
-    formData.append('file', file, uniqueFilename);
+    formData.append("file", file, uniqueFilename);
 
-    await axios.post('http://localhost:5000/admin/upload', formData, {
+    await axios.post("http://localhost:5000/admin/upload", formData, {
       headers: {
-        'Content-Type': 'multipart/form-data',
+        "Content-Type": "multipart/form-data",
       },
     });
     setImagePreview(null); // Clear image preview after upload
     setFile(null); // Reset file input
     setUploading(false);
-    fetchGallery();  // Refresh gallery after upload
+    fetchGallery(); // Refresh gallery after upload
   };
 
   // Handle image deletion with confirmation
   const handleDelete = async (id) => {
-    const confirmed = window.confirm("Are you sure you want to delete this image?");
+    const confirmed = window.confirm(
+      "Are you sure you want to delete this image?"
+    );
     if (confirmed) {
       await axios.delete(`http://localhost:5000/admin/delete/${id}`);
-      fetchGallery();  // Refresh gallery after delete
+      fetchGallery(); // Refresh gallery after delete
     }
   };
 
@@ -105,28 +107,39 @@ const AdminUploadImg = () => {
 
   // resets all states and clear input
   const handleClearInputs = () => {
-    setImagePreview(null); 
-    setFile(null); 
+    setImagePreview(null);
+    setFile(null);
   };
 
   return (
-    <div className='admin-dashboard'>
+    <div className="admin-dashboard">
       <h2>Upload photo to explore page </h2>
 
       {/* Upload Section */}
-      <div className='action-button'> 
+      <div className="action-button">
         <form onSubmit={handleUpload}>
           <div className="choose-btn-wrapper">
-            <button className='btn-choose'>Choose Image</button>
-            <input type="file" onChange={handleFileChange}/>
+            <button className="btn-choose">Choose Image</button>
+            <input type="file" onChange={handleFileChange} />
           </div>
-          <button type="submit" disabled={!file || uploading} className='btn-upload'>
-            {uploading ? 'Uploading...' : 'Upload Image'}
+          <button
+            type="submit"
+            disabled={!file || uploading}
+            className="btn-upload"
+          >
+            {uploading ? "Uploading..." : "Upload Image"}
           </button>
-          <button type="button" onClick={handleClearInputs} className='btn-clear'> Clear Input </button>
+          <button
+            type="button"
+            onClick={handleClearInputs}
+            className="btn-clear"
+          >
+            {" "}
+            Clear Input{" "}
+          </button>
           <div>
             {imagePreview && (
-              <div style={{ marginTop: '10px' }}>
+              <div style={{ marginTop: "10px" }}>
                 <img src={imagePreview} alt="Preview" width="300" />
               </div>
             )}
@@ -136,31 +149,52 @@ const AdminUploadImg = () => {
 
       {/* Gallery Section */}
       <h3>Pre-Existing Gallery</h3>
-      <div className="gallery">
-        <table style={{ width: '100%', borderCollapse: 'collapse', marginTop: '20px' }}>
+      <div className="gallery-table">
+        <table
+          style={{
+            width: "100%",
+            borderCollapse: "collapse",
+            marginTop: "20px",
+          }}
+          className="tab-table"
+        >
           <thead>
             <tr>
-              <th style={{ borderBottom: '1px solid #ccc', padding: '8px' }}>ID</th>
-              <th style={{ borderBottom: '1px solid #ccc', padding: '8px' }}>Image</th>
-              <th style={{ borderBottom: '1px solid #ccc', padding: '8px' }}>Actions</th>
+              <th style={{ borderBottom: "1px solid #ccc", padding: "8px" }}>
+                ID
+              </th>
+              <th style={{ borderBottom: "1px solid #ccc", padding: "8px" }}>
+                Image
+              </th>
+              <th style={{ borderBottom: "1px solid #ccc", padding: "8px" }}>
+                Actions
+              </th>
             </tr>
           </thead>
           <tbody>
             {currentImages.map((image) => (
               <tr key={image.id}>
-                <td style={{ borderBottom: '1px solid #ccc', padding: '8px' }}>{image.id}</td>
-                <td style={{ borderBottom: '1px solid #ccc', padding: '8px' }}>
-                  <img 
-                    src={image.filepath} 
-                    alt="" 
-                    width="150" 
-                    style={{ cursor: 'pointer' }} 
+                <td style={{ borderBottom: "1px solid #ccc", padding: "8px" }}>
+                  {image.id}
+                </td>
+                <td style={{ borderBottom: "1px solid #ccc", padding: "8px" }}>
+                  <img
+                    src={image.filepath}
+                    alt=""
+                    width="150"
+                    style={{ cursor: "pointer" }}
                     onClick={() => handleImageClick(image.filepath)} // Handle image click
                   />
                 </td>
-                <td style={{ borderBottom: '1px solid #ccc', padding: '8px' }}>
+                <td style={{ borderBottom: "1px solid #ccc", padding: "8px" }}>
                   <button
-                    style={{ backgroundColor: '#d9534f', color: 'white', padding: '6px 12px', border: 'none', cursor: 'pointer' }}
+                    style={{
+                      backgroundColor: "#d9534f",
+                      color: "white",
+                      padding: "6px 12px",
+                      border: "none",
+                      cursor: "pointer",
+                    }}
                     onClick={() => handleDelete(image.id)}
                   >
                     Delete
@@ -172,18 +206,24 @@ const AdminUploadImg = () => {
         </table>
 
         {/* Pagination Section */}
-        <div style={{ marginTop: '20px', display: 'flex', justifyContent: 'center' }}>
+        <div
+          style={{
+            marginTop: "20px",
+            display: "flex",
+            justifyContent: "center",
+          }}
+        >
           {Array.from({ length: totalPages }, (_, index) => (
             <button
               key={index + 1}
               onClick={() => handlePageChange(index + 1)}
               style={{
-                padding: '8px 16px',
-                margin: '0 4px',
-                backgroundColor: currentPage === index + 1 ? '#007bff' : '#fff',
-                color: currentPage === index + 1 ? '#fff' : '#000',
-                border: '1px solid #007bff',
-                cursor: 'pointer',
+                padding: "8px 16px",
+                margin: "0 4px",
+                backgroundColor: currentPage === index + 1 ? "#007bff" : "#fff",
+                color: currentPage === index + 1 ? "#fff" : "#000",
+                border: "1px solid #007bff",
+                cursor: "pointer",
               }}
             >
               {index + 1}
@@ -194,17 +234,37 @@ const AdminUploadImg = () => {
 
       {/* Modal for enlarged image */}
       {selectedImage && (
-        <div className="modal" style={{
-          position: 'fixed', top: 0, left: 0, width: '100%', height: '100%', backgroundColor: 'rgba(0, 0, 0, 0.8)',
-          display: 'flex', justifyContent: 'center', alignItems: 'center'
-        }}>
-          <div style={{ position: 'relative' }}>
-            <img src={selectedImage} alt="Enlarged" style={{ width: '400px', height: 'auto',  }} />
-            <button 
-              onClick={handleCloseModal} 
+        <div
+          className="modal"
+          style={{
+            position: "fixed",
+            top: 0,
+            left: 0,
+            width: "100%",
+            height: "100%",
+            backgroundColor: "rgba(0, 0, 0, 0.8)",
+            display: "flex",
+            justifyContent: "center",
+            alignItems: "center",
+          }}
+        >
+          <div style={{ position: "relative" }}>
+            <img
+              src={selectedImage}
+              alt="Enlarged"
+              style={{ width: "400px", height: "auto" }}
+            />
+            <button
+              onClick={handleCloseModal}
               style={{
-                position: 'absolute', top: '10px', right: '10px', opacity: "0.5", border: 'none',
-                padding: '10px', cursor: 'pointer', fontSize: '16px'
+                position: "absolute",
+                top: "10px",
+                right: "10px",
+                opacity: "0.5",
+                border: "none",
+                padding: "10px",
+                cursor: "pointer",
+                fontSize: "16px",
               }}
             >
               Close

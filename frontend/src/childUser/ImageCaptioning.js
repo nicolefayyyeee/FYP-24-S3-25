@@ -1,9 +1,9 @@
 import React, { useState, useRef, useEffect } from "react";
-import axios from 'axios';
+import axios from "axios";
 import Slider from "react-slick"; // image slider
 import Webcam from "react-webcam"; // web cam
-import { useLocation } from "react-router-dom";  // Import useLocation
-import './ImageCaptioning.css';
+import { useLocation } from "react-router-dom"; // Import useLocation
+import "./ImageCaptioning.css";
 
 const ImageCaptioning = () => {
   //state functions (self explanatory)
@@ -15,12 +15,10 @@ const ImageCaptioning = () => {
   const [useWebcam, setUseWebcam] = useState(false);
   const [capturedImage, setCapturedImage] = useState(null);
 
-  //explore page 
+  //explore page
   const explorePageLocation = useLocation();
   const { selectedImage } = explorePageLocation.state || {};
 
-
-  
   // references functions
   const imageFileRef = useRef(null);
   const imageUrlRef = useRef(null);
@@ -28,18 +26,18 @@ const ImageCaptioning = () => {
 
   const generateUniqueFilename = (userId) => {
     const now = new Date();
-    
+
     // Format the date as ddmmyyyy
-    const day = String(now.getDate()).padStart(2, '0');
-    const month = String(now.getMonth() + 1).padStart(2, '0'); // getMonth() is zero-indexed
+    const day = String(now.getDate()).padStart(2, "0");
+    const month = String(now.getMonth() + 1).padStart(2, "0"); // getMonth() is zero-indexed
     const year = now.getFullYear();
     const formattedDate = `${day}${month}${year}`;
-    
+
     const randomString = Math.random().toString(36).substring(2, 8); // Generate a random string
-    
+
     return `ChildImage_${userId}_${formattedDate}_${randomString}.jpg`; // Combine user ID, formatted date, and random string
   };
-  
+
   // Pop up alert
   const showAlert = (message) => {
     alert(message);
@@ -48,7 +46,7 @@ const ImageCaptioning = () => {
 
   // Fetch the explore page images
   const fetchGallery = async () => {
-    const response = await axios.get('http://localhost:5000/explorePage');
+    const response = await axios.get("http://localhost:5000/explorePage");
     setImages(response.data.images);
   };
 
@@ -65,10 +63,9 @@ const ImageCaptioning = () => {
     const imageFile = imageFileRef.current.files[0];
     const imageURL = imageUrlRef.current.value || selectedImageUrl;
     const imageBlob = capturedImage;
-  
-    const userId = localStorage.getItem('user_id');
 
-    
+    const userId = localStorage.getItem("user_id");
+
     // error handling process
     if (!imageFile && !imageURL && !imageBlob) {
       showAlert("No image selected, please upload an image.");
@@ -81,7 +78,7 @@ const ImageCaptioning = () => {
     if (imageFile) {
       formData.append("imageFile", imageFile, uniqueFilename);
     } else if (imageURL) {
-      formData.append("imageURL", imageURL, );
+      formData.append("imageURL", imageURL);
       formData.append("imageFilename", uniqueFilename);
     } else if (imageBlob) {
       formData.append("imageFile", imageBlob, uniqueFilename);
@@ -101,13 +98,13 @@ const ImageCaptioning = () => {
     setLoading(false);
   };
 
-    // Set the selected image from the explore page as the preview
-    useEffect(() => {
-      if (selectedImage) {
-        setPreview(selectedImage);
-        setSelectedImageUrl(selectedImage);
-      }
-    }, [selectedImage]);
+  // Set the selected image from the explore page as the preview
+  useEffect(() => {
+    if (selectedImage) {
+      setPreview(selectedImage);
+      setSelectedImageUrl(selectedImage);
+    }
+  }, [selectedImage]);
 
   //preview image uploaded
   const previewImage = (event) => {
@@ -155,7 +152,6 @@ const ImageCaptioning = () => {
     imageUrlRef.current.value = "";
     setPreview(null);
     setCaption("");
-    
   };
 
   // text-to-speech functionality
@@ -205,7 +201,7 @@ const ImageCaptioning = () => {
             {useWebcam ? "Close Webcam" : "Capture Image"}
           </button>
           <input
-          className="btn-url"
+            className="btn-url"
             type="text"
             ref={imageUrlRef}
             placeholder="Enter Image URL"
@@ -265,10 +261,7 @@ const ImageCaptioning = () => {
           <Slider {...settings}>
             {exampleImages.map((image, index) => (
               <div key={index} onClick={() => handleImageClick(image.filepath)}>
-                <img
-                  src={image.filepath}
-                  className="slider-image"
-                />
+                <img src={image.filepath} className="slider-image" />
               </div>
             ))}
           </Slider>

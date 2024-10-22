@@ -16,21 +16,21 @@
     color: #fff6f6;
   }
 
-  .action-button{
+  .admin-dashboard .action-button{
     display: flex;
     justify-content: center;
     margin-bottom: 20px;
     padding: 10px 20px;
   }
 
-  .choose-btn-wrapper {
+  .admin-dashboard .choose-btn-wrapper {
     position: relative;
     overflow: hidden;
     display: inline-flex;
     margin: 10px;
   }
   
-  .choose-btn-wrapper input[type=file] {
+  .admin-dashboard .choose-btn-wrapper input[type=file] {
     font-size: 100px;
     position: absolute;
     left: 0;
@@ -38,7 +38,7 @@
     opacity: 0;
   }
 
-  .btn-clear{
+  .admin-dashboard .btn-clear{
     background-color: #88888f;
     color: #fff;
     margin: 10px;
@@ -46,7 +46,7 @@
   }
 
   /* Form Styling */
-  form button {
+  .admin-dashboard form button {
     padding: 10px 30px;
     background-color: #007bff;
     color: white;
@@ -57,18 +57,18 @@
   }
   
   /* Image Preview */
-  .image-preview {
+  .admin-dashboard .image-preview {
     margin-top: 10px;
   }
   
-  .image-preview img {
+  .admin-dashboard .image-preview img {
     border: px solid #ddd;
     padding: 5px;
     border-radius: 8px;
   }
   
   /* Table Styling */
-  .gallery {
+  .admin-dashboard .gallery-table {
     margin-top: 10px;
   }
   
