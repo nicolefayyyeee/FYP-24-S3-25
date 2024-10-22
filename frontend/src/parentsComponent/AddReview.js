@@ -13,6 +13,7 @@ const AddReview = () => {
     const [errorMessage, setErrorMessage] = useState('');
     
     const submit = async () => {
+        const userId = localStorage.getItem('user_id');
         if (form.rating === 0 || form.content === "") {
             setErrorMessage("Please fill in all fields");
             return;
@@ -28,6 +29,7 @@ const AddReview = () => {
                 body: JSON.stringify({
                     rating: form.rating,
                     content: form.content,
+                    user_id: userId,
                 }),
             });
 
