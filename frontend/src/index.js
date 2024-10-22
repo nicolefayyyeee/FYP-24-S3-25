@@ -41,8 +41,6 @@ import CreateProfilePage from './routes/CreateProfilePage';
 import ViewAllAccountsPage from './routes/ViewAllAccountsPage';
 import ViewAllProfilesPage from './routes/ViewAllProfilesPage';
 import ViewAllReviewsPage from './routes/ViewAllReviewsPage';
-// import SearchAccountPage from './routes/SearchAccountPage';
-// import SearchProfilePage from './routes/SearchProfilePage';
 
 import EditAccountPage from './routes/EditAccountPage';
 
@@ -86,9 +84,7 @@ ReactDOM.render(
       {/* <Route path='/editUserProfile' element={<EditUserProfilePage/>} />  */}
       <Route path='/viewAllAccounts' element={<ViewAllAccountsPage/>} />
       <Route path='/viewAllProfiles' element={<ViewAllProfilesPage/>} />
-      <Route path='/viewAllReviews' element={<ViewAllReviewsPage/>} /> 
-      {/* <Route path='/searchAccount' element={<SearchAccountPage/>} /> */}
-      {/* <Route path='/searchProfile' element={<SearchProfilePage/>} /> */}
+      <Route path='/viewAllReviews' element={<ViewAllReviewsPage/>} />
 
       <Route path='/editAccount' element={<EditAccountPage/>} /> 
 

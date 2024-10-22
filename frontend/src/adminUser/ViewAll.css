@@ -18,7 +18,7 @@
 }
 
 .user-card:hover {
-    transform: scale(1.05);
+    transform: scale(1.1);
     box-shadow: 0 0 20px 3px rgb(150, 150, 150);
 }
 
@@ -162,4 +162,35 @@ input:checked+.slider:before {
 
 .slider.round:before {
     border-radius: 50%;
+}
+
+/* Search Bar */
+.search-container {
+    position: relative;
+    width: 50%;
+    margin: 20px auto;
+}
+
+.search-bar {
+    width: 100%;
+    padding: 10px 40px 10px 20px;
+    font-size: 16px;
+    border: 2px solid #ccc;
+    border-radius: 25px;
+    transition: border-color 0.3s ease;
+}
+
+.search-bar:focus {
+    box-shadow: 0 0 5px 2px rgb(150, 150, 150);
+    outline: none;
+}
+
+.search-icon {
+    position: absolute;
+    top: 50%;
+    right: 15px;
+    transform: translateY(-50%);
+    font-size: 18px;
+    color: #aaa;
+    pointer-events: none;
 }

@@ -30,9 +30,6 @@ const ManageAccounts = () => {
                     <Link to="/viewAllAccounts">
                         <div className="admin-option-card yellow">View All Accounts</div>
                     </Link>
-                    <Link to="/searchAccount">
-                        <div className="admin-option-card green">Search User Account</div>
-                    </Link>
                 </div>
             </div>
         </>

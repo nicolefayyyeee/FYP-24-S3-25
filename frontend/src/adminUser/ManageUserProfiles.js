@@ -30,9 +30,6 @@ const ManageUserProfiles = () => {
                     <Link to="/viewAllProfiles">
                         <div className="admin-option-card yellow">View All Profiles</div>
                     </Link>
-                    <Link to="/searchProfile">
-                        <div className="admin-option-card green">Search User Profile</div>
-                    </Link>
                 </div>
             </div>
         </>
