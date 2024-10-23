@@ -4,9 +4,6 @@
 
 /* Container styling */
 .container-imageCaptioning {
-    max-width: 1500px;
-    margin: 0 auto;
-    padding: 20px;
     text-align: center;
     display: flex;
     flex-direction: column;
@@ -14,20 +11,25 @@
     align-items: center;
     min-height: 100vh;
     box-sizing: border-box;
-    /* font-family: 'Arial', sans-serif; */
-    background-color: #1c0c43;
+    background-color: #2b235a;
     color: #fff;
   }
 
 /* Title styling */
-h1 {
-  font-size: 2.5em;
-  margin-bottom: 10px;
+.image-captioning-title {
+  font-size: 5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  background: linear-gradient(120deg, #f3a46c, #fdf1cb, #aed1ef); /* Gradient background */
+    -webkit-background-clip: text; /* Clip the background to the text */
+    background-clip: text; /* Standard property for other browsers */
+    color: transparent; /* Set the text color to transparent */ 
 }
 
 p {
-  font-size: 1em;
+  font-size: 2rem;
   margin-bottom: 30px;
+  font-weight: 500;
 }
 
 /* Button styling */
@@ -35,67 +37,119 @@ p {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
+  gap: 20px; /* Add a gap between the buttons */
 }
 
 .actions-bottom {
   display: flex;
   justify-content: center;
   margin-bottom: 20px;
+  padding: 10px;
+  gap: 20px; /* Add a gap between the buttons */
 }
 
-.container-imageCaptioning .btn {
-  padding: 10px 30px;
-  font-size: 16px;
-  margin-right: 10px;
-  border: none;
-  border-radius: 10px;
-  cursor: pointer;
-}
-
+/*Upload Button*/
 .btn-upload {
-  background-color: #ffa500;
+  background-color: #ffa500; /* Orange */
   color: #fff;
+  border-radius: 5px;
+  padding: 10px 20px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  width: 150px;
+  height: 45px;
+  border: none;
+  transition: background-color 0.3s ease;
 }
 
-
+/* Wrapper Style */
 .upload-btn-wrapper {
   position: relative;
   overflow: hidden;
   display: inline-block;
 }
 
+/* Make sure the input is absolutely positioned and hidden */
 .upload-btn-wrapper input[type=file] {
   font-size: 100px;
   position: absolute;
   left: 0;
   top: 0;
   opacity: 0;
+  cursor: pointer;
 }
 
-.upload-btn-wrapper:hover{
-  background-color: #ec9f0f;
+/* Apply hover effect to both wrapper and button */
+.upload-btn-wrapper:hover .btn-upload {
+  background-color: #cc8400; /* Darker Orange on hover */
+  color: black;
+}
+
+/* Capture Button */
+.btn-capture {
+  padding: 10px 20px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  background-color: #ff6347;
+  color: #fff;
   border: none;
   border-radius: 5px;
-  cursor: pointer;
-  
+  transition: background-color 0.3s ease;
 }
 
+.btn-capture:hover {
+  background-color: #c14e02;
+}
+
+/* URL Input */
+.btn-url {
+  padding: 10px;
+  border-radius: 5px;
+  border: 1px solid #ccc;
+  font-size: 1.5rem;
+  width: 400px;
+  box-sizing: border-box; /* Ensures padding is included in the element's width */
+}
+
+.btn-url:focus {
+  border-color: #ffa500; /* Change border color when focused */
+  outline: none; /* Remove default outline on focus */
+}
+
+
+/* Generate Button */
 .btn-generate{
   background-color: #4a47ff;
   color: #fff;
-  width:100%;
+  width: 70%;
+  height: 45px;
+  font-size: 1.5rem;
 }
 
 .btn-generate:hover{
   background-color: #4846be;
-  
+  color: black;
 }
+
+.btn-secondary{
+  background-color: #777777;
+  color: #fff;
+  width: 20%;
+  height: 45px;
+  font-size: 1.5rem;
+}
+
+.btn-secondary:hover{
+  background-color: #666666;
+  color: black;
+}
+
 .dropdown-model{
   width: 350px;
   outline: none;
   border: 1px solid #fff;
   padding: 1rem;
-  font-size: 1.1rem;
+  font-size: 1.5rem;
   border-radius: 0.5rem;
   box-shadow: 0 1px 4px rgb(146 161 176 / 15%);
   cursor: pointer;
@@ -115,6 +169,7 @@ p {
   font-size: 20px; /* Increase icon size */
   cursor: pointer;
   transition: background-color 0.3s ease; /* Smooth background change */
+  margin-top: 1rem;
 }
 
 .btn-speak:hover {
@@ -130,22 +185,7 @@ p {
   outline: none; /* Remove default focus outline */
 }
 
-.btn-capture {
-  padding: 10px 20px;
-  font-size: 16px;
-  cursor: pointer;
-  background-color: #ff6347;
-  color: #fff;
-  border: none;
-  border-radius: 5px;
-  transition: background-color 0.3s ease;
-}
-
-.btn-capture:hover {
-  background-color: #c14e02;
-}
-
-/* webcam styling */
+/* Webcam styling */
 .webcam-container {
   display: flex;
   flex-direction: column;
@@ -159,7 +199,6 @@ p {
   border-radius: 8px;
   margin-bottom: 10px;
 }
-
 
 select:focus,
 select:hover{
@@ -183,7 +222,7 @@ select:hover{
   box-shadow: 0 4px 6px rgba(0, 0, 0, 0.2);
   font-weight: bold;
   font-size: 1.2em;
-  color: #bcb8b2ad;
+  color: #bcb8b25d;
 }
 
 .image-placeholder {
@@ -194,7 +233,7 @@ select:hover{
 }
 
 .outer{
-  background-color: #2a1d59;
+  background-color: #1b0041;
   padding: 20px;
   display: flex;
   border-radius: 10px;
@@ -277,17 +316,19 @@ select:hover{
 
 /* Flexbox alignment for the slider container */
 .example-images {
-  margin-top: 30px;
+  margin-top: 50px;
   display: flex;
   justify-content: center;
   align-items: center;
   flex-direction: column;
 }
 
-.example-images h3 {
-  font-size: 1.5em;
-  margin-bottom: 20px;
-  color: #ffa500; /* Title color matching theme */
+.example-images h2 {
+  font-size: 2em;
+  background: linear-gradient(120deg, #ffe4aa, #ffbca0); /* Gradient background */
+  -webkit-background-clip: text; /* Clip the background to the text */
+  background-clip: text; /* Standard property for other browsers */ 
+  color: transparent; /* Set the text color to transparent */ 
 }
 
 .slick-list {
@@ -296,7 +337,7 @@ select:hover{
 
 /* Generated caption styling */
 .generated-caption {
-  font-size: 0.9em;
+  font-size: 1.5em;
   margin-bottom: 30px;
   padding: 20px;
   text-align:justify ;
@@ -307,9 +348,9 @@ select:hover{
   text-wrap: wrap;
 }
 
-.generated-caption-p{
+.generated-caption-p { 
     font-size: 1.2em;
-    font-weight: bold;
+    font-weight: 600;
 }
 
 
@@ -351,16 +392,3 @@ select:hover{
   0% { transform: rotate(0deg); }
   100% { transform: rotate(360deg); }
 }
-
-/* Footer styling */
-.footer {
-  background-color: #2a1d59;
-  color: #fff;
-  text-align: center;
-  padding: 20px;
-  position: absolute;
-  height: -100px;
-  margin-top: auto;
-  width: 100%;
-}
-

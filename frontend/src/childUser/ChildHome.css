@@ -8,6 +8,7 @@ body {
   background-color: #2b235a;
   text-align: center;
   text-decoration: none;
+  min-height: 100vh;
 }
 
 .child-welcome-header h2{

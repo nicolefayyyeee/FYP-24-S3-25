@@ -173,8 +173,8 @@ const ImageCaptioning = () => {
 
   return (
     <div className="container-imageCaptioning">
-      <div className="title>">
-        <h1>Upload or Capture an Image</h1>
+      <div>
+        <h1 className="image-captioning-title">Upload or Capture an Image</h1>
         <p>
           Choose an image from your computer or take a new picture with your
           camera to begin!
@@ -257,7 +257,7 @@ const ImageCaptioning = () => {
 
         {/* image slider */}
         <div className="example-images">
-          <h2>Example Images</h2>
+          <h2>Choose an image below to start exploring!</h2>
           <Slider {...settings}>
             {exampleImages.map((image, index) => (
               <div key={index} onClick={() => handleImageClick(image.filepath)}>
