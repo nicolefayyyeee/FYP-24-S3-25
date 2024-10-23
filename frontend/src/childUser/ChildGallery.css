@@ -2,15 +2,55 @@
 .gallery-container {
   padding: 50px;
   text-align: center;
-  background-color: #1c0c43;
+  background-color: #2b235a;
   min-height: 100vh;
 }
 
 .gallery-title{
-  font-size: 32px;
-  font-weight: 600;
+  font-size: 5rem;
+  font-weight: bold;
+  margin-bottom: 20px;
+  background: linear-gradient(120deg, #f3a46c, #fdf1cb, #aed1ef); /* Gradient background */
+    -webkit-background-clip: text; /* Clip the background to the text */
+    background-clip: text; /* Standard property for other browsers */
+    color: transparent; /* Set the text color to transparent */ 
+}
+
+.gallery-buttons {
+  display: flex;
+  gap: 20px; /* Adjust the gap as needed */
+  justify-content: center; /* Centers the buttons horizontally */
+  margin-bottom: 20px; /* Optional: Adds some space below the buttons */
+}
+
+.btn-fav-photos {
+  padding: 10px 20px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  background-color: #ff6347;
   color: #fff;
-  margin-bottom: 30px;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-fav-photos:hover {
+  background-color: #c14e02;
+}
+
+.btn-all-photos {
+  padding: 10px 20px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  background-color: #ffa500;
+  color: #fff;
+  border: none;
+  border-radius: 5px;
+  transition: background-color 0.3s ease;
+}
+
+.btn-all-photos:hover {
+  background-color: #cc8400;
 }
 
 /* Gallery Styles */
@@ -19,7 +59,7 @@
   grid-template-columns: repeat(auto-fill, minmax(250px, 1fr)); /* Responsive grid */
   gap: 30px;
   padding: 20px;
-  background-color: #1c0c43;
+  background-color: #2b235a;
   justify-items: center;
 }
 
@@ -29,7 +69,8 @@
   border-radius: 12px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   transition: transform 0.3s ease-in-out;
-  background-color: #311f60;
+  background-color: #1b0041;
+  height: 400px;
 }
 
 .gallery-container .gallery-item:hover {
@@ -74,7 +115,7 @@
 }
 
 .gallery-container .favorite-btn.favorited {
-  background: rgba(255, 215, 0, 0.9); /* Gold background for favorited items */
+  background: #ffd700e6; /* Gold background for favorited items */
 }
 
 .gallery-container .favorite-btn:hover, .gallery-container .delete-btn:hover {
@@ -85,8 +126,9 @@
 .gallery-container .gallery-caption {
   text-align: center;
   margin-top: 10px;
-  font-size: 14px;
+  font-size: 1.5rem;
   color: #fff;
+  padding: 20px;
 }
 
 /* Responsive Design */

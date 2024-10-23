@@ -55,8 +55,15 @@ const ChildGallery = () => {
 
   return (
     <div className="gallery-container">
-      <h1 className="gallery-title">Your Gallery</h1>
+      <h1 className="gallery-title">My Gallery</h1>
       {error && <p className="error">{error}</p>}
+
+      {/* Buttons for Favourites and View All Photos */}
+      <div className="gallery-buttons">
+        <button className="btn-fav-photos">My Favourites</button>
+        <button className="btn-all-photos">View All Photos</button>
+      </div>
+
       <div className="gallery">
         {gallery.length > 0 ? (
           gallery.map((item, index) => (
