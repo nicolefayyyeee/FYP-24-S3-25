@@ -20,6 +20,7 @@ import MatchPictureGamePage from './routes/MatchPictureGamePage';
 import StorytellingGamePage from './routes/StorytellingGamePage';
 import GalleryPage from './routes/galleryPage';
 import ChildExplorePage from './routes/ChildExplorePage'
+import Avatar from './routes/Avatar'
 
 // Parent Pages
 import SubscriptionPlansPage from './routes/SubscriptionPlansPage';
@@ -64,6 +65,7 @@ ReactDOM.render(
       <Route path="/storytelling-game" element={<StorytellingGamePage />} />
       <Route path='/galleryPage' element={<GalleryPage />} />
       <Route path='/explorePage' element={<ChildExplorePage />} />
+      <Route path='/avatar' element={<Avatar />} />
 
       {/* Parent Routes */}
       <Route path='/parenthome' element={<ParentHomePage />} />

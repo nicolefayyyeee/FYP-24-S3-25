@@ -1,10 +1,14 @@
 import React from "react";
-import { Link } from "react-router-dom";
+import { useNavigate, Link } from "react-router-dom";
 
 import "./ChildHome.css"; // Custom styles for the home page
 
 const ChildHome = () => {
   const username = localStorage.getItem('username');
+  const navigate = useNavigate();
+  const handleEditAvatar = () => {
+    navigate('/avatar'); 
+  };
 
   return (
     <>
@@ -12,7 +16,9 @@ const ChildHome = () => {
         <div className="child-welcome-header">
           <h2>Welcome back, {username}!</h2>
           <p>Let's capture your world and bring your moments to life!</p>
-          <button className="child-avatar-btn">Edit Avatar</button>
+          <button className="child-avatar-btn" onClick={handleEditAvatar}>
+            Edit Avatar
+          </button>        
         </div>
         <div className="child-options-grid">
           <Link to="/imageCaptioning">
