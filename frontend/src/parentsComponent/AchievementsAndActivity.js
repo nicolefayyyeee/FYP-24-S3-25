@@ -88,7 +88,6 @@ const AchievementsAndActivity = () => {
       </div>
 
       {/* Game Scores Section */}
-      {/* New section for game scores */}
       <div className="activity-section">
         <h3>Game Scores</h3>
         <ul className="scores-list">
