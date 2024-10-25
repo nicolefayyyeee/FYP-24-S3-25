@@ -23,6 +23,11 @@
   margin-bottom: 20px; /* Optional: Adds some space below the buttons */
 }
 
+.gallery-buttons button.active {
+  background-color: #4caf50;
+  color: white;
+}
+
 .btn-fav-photos {
   padding: 10px 20px;
   font-size: 1.5rem;
@@ -51,6 +56,7 @@
 
 .btn-all-photos:hover {
   background-color: #cc8400;
+  
 }
 
 /* Gallery Styles */
@@ -115,7 +121,8 @@
 }
 
 .gallery-container .favorite-btn.favorited {
-  background: #ffd700e6; /* Gold background for favorited items */
+  background: rgba(245, 245, 245, 0.6);; /* Gold background for favorited items */
+  
 }
 
 .gallery-container .favorite-btn:hover, .gallery-container .delete-btn:hover {

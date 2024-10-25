@@ -1,46 +1,94 @@
-import React from "react";
+import axios from "axios";
+import React, { useEffect, useState } from "react";
 import "./AchievementsAndActivity.css"; // Custom styles for the home page
 
 const AchievementsAndActivity = () => {
-  // Placeholder data for demonstration
+  const [children, setChildren] = useState([]); // State for child profiles
+  const [selectedChildId, setSelectedChildId] = useState(null); // Track selected child ID
+  const [gallery, setGallery] = useState([]);
+  const [error, setError] = useState('');
+  const parentId = localStorage.getItem('user_id'); // Fetch parent user ID from localStorage
+
   const childData = {
     scores: [
       { score: 95, date: "2024-10-20" }, // Sample scores with dates
       { score: 88, date: "2024-10-18" },
       { score: 76, date: "2024-10-15" },
-    ],
-    uploadedPictures: [
-      { url: "https://via.placeholder.com/150", date: "2024-10-19" }, // Sample image URLs with dates
-      { url: "https://via.placeholder.com/150", date: "2024-10-18" },
-      { url: "https://via.placeholder.com/150", date: "2024-10-17" },
-      { url: "https://via.placeholder.com/150", date: "2024-10-16" },
-      { url: "https://via.placeholder.com/150", date: "2024-10-15" },
-      { url: "https://via.placeholder.com/150", date: "2024-10-14" },
-      { url: "https://via.placeholder.com/150", date: "2024-10-13" },
-      { url: "https://via.placeholder.com/150", date: "2024-10-12" },
-      { url: "https://via.placeholder.com/150", date: "2024-10-11" },
-      { url: "https://via.placeholder.com/150", date: "2024-10-10" },
-      { url: "https://via.placeholder.com/150", date: "2024-10-09" },
-      { url: "https://via.placeholder.com/150", date: "2024-10-08" },
-    ]
+    ],}
+
+  // Fetch children profiles based on parent_id
+  useEffect(() => {
+    fetchChildren();
+  }, []);
+
+  const fetchChildren = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/children?parent_id=${parentId}`);
+      console.log("Children data received:", response.data);
+      setChildren(response.data.children);
+    } catch (error) {
+      console.error("Error fetching children:", error);
+      setError('Failed to load children profiles.');
+    }
   };
 
-  // Get the last 12 uploaded pictures and sort them if necessary
-  const sortedPictures = childData.uploadedPictures.slice(-12).sort((a, b) => new Date(b.date) - new Date(a.date));
+  // Fetch gallery and scores for the selected child
+  const fetchChildData = async (childId) => {
+    setSelectedChildId(childId); // Set the currently selected child
+    try {
+      // Fetch gallery for selected child
+      const galleryResponse = await axios.get(`http://localhost:5000/gallery?user_id=${childId}`, {
+        withCredentials: true,
+      });
+      console.log("Gallery data for child received:", galleryResponse.data);
+      setGallery(galleryResponse.data.images);
+
+    
+
+    } catch (error) {
+      console.error("Error fetching child data:", error);
+      setError('Failed to load child data.');
+    }
+  };
+
+  
+
+  // Limit the gallery to the last 9 images and sort them by date
+  const sortedGallery = gallery
+    .slice(-9) // Take the last 9 images
+    .sort((a, b) => new Date(b.dateUploaded) - new Date(a.dateUploaded)); // Sort by date
+    // Placeholder for scores (replace with real data if needed)
+
   const sortedScores = childData.scores.sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort scores by date
+
+  
 
   return (
     <div className="activityHome">
       <div className="welcome-header">
         <h2>Your Child's Activity</h2>
         <p>Choose a child's profile to view!</p>
+
+        {/* Dynamically generate child buttons */}
         <div className="button-container">
-          <button className="profile-btn">Child 1</button>
-          <button className="profile-btn">Child 2</button>
+          {children.length > 0 ? (
+            children.map((child) => (
+              <button
+                key={child.id}
+                className="profile-btn"
+                onClick={() => fetchChildData(child.id)}
+              >
+                {child.name}
+              </button>
+            ))
+          ) : (
+            <p>No children profiles found.</p>
+          )}
         </div>
       </div>
 
-      {/* New section for game scores - moved to the top */}
+      {/* Game Scores Section */}
+      {/* New section for game scores */}
       <div className="activity-section">
         <h3>Game Scores</h3>
         <ul className="scores-list">
@@ -52,18 +100,25 @@ const AchievementsAndActivity = () => {
         </ul>
       </div>
 
-      {/* New section for uploaded pictures */}
-      <div className="activity-section">
-        <h3>Uploaded Pictures</h3>
-        <div className="pictures-container">
-          {sortedPictures.map((item, index) => (
-            <div key={index} className="uploaded-picture">
-              <img src={item.url} alt={`Uploaded ${index + 1}`} className="uploaded-image" />
-              <p className="upload-date">Uploaded on: {new Date(item.date).toLocaleString()}</p>
-            </div>
-          ))}
+      {/* Uploaded Pictures Section */}
+      {selectedChildId && (
+        <div className="activity-section">
+          <h3>Recent uploaded Pictures</h3>
+          {error && <p className="error">{error}</p>}
+          <div className="pictures-container">
+            {sortedGallery.length > 0 ? (
+              sortedGallery.map((item, index) => (
+                <div key={index} className="uploaded-picture">
+                  <img src={item.filepath} alt={`Uploaded ${index + 1}`} className="uploaded-image" />
+                  <p className="upload-date">Uploaded on: {new Date(item.dateUploaded).toLocaleString()}</p>
+                </div>
+              ))
+            ) : (
+              <p>No images uploaded yet for this child.</p>
+            )}
+          </div>
         </div>
-      </div>
+      )}
     </div>
   );
 };

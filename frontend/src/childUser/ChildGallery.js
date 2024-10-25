@@ -5,6 +5,7 @@ import './ChildGallery.css';
 const ChildGallery = () => {
   const [gallery, setGallery] = useState([]);
   const [error, setError] = useState('');
+  const [showFavorites, setShowFavorites] = useState(false);  // State for showing only favorites
   const userId = localStorage.getItem('user_id');
 
   useEffect(() => {
@@ -53,6 +54,11 @@ const ChildGallery = () => {
     }
   };
 
+  // Filter the gallery based on the showFavorites state
+  const filteredGallery = showFavorites
+    ? gallery.filter((item) => item.is_favorite)
+    : gallery;
+
   return (
     <div className="gallery-container">
       <h1 className="gallery-title">My Gallery</h1>
@@ -60,13 +66,23 @@ const ChildGallery = () => {
 
       {/* Buttons for Favourites and View All Photos */}
       <div className="gallery-buttons">
-        <button className="btn-fav-photos">My Favourites</button>
-        <button className="btn-all-photos">View All Photos</button>
+        <button
+          className={`btn-fav-photos ${showFavorites ? 'active' : ''}`}
+          onClick={() => setShowFavorites(true)}
+        >
+          My Favourites
+        </button>
+        <button
+          className={`btn-all-photos ${!showFavorites ? 'active' : ''}`}
+          onClick={() => setShowFavorites(false)}
+        >
+          View All Photos
+        </button>
       </div>
 
       <div className="gallery">
-        {gallery.length > 0 ? (
-          gallery.map((item, index) => (
+        {filteredGallery.length > 0 ? (
+          filteredGallery.map((item, index) => (
             <div key={index} className="gallery-item">
               <div className="image-container">
                 <img src={item.filepath} alt={`Uploaded ${index}`} className="gallery-image" />

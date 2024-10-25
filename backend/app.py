@@ -50,14 +50,7 @@ bcrypt = Bcrypt(app)
 db = SQLAlchemy(app)
 CORS(app, origins=["http://localhost:3000"], supports_credentials=True)
 
-# Set the upload folder
-UPLOAD_FOLDER = os.path.join(os.getcwd(), 'uploads')
-app.config['UPLOAD_FOLDER'] = os.path.join(os.getcwd(), 'uploads')  # Adjust as necessary
-
-# Create the uploads folder if it doesn't exist
-if not os.path.exists(app.config['UPLOAD_FOLDER']):
-    os.makedirs(app.config['UPLOAD_FOLDER'])
-    
+#google bucket 
 def upload_to_gcs(file, bucket_name, filename):
     """Uploads a file to the Google Cloud Storage bucket."""
     storage_client = storage.Client()
@@ -75,7 +68,7 @@ def delete_from_gcs(file, bucket_name,filename):
     blob = bucket.blob(filename)
     blob.delete()
 
-# Image caption function start & upload user image to their own gallery
+# Image caption function start & upload user image to google bucket
 @app.route('/imageCaptioning', methods=['POST'])
 def predict_caption():
     generated_caption = None
@@ -154,7 +147,7 @@ def user_gallery():
     # Fetch the user based on the provided user_id
     user_id = request.args.get('user_id')
     user = User.query.get(user_id)
-    print(user_id) #check if get the current user id
+    # print(user_id) #check if get the current user id
     
      # Verify if the user exists in the users table
     user = User.query.filter_by(id=user_id).first()  # Assuming you have a User model
@@ -177,9 +170,10 @@ def user_gallery():
             "filepath":  img.filepath,  # Full image URL,
             "caption": img.imageCaption,
             "is_favorite": img.is_favorite,
+            "dateUploaded": img.date_uploaded
         } for img in images
     ]
-    print(image_list) #check image list
+    # print(image_list) #check image list
     
     # Return the list of images as JSON
     return jsonify({"images": image_list}), 200
@@ -200,8 +194,9 @@ def upload_image():
     filename = secure_filename(file.filename)
     gcs_url = upload_to_gcs(file, GOOGLE_CLOUD_STORAGE_BUCKET, filename)
     
-    print(file.filename)
-    print(file)
+    # to check file
+    # print(file.filename)
+    # print(file)
     
     new_image = AdminImage(
             filename=filename,  # Use the secure filename
@@ -211,7 +206,9 @@ def upload_image():
 
     db.session.add(new_image)
     db.session.commit()
-    print(new_image)
+    
+    # to check
+    # print(new_image)
     
     return jsonify({"message": "Image uploaded successfully"}), 201
 
@@ -222,9 +219,8 @@ def favorite_image():
     image_id = data.get('image_id')
     is_favorite = data.get('is_favorite')
     
-    print(data)
+    # print(data)
 
-    
     # Query the image by id and user_id
     image = ChildImage.query.filter_by(id=image_id, user_id=user_id).first()
 
@@ -284,9 +280,30 @@ def view_gallery():
             "filepath":  img.filepath,  # Full image URL,
         } for img in images
     ]
-    print(image_list) #check image list
+    # print(image_list) #check image list
     
     return jsonify({"images": image_list}), 200
+
+# Route to get child id from parents id 
+# In your Flask app, add a route to fetch children by parent ID
+@app.route('/children', methods=['GET'])
+def get_children():
+    parent_id = request.args.get('parent_id')
+    
+    if not parent_id:
+        return jsonify({"error": "Parent ID is required"}), 400
+    
+    # Fetch all children where parent_id matches
+    children = User.query.filter_by(parent_id=parent_id).all()
+    
+    if not children:
+        return jsonify({"error": "No children found for this parent"}), 404
+
+    # Return the child data
+    children_data = [{"id": child.id, "name": child.name} for child in children]
+    
+    return jsonify({"children": children_data}), 200
+
 
 #Images db start
 # User model for image upload
