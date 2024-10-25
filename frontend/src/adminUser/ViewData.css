@@ -1,0 +1,64 @@
+body {
+    font-family: 'Poppins', sans-serif;
+}
+  
+.viewData {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+    background-color: #2b235a;
+    color: white;
+    text-align: center;
+}
+  
+.viewData-welcome-header h2 {
+    font-size: 5rem;
+    background: linear-gradient(120deg, #ffcaa6, #ea72ad); /* Define the gradient background */
+    -webkit-background-clip: text; /* Clip the background to the text */
+    background-clip: text; /* Standard property for other browsers */
+    color: transparent; /* Set the text color to transparent */
+    padding-top: 50px;
+}
+  
+.viewData-welcome-header p {
+    font-size: 2rem;
+    color: white;
+}
+  
+.viewData-metrics {
+    margin-top: 40px;
+    padding: 0 20px; /* Add padding to left and right */
+}
+
+.viewData-metrics h3 {
+    font-size: 3rem;
+    margin-bottom: 20px;
+    font-weight: 600;
+}
+
+.viewData-metrics-grid {
+    display: grid;
+    grid-template-columns: repeat(2, 1fr); /* Create 2 equal columns */
+    gap: 10px; /* Reduce space between the grid items */
+    justify-items: center; /* Center items horizontally */
+    max-width: 800px; /* Set a maximum width for the grid */
+    margin: 0 auto; /* Center the grid within the parent container */
+}
+
+.viewData-metric-card {
+    background-color: #4a4a7d;
+    border-radius: 8px;
+    padding: 20px;
+    text-align: center;
+    width: 100%; /* Ensure cards take full width of grid cell */
+}
+
+.viewData-metric-card h4 {
+    font-size: 2rem;
+    margin-bottom: 10px;
+}
+
+.viewData-metric-card p {
+    font-size: 1.5rem;
+    color: #ffcaa6; /* Optional color for counts */
+}

@@ -25,7 +25,7 @@ const AdminHome = () => {
               Manage User Accounts and Profiles
             </div>
           </Link>
-          <Link to="/gallery">
+          <Link to="/viewData">
             <div className="admin-option-card green">
               <div className="admin-icon">📈</div>
               View Data Metrics

@@ -10,8 +10,6 @@ import OurApp from './routes/OurAppPage'
 import AboutPage from './routes/AboutPage'
 import ContactPage from './routes/ContactPage'
 import LoginPage from './routes/LoginPage'
-import ImageCaptionPage from "./routes/ImageCaptionPage";
-import ProfilePage from './routes/ProfilePage'
 
 // Child Pages
 import ChildHomePage from './routes/ChildHomePage';
@@ -21,6 +19,7 @@ import StorytellingGamePage from './routes/StorytellingGamePage';
 import GalleryPage from './routes/galleryPage';
 import ChildExplorePage from './routes/ChildExplorePage'
 import Avatar from './routes/Avatar'
+import ImageCaptionPage from "./routes/ImageCaptionPage";
 
 // Parent Pages
 import SubscriptionPlansPage from './routes/SubscriptionPlansPage';
@@ -30,6 +29,7 @@ import CreateChildPage from './routes/CreateChildPage';
 import EditChildPage from './routes/EditChildPage';
 import AddReviewPage from './routes/AddReviewPage';
 import MyReviewsPage from './routes/MyReviewsPage';
+import ProfilePage from './routes/ProfilePage'
 
 // Admin Pages
 import AdminHomePage from './routes/AdminHomePage';
@@ -42,7 +42,7 @@ import CreateProfilePage from './routes/CreateProfilePage';
 import ViewAllAccountsPage from './routes/ViewAllAccountsPage';
 import ViewAllProfilesPage from './routes/ViewAllProfilesPage';
 import ViewAllReviewsPage from './routes/ViewAllReviewsPage';
-
+import ViewDataPage from './routes/ViewDataPage';
 import EditAccountPage from './routes/EditAccountPage';
 
 ReactDOM.render(
@@ -87,7 +87,7 @@ ReactDOM.render(
       <Route path='/viewAllAccounts' element={<ViewAllAccountsPage/>} />
       <Route path='/viewAllProfiles' element={<ViewAllProfilesPage/>} />
       <Route path='/viewAllReviews' element={<ViewAllReviewsPage/>} />
-
+      <Route path='/viewData' element={<ViewDataPage/>} />
       <Route path='/editAccount' element={<EditAccountPage/>} /> 
 
     </Routes>
