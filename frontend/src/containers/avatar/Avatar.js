@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import { createAvatar } from '@dicebear/core';
 import { micah } from '@dicebear/collection';
+import './Avatar.css'; // Ensure you have this line to import your CSS
 
 const AvatarBuilder = () => {
   const [options, setOptions] = useState({
@@ -63,32 +64,37 @@ const AvatarBuilder = () => {
   };
 
   return (
-    <div style={styles.container}>
+    <div className='avatar-builder-container'>
       <h1>Avatar Builder</h1>
-      <div style={styles.controls}>
-
+      <div className='avatar-options'>
         {/* Earrings */}
-        <label>
-          Earrings:
+        <div className='option-group'>
+          <label>
+            Earrings:
+          </label>
           <select name="earrings" value={options.earrings} onChange={handleChange}>
             <option value="hoop">Hoop</option>
             <option value="stud">Stud</option>
           </select>
-        </label>
+        </div>
 
         {/* Eyebrows */}
-        <label>
-          Eyebrows:
+        <div className='option-group'>
+          <label>
+            Eyebrows:
+          </label>
           <select name="eyebrows" value={options.eyebrows} onChange={handleChange}>
             <option value="down">Down</option>
             <option value="eyelashesDown">Eyelashes Down</option>
             <option value="eyelashesUp">Eyelashes Up</option>
           </select>
-        </label>
+        </div>
 
         {/* Eyes */}
-        <label>
-          Eyes:
+        <div className='option-group'>
+          <label>
+            Eyes:
+          </label>
           <select name="eyes" value={options.eyes} onChange={handleChange}>
             <option value="eyes">Eyes</option>
             <option value="eyesShadow">Eyes Shadow</option>
@@ -96,30 +102,35 @@ const AvatarBuilder = () => {
             <option value="smiling">Smiling</option>
             <option value="smilingShadow">Smiling Shadow</option>
           </select>
-        </label>
+        </div>
 
         {/* Facial Hair */}
-        <label>
-          Facial Hair:
+        <div className='option-group'>
+          <label>
+            Facial Hair:
+          </label>
           <select name="facialHair" value={options.facialHair} onChange={handleChange}>
             <option value="beard">Beard</option>
             <option value="scruff">Scruff</option>
           </select>
-        </label>
+        </div>
 
         {/* Glasses */}
-        <label>
-          Glasses:
+        <div className='option-group'>
+          <label>
+            Glasses:
+          </label>
           <select name="glasses" value={options.glasses} onChange={handleChange}>
             <option value="round">Round</option>
             <option value="square">Square</option>
           </select>
-        </label>
-
+        </div>
 
         {/* Hair */}
-        <label>
-          Hair:
+        <div className='option-group'>
+          <label>
+            Hair:
+          </label>
           <select name="hair" value={options.hair} onChange={handleChange}>
             <option value="dannyPhantom">Danny Phantom</option>
             <option value="dougFunny">Doug Funny</option>
@@ -130,12 +141,13 @@ const AvatarBuilder = () => {
             <option value="pixie">Pixie</option>
             <option value="turban">Turban</option>
           </select>
-        </label>
-
+        </div>
 
         {/* Mouth */}
-        <label>
-          Mouth:
+        <div className='option-group'>
+          <label>
+            Mouth:
+          </label>
           <select name="mouth" value={options.mouth} onChange={handleChange}>
             <option value="frown">Frown</option>
             <option value="laughing">Laughing</option>
@@ -146,38 +158,42 @@ const AvatarBuilder = () => {
             <option value="smirk">Smirk</option>
             <option value="surprised">Surprised</option>
           </select>
-        </label>
+        </div>
 
-       
         {/* Nose */}
-        <label>
-          Nose:
+        <div className='option-group'>
+          <label>
+            Nose:
+          </label>
           <select name="nose" value={options.nose} onChange={handleChange}>
             <option value="curve">Curve</option>
             <option value="pointed">Pointed</option>
-            <option value="tound">Round</option>
+            <option value="round">Round</option>
           </select>
-        </label>
+        </div>
 
         {/* Shirt */}
-        <label>
-          Shirt:
+        <div className='option-group'>
+          <label>
+            Shirt:
+          </label>
           <select name="shirt" value={options.shirt} onChange={handleChange}>
             <option value="collared">Collared</option>
             <option value="crew">Crew</option>
             <option value="open">Open</option>
           </select>
-        </label>
+        </div>
 
       </div>
 
+  
       {/* Render the SVG */}
       <div style={styles.avatar} dangerouslySetInnerHTML={{ __html: avatarSVG }} />
       <button onClick={() => navigator.clipboard.writeText(avatarSVG)}>
         Copy SVG
       </button>
     </div>
-  );
+  );  
 };
 
 const styles = {

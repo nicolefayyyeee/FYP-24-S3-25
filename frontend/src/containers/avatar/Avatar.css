@@ -3,30 +3,79 @@
   display: flex;
   flex-direction: column;
   align-items: center;
-  background-color: #332359;
+  background-color: #2b235a;
   padding: 20px;
   color: #fff;
   min-height: 100vh;
 }
 
-.avatar-display {
-  margin: 20px 0;
-}
-
-.avatar-image {
-  width: 150px;
-  height: 150px;
-  border-radius: 50%;
-}
-
-.category-container {
-  display: flex;
-  flex-wrap: wrap;
-  justify-content: center;
+.avatar-builder-container h1 {
+  font-size: 5rem;
+  font-weight: bold;
   margin-bottom: 20px;
+  background: linear-gradient(120deg, #f3a46c, #fdf1cb, #aed1ef); /* Gradient background */
+  -webkit-background-clip: text; /* Clip the background to the text */
+  background-clip: text; /* Standard property for other browsers */
+  color: transparent; /* Set the text color to transparent */
 }
 
-.category-button {
+.avatar-options {
+  font-size: 2rem;
+  display: flex;
+  flex-wrap: wrap; /* Allows wrapping of items */
+  justify-content: center; /* Center the options */
+  gap: 20px; /* Space between the options */
+}
+
+.option-group {
+  display: flex;
+  flex-direction: column; /* Stack the label and select */
+  align-items: center; /* Center align the label and select */
+  min-width: 150px; /* Minimum width for consistent sizing */
+  position: relative; /* Required for positioning the arrow */
+  grid-template-columns: repeat(3, 1fr);
+}
+
+label {
+  text-align: center; /* Center the label text */
+  margin-bottom: 10px; /* Space between label and select */
+}
+
+select {
+  padding: 10px; /* Increase padding for better click area */
+  border-radius: 5px; /* Rounded corners */
+  border: 2px solid #f3a46c; /* Border color */
+  background-color: #fff; /* White background for contrast */
+  color: #2b235a; /* Text color */
+  font-size: 1.5rem; /* Adjust font size */
+  appearance: none; /* Remove default dropdown arrow */
+  cursor: pointer; /* Pointer cursor on hover */
+  transition: border-color 0.3s, background-color 0.3s; /* Smooth transitions */
+  width: 200px; /* Fixed width for consistent sizing */
+}
+
+select:hover {
+  border-color: #fdf1cb; /* Change border color on hover */
+}
+
+select:focus {
+  outline: none; /* Remove default outline */
+  border-color: #fe7479; /* Change border color on focus */
+  background-color: #f9f9f9; /* Light background on focus */
+}
+
+/* Custom dropdown arrow */
+.option-group::after {
+  content: '▼'; /* Custom dropdown arrow */
+  position: absolute;
+  right: 15px; /* Positioning from the right */
+  top: 70%; /* Center vertically */
+  transform: translateY(-50%); /* Centering adjustment */
+  color: #f3a46c; /* Arrow color */
+  pointer-events: none; /* Prevent pointer events on the arrow */
+}
+
+.save-changes-button {
   background-color: #444;
   color: #fff;
   padding: 10px 15px;
@@ -37,10 +86,10 @@
   transition: background-color 0.3s;
 }
 
-.category-button:hover {
+.save-changes-button:hover {
   background-color: #555;
 }
 
-.category-button.selected {
+.save-changes-button.selected {
   background-color: #fe7479;
 }
