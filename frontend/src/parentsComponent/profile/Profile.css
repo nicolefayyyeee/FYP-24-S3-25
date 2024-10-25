@@ -29,6 +29,10 @@ html {
   font-size: 7rem;
   letter-spacing: 0.2rem;
   font-size: 600;
+  background: linear-gradient(120deg, #f187fb, #aed1ef); /* Gradient background */
+    -webkit-background-clip: text; /* Clip the background to the text */
+    background-clip: text; /* Standard property for other browsers */
+    color: transparent; /* Set the text color to transparent */ 
 }
 
 .memberDiv {

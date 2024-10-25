@@ -7,13 +7,21 @@
   }
   
   .admin-dashboard h2{
-    text-align: center;
-    color: #fffdfd;
+    font-size: 5rem;
+    font-weight: bold;
+    margin-bottom: 10px;
+    margin-top: 20px;
+    background: linear-gradient(120deg, #ffcaa6, #ea72ad); /* Define the gradient background */
+      -webkit-background-clip: text; /* Clip the background to the text */
+      background-clip: text; /* Standard property for other browsers */
+      color: transparent; /* Set the text color to transparent */ 
   }
 
   .admin-dashboard h3{
     text-align: center;
     color: #fff6f6;
+    font-size: 2.5rem;
+    font-weight: 600;
   }
 
   .admin-dashboard .action-button{
@@ -42,19 +50,33 @@
     background-color: #88888f;
     color: #fff;
     margin: 10px;
-    
   }
 
-  /* Form Styling */
-  .admin-dashboard form button {
-    padding: 10px 30px;
-    background-color: #007bff;
-    color: white;
-    border: none;
-    border-radius: 10px;
-    cursor: pointer;
-    
-  }
+ /* Form Styling */
+.admin-dashboard form button {
+  padding: 10px 20px;
+  background-color: #007bff; /* Darker blue */
+  color: white;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 1.5rem;
+  transition: background-color 0.3s ease;
+}
+
+/* Specific button classes */
+.admin-dashboard form button.btn-choose:hover {
+  background-color: #0056b3 !important; /* Darker blue on hover */
+}
+
+.admin-dashboard form button.btn-upload:hover {
+  background-color: #0056b3 !important; /* Darker blue on hover */
+}
+
+.admin-dashboard form button.btn-clear:hover {
+  background-color: #777777 !important; /* Change to a different color if desired */
+}
+
   
   /* Image Preview */
   .admin-dashboard .image-preview {
@@ -85,12 +107,14 @@
     padding: 12px;
     text-align: center;
     border-bottom: 1px solid #ddd;
+    font-size: 1.5rem;
   }
   
   .admin-dashboard th {
     background-color: #007bff;
     color: #ffffff;
     font-weight: bold;
+    font-size: 1.5rem;
   }
   
   .admin-dashboard td img {
@@ -102,9 +126,9 @@
     background-color: #dc3545;
     color: white;
     border: none;
-    padding: 8px 16px;
+    padding: 10px 20px;
     cursor: pointer;
-    border-radius: 4px;
+    border-radius: 5px;
   }
   
   .admin-dashboard button.delete-btn:hover {
@@ -146,15 +170,3 @@
       padding: 6px 10px;
     }
   }
-  
-  Footer styling
-  .admin-dashboard footer {
-  background-color: #2a1d59;
-  color: #fff;
-  text-align: center;
-  padding: 20px;
-  position: absolute;
-  height: -100px;
-  margin-top: auto;
-  width: 100%;
-}

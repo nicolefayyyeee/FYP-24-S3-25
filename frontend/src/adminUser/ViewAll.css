@@ -110,7 +110,7 @@ button:focus {
     color: #ccc;
 }
 
-.switch {
+.viewall-switch {
     position: relative;
     display: inline-block;
     width: 34px;
@@ -118,13 +118,13 @@ button:focus {
     margin-left: 5px;
 }
 
-.switch input {
+.viewall-switch input {
     opacity: 0;
     width: 0;
     height: 0;
 }
 
-.slider {
+.viewall-slider {
     position: absolute;
     cursor: pointer;
     top: 0;
@@ -136,7 +136,7 @@ button:focus {
     border-radius: 34px;
 }
 
-.slider:before {
+.viewall-slider:before {
     position: absolute;
     content: "";
     height: 12px;
@@ -148,19 +148,19 @@ button:focus {
     transition: 0.2s;
 }
 
-input:checked+.slider {
+input:checked+.viewall-slider {
     background-color: #4caf50;
 }
 
-input:checked+.slider:before {
+input:checked+.viewall-slider:before {
     transform: translateX(14px);
 }
 
-.slider.round {
+.viewall-slider.round {
     border-radius: 34px;
 }
 
-.slider.round:before {
+.viewall-slider.round:before {
     border-radius: 50%;
 }
 

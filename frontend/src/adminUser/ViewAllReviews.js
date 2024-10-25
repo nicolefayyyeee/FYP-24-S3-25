@@ -92,13 +92,13 @@ const ViewReviews = () => {
                                 <p><strong>Content:</strong> {review.content}</p>
                                 <p><strong>Timestamp:</strong> {review.timestamp}</p>
                                 <p><strong>Display:</strong> 
-                                <label className="switch">
+                                <label className="viewall-switch">
                                         <input
                                             type="checkbox"
                                             checked={review.display}
                                             onChange={() => handleToggleDisplay(review.id)}
                                         />
-                                        <span className="slider round"></span>
+                                        <span className="viewall-slider round"></span>
                                     </label>
                                 </p>
                             </div>

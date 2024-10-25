@@ -29,7 +29,7 @@ const SubscriptionPlans = () => {
   return (
     <div className="subPlans">
       <div className="subPlans-header">
-        <h2>Subscriptions</h2>
+        <h2>Subscription Plans</h2>
         <p>View the best plan for your family.</p>
         <button 
           className={`month-year-btn ${activeTab === "Monthly" ? "active" : ""}`}

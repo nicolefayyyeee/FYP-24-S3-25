@@ -13,7 +13,7 @@ body {
   
   .admin-welcome-header h2 {
     font-size: 5rem;
-    background: linear-gradient(120deg, #60efff, #f292ed, #ea5459); /* Define the gradient background */
+    background: linear-gradient(120deg, #ffcaa6, #ea72ad); /* Define the gradient background */
     -webkit-background-clip: text; /* Clip the background to the text */
     background-clip: text; /* Standard property for other browsers */
     color: transparent; /* Set the text color to transparent */

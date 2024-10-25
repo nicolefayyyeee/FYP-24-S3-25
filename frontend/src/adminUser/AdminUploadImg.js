@@ -13,8 +13,12 @@ const AdminUploadImg = () => {
 
   // Fetch the gallery images
   const fetchGallery = async () => {
-    const response = await axios.get("http://localhost:5000/explorePage");
-    setImages(response.data.images);
+    try {
+      const response = await axios.get("http://localhost:5000/explorePage");
+      setImages(response.data.images);
+    } catch (error) {
+      console.error("Error fetching gallery images:", error);
+    }
   };
 
   useEffect(() => {
@@ -23,21 +27,16 @@ const AdminUploadImg = () => {
 
   const generateUniqueFilename = (userId) => {
     const now = new Date();
-
-    // Format the date as ddmmyyyy
-    const day = String(now.getDate()).padStart(2, "0");
-    const month = String(now.getMonth() + 1).padStart(2, "0"); // getMonth() is zero-indexed
-    const year = now.getFullYear();
-    const formattedDate = `${day}${month}${year}`;
-
+    const formattedDate = `${String(now.getDate()).padStart(2, "0")}${String(now.getMonth() + 1).padStart(2, "0")}${now.getFullYear()}`;
     const randomString = Math.random().toString(36).substring(2, 8); // Generate a random string
-
     return `AdminImage_${userId}_${formattedDate}_${randomString}.jpg`; // Combine user ID, formatted date, and random string
   };
 
   // Handle image upload
   const handleUpload = async (e) => {
     e.preventDefault();
+    if (!file) return; // Prevent upload if no file is selected
+
     const formData = new FormData();
     const userId = localStorage.getItem("user_id");
     const uniqueFilename = generateUniqueFilename(userId);
@@ -45,25 +44,30 @@ const AdminUploadImg = () => {
 
     formData.append("file", file, uniqueFilename);
 
-    await axios.post("http://localhost:5000/admin/upload", formData, {
-      headers: {
-        "Content-Type": "multipart/form-data",
-      },
-    });
-    setImagePreview(null); // Clear image preview after upload
-    setFile(null); // Reset file input
-    setUploading(false);
-    fetchGallery(); // Refresh gallery after upload
+    try {
+      await axios.post("http://localhost:5000/admin/upload", formData, {
+        headers: { "Content-Type": "multipart/form-data" },
+      });
+      // Reset states after successful upload
+      setFile(null);
+      setImagePreview(null);
+      fetchGallery(); // Refresh gallery after upload
+    } catch (error) {
+      console.error("Error uploading image:", error);
+    } finally {
+      setUploading(false);
+    }
   };
 
   // Handle image deletion with confirmation
   const handleDelete = async (id) => {
-    const confirmed = window.confirm(
-      "Are you sure you want to delete this image?"
-    );
-    if (confirmed) {
-      await axios.delete(`http://localhost:5000/admin/delete/${id}`);
-      fetchGallery(); // Refresh gallery after delete
+    if (window.confirm("Are you sure you want to delete this image?")) {
+      try {
+        await axios.delete(`http://localhost:5000/admin/delete/${id}`);
+        fetchGallery(); // Refresh gallery after delete
+      } catch (error) {
+        console.error("Error deleting image:", error);
+      }
     }
   };
 
@@ -73,11 +77,9 @@ const AdminUploadImg = () => {
     setFile(selectedFile);
 
     // Create a preview URL for the selected image
-    const reader = new FileReader();
-    reader.onloadend = () => {
-      setImagePreview(reader.result); // Show the preview
-    };
     if (selectedFile) {
+      const reader = new FileReader();
+      reader.onloadend = () => setImagePreview(reader.result); // Show the preview
       reader.readAsDataURL(selectedFile);
     } else {
       setImagePreview(null);
@@ -98,14 +100,13 @@ const AdminUploadImg = () => {
   const indexOfLastImage = currentPage * imagesPerPage;
   const indexOfFirstImage = indexOfLastImage - imagesPerPage;
   const currentImages = images.slice(indexOfFirstImage, indexOfLastImage);
-
   const totalPages = Math.ceil(images.length / imagesPerPage);
 
   const handlePageChange = (pageNumber) => {
     setCurrentPage(pageNumber);
   };
 
-  // resets all states and clear input
+  // Resets all states and clears input
   const handleClearInputs = () => {
     setImagePreview(null);
     setFile(null);
@@ -113,13 +114,15 @@ const AdminUploadImg = () => {
 
   return (
     <div className="admin-dashboard">
-      <h2>Upload photo to explore page </h2>
+      <h2>Upload Photos to the Explore Page</h2>
 
       {/* Upload Section */}
       <div className="action-button">
         <form onSubmit={handleUpload}>
           <div className="choose-btn-wrapper">
-            <button className="btn-choose">Choose Image</button>
+            <button type="button" className="btn-choose">
+              Choose Image
+            </button>
             <input type="file" onChange={handleFileChange} />
           </div>
           <button
@@ -134,16 +137,13 @@ const AdminUploadImg = () => {
             onClick={handleClearInputs}
             className="btn-clear"
           >
-            {" "}
-            Clear Input{" "}
+            Clear Input
           </button>
-          <div>
-            {imagePreview && (
-              <div style={{ marginTop: "10px" }}>
-                <img src={imagePreview} alt="Preview" width="300" />
-              </div>
-            )}
-          </div>
+          {imagePreview && (
+            <div style={{ marginTop: "10px" }}>
+              <img src={imagePreview} alt="Preview" width="300" />
+            </div>
+          )}
         </form>
       </div>
 

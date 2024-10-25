@@ -9,6 +9,7 @@ body {
   text-align: center;
   text-decoration: none;
   min-height: 100vh;
+  box-sizing: border-box;
 }
 
 .child-welcome-header h2{
