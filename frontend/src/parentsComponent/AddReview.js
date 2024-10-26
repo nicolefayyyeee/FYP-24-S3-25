@@ -98,10 +98,12 @@ const AddReview = () => {
                     </div>
                     <div className="form-field">
                         <label>Description</label><br/>
-                        <input
+                        <textarea
                             type="text"
                             value={form.description}
                             onChange={(e) => setForm({ ...form, description: e.target.value })}
+                            rows={5} 
+                            style={{ fontSize: '14px' }}
                         />
                     </div>
                     <button className="submit-btn" type="submit" disabled={isSubmitting}>
