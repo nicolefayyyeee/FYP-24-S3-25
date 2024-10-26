@@ -111,7 +111,7 @@ export function SignupForm(props) {
         />
         <Marginer direction="vertical" margin={20} />
 
-        {errorMessage && <p style={{ color: 'red', textAlign: 'center' }}>{errorMessage}</p>}
+        {errorMessage && <p style={{ color: 'red', textAlign: 'center' }} className="error-msg">{errorMessage}</p>}
 
         <SubmitButton type="submit" onClick={handleSubmit}>Signup</SubmitButton>
         </FormContainer>

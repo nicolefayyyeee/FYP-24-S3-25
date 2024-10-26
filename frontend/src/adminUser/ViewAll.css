@@ -77,13 +77,11 @@
 .suspend-btn:hover {
     background-color: #f44336;
     box-shadow: 0 0;
-    ;
 }
 
 .suspend-btn.unsuspend:hover {
     background-color: rgb(145, 145, 145);
     box-shadow: 0 0;
-    ;
 }
 
 .button-row {
