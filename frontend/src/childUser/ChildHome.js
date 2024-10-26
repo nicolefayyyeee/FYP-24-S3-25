@@ -50,7 +50,7 @@ const ChildHome = () => {
     // time limit logic not done yet
     let timer; 
     if (timeLimit > 0) {
-      const logoutTime = Date.now() + timeLimit * 1000; // in seconds for how, 3600000 = hours
+      const logoutTime = Date.now() + timeLimit * 1000; // in seconds for now, 3600000 = hours
       timer = setInterval(() => {
         if (Date.now() >= logoutTime) {
           logoutUser(); 

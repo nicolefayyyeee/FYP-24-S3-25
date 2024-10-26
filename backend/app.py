@@ -768,8 +768,9 @@ def delete_user(user_id):
         if not user:
             return jsonify({"message": "User not found"}), 404
         
-        # Delete in the Child table
         children = User.query.filter_by(parent_id=user_id).all()
+        
+         # Delete in the Child table
         if children:
             child_ids = [child.id for child in children]
             Child.query.filter(Child.user_id.in_(child_ids)).delete(synchronize_session=False)  # Delete related entries in Child table
