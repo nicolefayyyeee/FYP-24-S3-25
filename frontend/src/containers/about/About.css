@@ -60,12 +60,25 @@
   color: #333;
 }
 
-.review-author {
-  text-align: right;
+.review-section {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  width: 100%;
+}
+
+.review-section p {
   font-weight: bold;
   font-size: 1.2rem;
   color: #666;
 }
+
+/* .review-author {
+  text-align: right;
+  font-weight: bold;
+  font-size: 1.2rem;
+  color: #666;
+} */
 
 .star-rating {
   display: flex; /* Use flexbox for centering */

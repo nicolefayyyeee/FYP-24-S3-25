@@ -55,8 +55,8 @@ const ViewReviews = () => {
         const emptyStars = "☆".repeat(5 - rating);
         return (
             <>
-                <span className="star filled">{filledStars}</span>
-                <span className="star empty">{emptyStars}</span>
+                <span className="review-star filled">{filledStars}</span>
+                <span className="review-star empty">{emptyStars}</span>
             </>
         );
     };
@@ -88,8 +88,9 @@ const ViewReviews = () => {
                                 <div className="user-header">
                                     <p>Rating: {renderStars(review.rating)}</p>
                                 </div>
+                                <p><strong>Topic: {review.type}</strong></p>
                                 <p><strong>Username:</strong> {review.username}</p>
-                                <p><strong>Content:</strong> {review.content}</p>
+                                <p><strong>Content:</strong> {review.description}</p>
                                 <p><strong>Timestamp:</strong> {review.timestamp}</p>
                                 <p><strong>Display:</strong> 
                                 <label className="viewall-switch">

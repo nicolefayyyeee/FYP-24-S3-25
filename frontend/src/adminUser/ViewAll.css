@@ -95,16 +95,16 @@ button:focus {
 }
 
 /* View All Reviews */
-.star {
+.review-star {
     font-size: 20px;
     color: #ccc;
 }
 
-.star.filled {
+.review-star.filled {
     color: #f5b742;
 }
 
-.star.empty {
+.review-star.empty {
     color: #ccc;
 }
 

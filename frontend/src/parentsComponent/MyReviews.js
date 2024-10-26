@@ -36,8 +36,8 @@ const MyReviews = () => {
         const emptyStars = "☆".repeat(5 - rating);
         return (
             <>
-                <span className="star filled">{filledStars}</span>
-                <span className="star empty">{emptyStars}</span>
+                <span className="review-star filled">{filledStars}</span>
+                <span className="review-star empty">{emptyStars}</span>
             </>
         );
     };
@@ -69,7 +69,8 @@ const MyReviews = () => {
                                 <div className="review-header">
                                     <p>Rating: {renderStars(review.rating)}</p>
                                 </div>
-                                <p>{review.content}</p>
+                                <p><strong>Topic: {review.type}</strong></p>
+                                <p>{review.description}</p>
                                 <p><i>{review.timestamp}</i></p>
                             </div>
                         </li>

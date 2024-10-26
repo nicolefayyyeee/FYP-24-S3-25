@@ -8,13 +8,14 @@ const AddReview = () => {
     const [isSubmitting, setSubmitting] = useState(false);
     const [form, setForm] = useState({
         rating: 0,
-        content: "",
+        description: "",
+        type: "",
     });
     const [errorMessage, setErrorMessage] = useState('');
     
     const submit = async () => {
         const userId = localStorage.getItem('user_id');
-        if (form.rating === 0 || form.content === "") {
+        if (form.rating === 0 || form.description === "" || form.type === "") {
             setErrorMessage("Please fill in all fields");
             return;
         }
@@ -28,7 +29,8 @@ const AddReview = () => {
                 },
                 body: JSON.stringify({
                     rating: form.rating,
-                    content: form.content,
+                    description: form.description,
+                    type: form.type,
                     user_id: userId,
                 }),
             });
@@ -80,11 +82,26 @@ const AddReview = () => {
                         </div>
                     </div>
                     <div className="form-field">
+                        <label>Type</label><br/>
+                        <select
+                            value={form.type}
+                            onChange={(e) => setForm({ ...form, type: e.target.value })}>
+                            <option value="">Select Type</option>
+                            <option value="Customer Service">Customer Service</option>
+                            <option value="Image Captioning">Image Captioning</option>
+                            <option value="Text to Speech">Text to Speech</option>
+                            <option value="Image Gallery">Image Gallery</option>
+                            <option value="Child Games">Child Games</option>
+                            <option value="Server Error">Server Error</option>
+                            <option value="Others">Others</option>
+                        </select>
+                    </div>
+                    <div className="form-field">
                         <label>Description</label><br/>
                         <input
                             type="text"
-                            value={form.content}
-                            onChange={(e) => setForm({ ...form, content: e.target.value })}
+                            value={form.description}
+                            onChange={(e) => setForm({ ...form, description: e.target.value })}
                         />
                     </div>
                     <button className="submit-btn" type="submit" disabled={isSubmitting}>

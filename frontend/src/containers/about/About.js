@@ -96,8 +96,11 @@ const About = () => {
         <div className="stars-container">
           {renderStars(review.rating)}
         </div>
-        <p className="review-text">"{review.content}"</p>
-        <p className="review-author">- {review.name}</p>
+        <p className="review-text">"{review.description}"</p>
+        <div className="review-section">
+          <p>Topic: {review.type}</p>
+          <p>- {review.name}</p>
+        </div>
       </div>
     ));
   };

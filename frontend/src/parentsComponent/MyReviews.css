@@ -42,3 +42,16 @@
     font-weight: bold;
     font-size: 14px;
 }
+
+.review-star {
+    font-size: 20px;
+    color: #ccc;
+}
+
+.review-star.filled {
+    color: #f5b742;
+}
+
+.review-star.empty {
+    color: #ccc;
+}

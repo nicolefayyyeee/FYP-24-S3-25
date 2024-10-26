@@ -372,7 +372,8 @@ class UserScores(db.Model):
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
-    content = db.Column(db.Text, nullable=False)
+    type = db.Column(db.String(255), nullable=False)
+    description = db.Column(db.Text, nullable=False)
     rating = db.Column(db.Integer, nullable=False)
     timestamp = db.Column(db.DateTime, default=lambda: datetime.now(pytz.timezone('Asia/Singapore')), nullable=False)
     display = db.Column(db.Boolean, default=False)
@@ -589,7 +590,7 @@ def add_review():
         return jsonify({"message": "Login required!"}), 401
 
     try:
-        new_review = Review(user_id=user_id, content=data['content'], rating=data['rating'] )
+        new_review = Review(user_id=user_id, type=data['type'], description=data['description'], rating=data['rating'] )
         db.session.add(new_review)
         db.session.commit()
         
@@ -611,7 +612,8 @@ def my_reviews():
 
         review_list = [
             {
-                "content": review.content,
+                "type": review.type,
+                "description": review.description,
                 "rating": review.rating,
                 "timestamp": review.timestamp.strftime('%Y-%m-%d %H:%M:%S')
             } for review in reviews
@@ -632,7 +634,8 @@ def view_all_reviews():
                 "id": review.id,
                 "user_id": review.user_id,
                 "username": review.user.username, 
-                "content": review.content,
+                "type": review.type,
+                "description": review.description,
                 "rating": review.rating,
                 "timestamp": review.timestamp.strftime('%Y-%m-%d %H:%M:%S'),
                 "display": review.display
@@ -672,7 +675,8 @@ def view_reviews():
             {
                 "user_id": review.user_id,
                 "name": review.user.name,
-                "content": review.content,
+                "type": review.type,
+                "description": review.description,
                 "rating": review.rating,
                 "timestamp": review.timestamp.strftime('%Y-%m-%d %H:%M:%S')
             } for review in reviews
@@ -769,11 +773,11 @@ def delete_user(user_id):
             return jsonify({"message": "User not found"}), 404
         
         children = User.query.filter_by(parent_id=user_id).all()
-        
+
          # Delete in the Child table
         if children:
             child_ids = [child.id for child in children]
-            Child.query.filter(Child.user_id.in_(child_ids)).delete(synchronize_session=False)  # Delete related entries in Child table
+            Child.query.filter(Child.user_id.in_(child_ids)).delete(synchronize_session=False)
 
         # Delete all child acc under parent acc
         for child in children:
