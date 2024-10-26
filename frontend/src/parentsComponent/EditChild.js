@@ -12,9 +12,9 @@ const EditChild = () => {
         name: "",
         password: "",
         confirmPassword: "",
-        timeLimit: "",
-        accessGames: true,
-        accessGallery: true,
+        timeLimit: 0,
+        gameAccess: true,
+        galleryAccess: true
     });
     const [errorMessage, setErrorMessage] = useState('');
 
@@ -29,9 +29,9 @@ const EditChild = () => {
                     name: data.name,
                     password: "",
                     confirmPassword: "",
-                    timeLimit: data.timeLimit || "",
-                    accessGames: data.accessGames ?? true,
-                    accessGallery: data.accessGallery ?? true,
+                    timeLimit: data.time_limit || 0,
+                    gameAccess: data.game_access,
+                    galleryAccess: data.gallery_access
                 });
             } catch (error) {
                 console.error("Error fetching child data:", error);
@@ -61,9 +61,9 @@ const EditChild = () => {
                     username: form.username,
                     name: form.name,
                     password: form.password,
-                    timeLimit: form.timeLimit,
-                    accessGames: form.accessGames,
-                    accessGallery: form.accessGallery,
+                    time_limit: form.timeLimit,
+                    game_access: form.gameAccess,
+                    gallery_access: form.galleryAccess
                 }),
             });
 
@@ -117,14 +117,14 @@ const EditChild = () => {
                 <div className="form-field">
                     <p className="parent-welcome-header">Set Restrictions for your Child</p>
                     <label>Time Limit (hours)</label><br />
-                    <input type="number" min="0" value={form.timeLimit} onChange={(e) => setForm({ ...form, timeLimit: e.target.value })} />
+                    <input type="number" value={form.timeLimit} onChange={(e) => setForm({ ...form, timeLimit: e.target.value })} />
                 </div>
 
                 {/* Toggle button for game access */}
                 <div className="form-field">
                     <label>Allow Access to Games</label><br />
                     <label className="toggle-switch">
-                        <input type="checkbox" checked={form.accessGames} onChange={(e) => setForm({ ...form, accessGames: e.target.checked })} />
+                        <input type="checkbox" checked={form.gameAccess} onChange={(e) => setForm({ ...form, gameAccess: e.target.checked })} />
                         <span className="slider"></span>
                     </label>
                 </div>
@@ -133,7 +133,7 @@ const EditChild = () => {
                 <div className="form-field">
                     <label>Allow Access to Explore Page</label><br />
                     <label className="toggle-switch">
-                        <input type="checkbox" checked={form.accessGallery} onChange={(e) => setForm({ ...form, accessGallery: e.target.checked })} />
+                        <input type="checkbox" checked={form.galleryAccess} onChange={(e) => setForm({ ...form, galleryAccess: e.target.checked })} />
                         <span className="slider"></span>
                     </label>
                 </div>
