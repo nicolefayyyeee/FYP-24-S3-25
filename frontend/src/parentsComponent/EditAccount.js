@@ -99,6 +99,35 @@ const EditAccount = () => {
         }
     };
 
+    const deleteAccount = async () => {
+        let confirmation = false;
+
+        if (profile === 'admin') {
+            confirmation = window.confirm("Are you sure you want to delete your account? This action cannot be undone.");
+        } else if (profile === 'parent') {
+            confirmation = window.confirm("Are you sure you want to delete your account? All children profiles under your account will be deleted too. This action cannot be undone.");
+        }
+
+        if (!confirmation) return;
+        
+        try {
+            const response = await fetch(`http://localhost:5000/delete_user/${userId}`, {
+                method: 'DELETE',
+            });
+
+            if (response.ok) {
+                alert("Your account has been deleted.");
+                localStorage.clear();
+                navigate('/');
+            } else {
+                const data = await response.json();
+                setErrorMessage(data.message || "Failed to delete account.");
+            }
+        } catch (error) {
+            alert("Error: " + error.message);
+        }
+    };
+
     return (
         <div className="parentHome">
             <div className="parent-welcome-header">
@@ -159,6 +188,11 @@ const EditAccount = () => {
                     {isSubmitting ? "Submitting..." : "Save Changes"}
                 </button>
             </form>
+            <div>
+                <button className="delete-btn" onClick={deleteAccount}>
+                    Delete Account
+                </button>
+            </div>
         </div>
     );
 };

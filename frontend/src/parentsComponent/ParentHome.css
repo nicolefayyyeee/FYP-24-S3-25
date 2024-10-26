@@ -20,7 +20,7 @@ body {
   padding-top: 50px;
 }
 
-.parent-welcome-header p {
+.parent-welcome-header {
   font-size: 2rem;
   color: white;
 }
@@ -97,6 +97,22 @@ body {
 
 .pink {
   background: linear-gradient(135deg, #f292ed, #ea5459);
+}
+
+.delete-btn {
+  width: 8%;
+  padding: 12px;
+  margin-top: 10px;
+  border-radius: 20px;
+  border: none;
+  background-color: #db3d32;
+  color: white;
+  font-size: 12px;
+}
+
+.delete-btn:hover {
+  background-color: #f44336;
+  box-shadow: 0 0;
 }
 
 /* Toggle switch styling */

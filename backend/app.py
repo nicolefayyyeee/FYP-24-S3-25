@@ -340,6 +340,15 @@ class User(db.Model):
 
     profile = db.relationship('Profile', backref=db.backref('users', lazy=True))
 
+# Child model
+class Child(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    time_limit = db.Column(db.Integer, default=0)
+    game_access = db.Column(db.Boolean, default=True)
+    gallery_access = db.Column(db.Boolean, default=True)
+    avatar = db.Column(db.Text, nullable=True) 
+
 # Profile model
 class Profile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -372,6 +381,33 @@ class Review(db.Model):
 # Create DB
 with app.app_context():
     db.create_all()
+
+# Child: save avatar
+@app.route('/save_avatar', methods=['POST'])
+def save_avatar():
+    data = request.get_json()
+    avatar_svg = data.get('avatar')
+    user_id = data.get('user_id') 
+    if not user_id:
+        return jsonify({"message": "Login required!"}), 401
+
+    user = Child.query.get(user_id)
+    user.avatar = avatar_svg 
+
+    db.session.commit()
+    return jsonify({'message': 'Avatar saved successfully!'}), 200
+
+
+# Child: get avatar
+@app.route('/get_avatar', methods=['GET'])
+def get_avatar():
+    user_id = request.args.get('user_id')
+    if not user_id:
+        return jsonify({"message": "Login required!"}), 401
+
+    user = Child.query.get(user_id)
+
+    return jsonify({'avatar': user.avatar}), 200
 
 # Parent: view all users (by user_id & profile_id)
 @app.route('/get_users', methods=['GET'])
@@ -415,8 +451,12 @@ def add_child():
     hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
     new_user = User(profile_id=3, username=data['username'], name=data['name'], password=hashed_password, parent_id=user_id)
     db.session.add(new_user)
+    db.session.flush() 
+
+    new_child = Child(user_id=new_user.id)
+    db.session.add(new_child)
     db.session.commit()
-    return jsonify({"message": "User added successfully!"}), 201
+    return jsonify({"message": "Child profile added successfully!"}), 201
 
 # Parent: sign up
 @app.route('/signup', methods=['POST'])
@@ -465,29 +505,6 @@ def logout():
     session.pop('user', None)
     session.clear()
     return jsonify({"message": "Logout successful!"}), 200
-
-# Add new child profile for the logged-in parent
-# @app.route('/add_child_profile', methods=['POST'])
-# def add_child_profile():
-#     if 'user' not in session:
-#         return jsonify({"message": "Login required!"}), 401
-
-#     data = request.get_json()
-#     user_name = data['name']
-#     parent_email = session['user']  # Get the logged-in parent's email
-
-#     parent = Users.query.filter_by(email=parent_email).first()
-
-#     # Check if the child name already exists under this parent
-#     if Users.query.filter_by(name=user_name, parentID=parent.id).first():
-#         return jsonify({"message": "Child profile already exists"}), 400
-
-#     # Create the child profile
-#     new_child = Users(name=user_name, email=f"{user_name}@example.com", password='default', parentID=parent.id)
-#     db.session.add(new_child)
-#     db.session.commit()
-
-#     return jsonify({"message": "Child profile added successfully!"}), 201
 
 # Get game content route
 @app.route('/api/game-content', methods=['GET'])
@@ -665,7 +682,7 @@ def view_reviews():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
-# Parent & Admin: edit my account 
+# All: edit my account 
 @app.route('/update_user/<int:user_id>', methods=['PUT'])
 def update_user(user_id):
     data = request.get_json()
@@ -692,14 +709,28 @@ def update_user(user_id):
     if 'password' in data:
         user.password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
 
+    # if child user
+    if user.profile_id == 3:
+        child = Child.query.filter_by(user_id=user.id).first()
+        if not child:
+            return jsonify({"message": "Child profile not found"}), 404
+        
+        if 'time_limit' in data:
+            child.time_limit = data['time_limit']
+        
+        if 'game_access' in data:
+            child.game_access = data['game_access']
+        
+        if 'gallery_access' in data:
+            child.gallery_access = data['gallery_access']
+
     try:
         db.session.commit()
         return jsonify({"message": "User updated successfully!"}), 200
     except Exception as e:
-        db.session.rollback()
         return jsonify({"error": str(e)}), 500
     
-# Parent & Admin: get my account details
+# All: get my account details
 @app.route('/get_user_details/<int:user_id>', methods=['GET'])
 def get_user_details(user_id):
     user = User.query.get(user_id)
@@ -715,7 +746,45 @@ def get_user_details(user_id):
         "parent_id": user.parent_id
     }
 
+    # if child user
+    if user.profile_id == 3:
+        child = Child.query.filter_by(user_id=user.id).first()
+        
+        if child:
+            user_info["time_limit"] = child.time_limit
+            user_info["game_access"] = child.game_access
+            user_info["gallery_access"] = child.gallery_access
+        else:
+            return jsonify({"message": "Child profile not found for user"}), 404
+
     return jsonify(user_info), 200
+
+# Parent & admin: delete my account
+@app.route('/delete_user/<int:user_id>', methods=['DELETE'])
+def delete_user(user_id):
+    try:
+        user = User.query.filter_by(id=user_id).first()
+
+        if not user:
+            return jsonify({"message": "User not found"}), 404
+        
+        # Delete in the Child table
+        children = User.query.filter_by(parent_id=user_id).all()
+        if children:
+            child_ids = [child.id for child in children]
+            Child.query.filter(Child.user_id.in_(child_ids)).delete(synchronize_session=False)  # Delete related entries in Child table
+
+        # Delete all child acc under parent acc
+        for child in children:
+                db.session.delete(child)
+
+        db.session.delete(user)
+        db.session.commit()
+
+        return jsonify({"message": "User deleted successfully"}), 200
+    except Exception as e:
+        print(f"Error: {str(e)}")
+        return jsonify({"error": str(e)}), 500
 
 # Admin: create admin user
 @app.route('/create_admin', methods=['POST'])
