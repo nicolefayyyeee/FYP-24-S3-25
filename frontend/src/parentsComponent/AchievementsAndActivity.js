@@ -34,6 +34,8 @@ const AchievementsAndActivity = () => {
 
   // Fetch gallery and scores for the selected child
   const fetchChildData = async (childId) => {
+    
+    setError(null);
     setSelectedChildId(childId); // Set the currently selected child
     try {
       // Fetch gallery for selected child
@@ -43,8 +45,6 @@ const AchievementsAndActivity = () => {
       console.log("Gallery data for child received:", galleryResponse.data);
       setGallery(galleryResponse.data.images);
 
-    
-
     } catch (error) {
       console.error("Error fetching child data:", error);
       setError('Failed to load child data.');
@@ -53,11 +53,11 @@ const AchievementsAndActivity = () => {
 
   
 
-  // Limit the gallery to the last 9 images and sort them by date
-  const sortedGallery = gallery
-    .slice(-9) // Take the last 9 images
-    .sort((a, b) => new Date(b.dateUploaded) - new Date(a.dateUploaded)); // Sort by date
-    // Placeholder for scores (replace with real data if needed)
+  const sortedGallery = gallery.length > 0
+  ? gallery
+      .slice(-9) // Limit to the last 9 images if available
+      .sort((a, b) => new Date(b.dateUploaded) - new Date(a.dateUploaded)) // Sort by 'dateUploaded' in descending order
+  : []; // Empty array if no images
 
   const sortedScores = childData.scores.sort((a, b) => new Date(b.date) - new Date(a.date)); // Sort scores by date
 
@@ -113,7 +113,7 @@ const AchievementsAndActivity = () => {
                 </div>
               ))
             ) : (
-              <p>No images uploaded yet for this child.</p>
+              <p>No images uploaded yet for this child.</p> 
             )}
           </div>
         </div>

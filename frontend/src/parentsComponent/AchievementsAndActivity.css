@@ -33,6 +33,11 @@ body {
   margin: 20px 0; /* Add margin for spacing */
 }
 
+.button-container button.active {
+  background-color: #4caf50;
+  color: white;
+}
+
 .profile-btn {
   background-color: #4a4a7d;
   border: none;
@@ -90,7 +95,10 @@ body {
   grid-template-columns: repeat(3, 1fr); /* 3 columns */
   gap: 10px;                  /* Space between images */
   justify-content: center;     /* Center the grid */
+  
 }
+
+
 
 
 .red {

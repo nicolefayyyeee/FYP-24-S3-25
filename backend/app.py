@@ -160,7 +160,7 @@ def user_gallery():
     images = ChildImage.query.filter_by(user_id=user_id).all()  # Filter images by user_id
     
     if not images:
-            return jsonify({'message': 'No images found for this user'}), 404
+            print("No images")
     
     # Create a list of image details
     image_list = [
@@ -173,7 +173,7 @@ def user_gallery():
             "dateUploaded": img.date_uploaded
         } for img in images
     ]
-    # print(image_list) #check image list
+    # print(image_list) 
     
     # Return the list of images as JSON
     return jsonify({"images": image_list}), 200
