@@ -214,6 +214,15 @@ h1 {
   transform: scale(1.05);
 }
 
+.download-button {
+  background-color: #9287FF;
+}
+
+.download-button:hover {
+  background-color: #5f57a7;
+  transform: scale(1.05);
+}
+
 .action-button:disabled {
   opacity: 0.6;
   cursor: not-allowed;

@@ -18,6 +18,8 @@ const categories = {
 };
 
 const AvatarBuilder = () => {
+  const userId = localStorage.getItem('user_id');
+
   const [options, setOptions] = useState({
     baseColor: '6bd9e9',
     earringColor: 'ff5733',
@@ -247,8 +249,6 @@ const AvatarBuilder = () => {
     );
   };
   
-  
-
   // Scroll through category buttons
   const scrollCategories = (direction) => {
     setCurrentSlide((prev) => {
@@ -259,8 +259,31 @@ const AvatarBuilder = () => {
     });
   };
 
-  // Handle Save functionality
-  const handleSave = () => {
+  // Fetch existing avatar
+  useEffect(() => {
+    const fetchAvatar = async () => {
+      if (!userId) return; 
+  
+      try {
+          const response = await fetch(`http://localhost:5000/get_avatar?user_id=${userId}`);
+          if (!response.ok) throw new Error("Failed to fetch avatar");
+  
+          const avatarData = await response.json();
+          console.log("Fetched Avatar Data:", avatarData);
+          setOptions((prevOptions) => ({
+              ...prevOptions,
+              ...avatarData,
+          }));
+      } catch (error) {
+          console.error("Error fetching avatar:", error);
+      }
+  };
+
+    fetchAvatar();
+}, [userId]);
+
+  // Handle Save functionality (download SVG)
+  const downloadSVG = () => {
     // Example: Download the SVG as a file
     const blob = new Blob([avatarSVG], { type: 'image/svg+xml' });
     const url = URL.createObjectURL(blob);
@@ -270,6 +293,31 @@ const AvatarBuilder = () => {
     document.body.appendChild(link);
     link.click();
     document.body.removeChild(link);
+  };
+
+  // Save to db
+  const handleSave = async () => {
+    try {
+      const response = await fetch('http://localhost:5000/save_avatar', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({
+          user_id: userId,
+          ...options,
+        }),
+      });
+  
+      const result = await response.json();
+      if (response.ok) {
+        alert(result.message);
+      } else {
+        alert(result.message);
+      }
+    } catch (error) {
+      console.error("Error saving avatar:", error);
+    }
   };
 
   // Handle Cancel functionality
@@ -393,6 +441,9 @@ const AvatarBuilder = () => {
         </button>
         <button onClick={handleCancel} className="action-button cancel-button">
           Cancel
+        </button>
+        <button onClick={downloadSVG} className="action-button download-button">
+          Download SVG
         </button>
       </div>
     </div>
