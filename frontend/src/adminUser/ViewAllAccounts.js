@@ -1,6 +1,8 @@
-import React, { useState, useEffect } from "react";
+import React, { useState, useEffect, useCallback } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
+import Modal from "../containers/modal/Modal";
+import useModal from "../containers/hooks/useModal"; 
 import "./ViewAll.css";
 import "./AdminHome.css";
 
@@ -10,7 +12,10 @@ const ViewAllAccounts = () => {
     const [users, setUsers] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
 
-    const fetchUsers = async () => {
+    // useModal
+    const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal();
+
+    const fetchUsers = useCallback(async () => {
         setLoading(true);
         try {
             const response = await fetch("http://localhost:5000/view_all_users");
@@ -18,21 +23,18 @@ const ViewAllAccounts = () => {
             if (response.ok) {
                 setUsers(data.users);
             } else {
-                alert("Error fetching users");
+                openModal("Error", "Error fetching users");
             }
         } catch (error) {
-            alert("Error fetching users");
+            openModal("Error", "Error fetching users");
         } finally {
             setLoading(false);
         }
-    };
+    }, [openModal]);
 
-    const handleSuspendToggle = async (userId, currentStatus) => {
-        const confirmation = window.confirm(
-            `Are you sure you want to ${currentStatus ? "unsuspend" : "suspend"} this user?`
-        );
-
-        if (confirmation) {
+    const handleSuspendToggle = (userId, currentStatus) => {
+        const action = currentStatus ? "unsuspend" : "suspend";
+        openModal(`Confirm ${action}`, `Are you sure you want to ${action} this user?`, async () => {
             setUsers((prevUsers) =>
                 prevUsers.map((user) =>
                     user.id === userId ? { ...user, suspend: !currentStatus } : user
@@ -50,24 +52,24 @@ const ViewAllAccounts = () => {
                             user.id === userId ? { ...user, suspend: data.suspend } : user
                         )
                     );
-                    alert(`Suspend status updated successfully`);
+                    openModal("Success", `Suspend status updated successfully`, closeModal);
                 } else {
-                    alert(data.message || "Error updating user suspend status");
                     setUsers((prevUsers) =>
                         prevUsers.map((user) =>
                             user.id === userId ? { ...user, suspend: currentStatus } : user
                         )
                     );
+                    openModal("Error", data.message || "Error updating user suspend status");
                 }
             } catch (error) {
-                console.error("Error updating user suspend status:", error);
+                openModal("Error", "Error updating user suspend status");
                 setUsers((prevUsers) =>
                     prevUsers.map((user) =>
                         user.id === userId ? { ...user, suspend: currentStatus } : user
                     )
                 );
             }
-        }
+        });
     };
 
     const filteredUsers = users.filter((user) =>
@@ -84,6 +86,13 @@ const ViewAllAccounts = () => {
 
     return (
         <div className="adminHome">
+            <Modal
+                isOpen={modalOpen}
+                onClose={closeModal}
+                onConfirm={modalAction}
+                header={modalHeader}
+                message={modalMessage}
+            />
             <div className="admin-welcome-header">
                 <h2>View All User Accounts</h2>
                 <p>Click the suspend/unsuspend button to update the account status</p>
