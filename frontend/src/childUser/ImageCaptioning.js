@@ -171,6 +171,9 @@ const ImageCaptioning = () => {
     slidesToScroll: 1,
   };
 
+  const capitalizeFirstLetter = (text) => text ? text.charAt(0).toUpperCase() + text.slice(1) : '';
+
+
   return (
     <div className="container-imageCaptioning">
       <div>
@@ -238,7 +241,7 @@ const ImageCaptioning = () => {
             )}
             <div className="generated-caption">
               <p className="generated-caption-p">
-                Generated Caption: {caption || "Your caption will appear here"}
+                Generated Caption: {capitalizeFirstLetter(caption) || "Your caption will appear here"}
                 {caption && (
                   <button
                     className="btn-speak"
