@@ -373,8 +373,8 @@ class Child(db.Model):
     game_access = db.Column(db.Boolean, default=True)
     gallery_access = db.Column(db.Boolean, default=True)
 
-# Avatar model
-class Avatar(db.Model):
+# Web Avatar model
+class WebAvatar(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
     base_color = db.Column(db.String(255), nullable=True, default='6bd9e9')
@@ -398,6 +398,26 @@ class Avatar(db.Model):
     background_color = db.Column(db.String(255), nullable=True, default='ffb036')
     gradient_start_color = db.Column(db.String(255), nullable=True, default='ffb036')
     gradient_end_color = db.Column(db.String(255), nullable=True, default='fe7479')
+
+# Mobile Avatar model
+class MobileAvatar(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    sex = db.Column(db.String(50), nullable=True, default='man')
+    face_color = db.Column(db.String(7), nullable=True, default='#fe7479')
+    ear_size = db.Column(db.String(50), nullable=True, default='big')
+    hair_color = db.Column(db.String(7), nullable=True, default='#0e9aab')
+    hair_style = db.Column(db.String(50), nullable=True, default='normal')
+    hat_color = db.Column(db.String(7), nullable=True, default='#ffb036')
+    hat_style = db.Column(db.String(50), nullable=True, default='none')
+    eye_style = db.Column(db.String(50), nullable=True, default='circle')
+    glasses_style = db.Column(db.String(50), nullable=True, default='none')
+    nose_style = db.Column(db.String(50), nullable=True, default='short')
+    mouth_style = db.Column(db.String(50), nullable=True, default='smile')
+    shirt_style = db.Column(db.String(50), nullable=True, default='hoody')
+    shirt_color = db.Column(db.String(7), nullable=True, default='#ffb036')
+    bg_color = db.Column(db.String(7), nullable=True, default='#fe7479')
+    is_gradient = db.Column(db.Boolean, nullable=False, default=False)
 
 # Profile model
 class Profile(db.Model):
@@ -433,9 +453,10 @@ class Review(db.Model):
 with app.app_context():
     db.create_all()
 
-# Child: save avatar
-@app.route('/save_avatar', methods=['POST'])
-def save_avatar():
+# WEB AVATAR
+# Child: save web avatar
+@app.route('/save_web_avatar', methods=['POST'])
+def save_web_avatar():
     data = request.get_json()
     user_id = data.get('user_id')
     
@@ -467,7 +488,7 @@ def save_avatar():
     }
 
     # Check if the avatar already exists for the user
-    existing_avatar = Avatar.query.filter_by(user_id=user_id).first()
+    existing_avatar = WebAvatar.query.filter_by(user_id=user_id).first()
 
     if existing_avatar:
         for key, value in avatar_attributes.items():
@@ -475,21 +496,21 @@ def save_avatar():
                 setattr(existing_avatar, key, value)
     else:
         new_avatar_data = {k: v for k, v in avatar_attributes.items() if v is not None}
-        new_avatar = Avatar(user_id=user_id, **new_avatar_data)
+        new_avatar = WebAvatar(user_id=user_id, **new_avatar_data)
         db.session.add(new_avatar)
 
     db.session.commit()
     return jsonify({'message': 'Avatar saved successfully!'}), 200
 
-# Child: get avatar
-@app.route('/get_avatar', methods=['GET'])
-def get_avatar():
+# Child: get web avatar
+@app.route('/get_web_avatar', methods=['GET'])
+def get_web_avatar():
     user_id = request.args.get('user_id')
     
     if not user_id:
         return jsonify({"message": "Login required!"}), 401
 
-    existing_avatar = Avatar.query.filter_by(user_id=user_id).first()
+    existing_avatar = WebAvatar.query.filter_by(user_id=user_id).first()
     
     # Default avatar attributes
     default_avatar = {
@@ -541,7 +562,103 @@ def get_avatar():
             'gradientEndColor': existing_avatar.gradient_end_color
         }
     else:
-        avatar_data = default_avatar
+       avatar_data = default_avatar
+
+    return jsonify(avatar_data), 200
+
+# MOBILE AVATAR
+# Child: save mobile avatar
+@app.route('/save_mobile_avatar', methods=['POST'])
+def save_mobile_avatar():
+    data = request.get_json()
+    user_id = data.get('user_id')
+
+    if not user_id:
+        return jsonify({"message": "Login required!"}), 401
+
+    avatar_attributes = {
+        'sex': data.get('sex'),
+        'face_color': data.get('faceColor'),
+        'ear_size': data.get('earSize'),
+        'hair_color': data.get('hairColor'),
+        'hair_style': data.get('hairStyle'),
+        'hat_color': data.get('hatColor'),
+        'hat_style': data.get('hatStyle'),
+        'eye_style': data.get('eyeStyle'),
+        'glasses_style': data.get('glassesStyle'),
+        'nose_style': data.get('noseStyle'),
+        'mouth_style': data.get('mouthStyle'),
+        'shirt_style': data.get('shirtStyle'),
+        'shirt_color': data.get('shirtColor'),
+        'bg_color': data.get('bgColor'),
+        'is_gradient': data.get('isGradient')
+    }
+
+    # Check if the avatar already exists for the user
+    existing_avatar = MobileAvatar.query.filter_by(user_id=user_id).first()
+
+    if existing_avatar:
+        for key, value in avatar_attributes.items():
+            if value is not None:
+                setattr(existing_avatar, key, value)
+    else:
+        new_avatar_data = {k: v for k, v in avatar_attributes.items() if v is not None}
+        new_avatar = MobileAvatar(user_id=user_id, **new_avatar_data)
+        db.session.add(new_avatar)
+
+    db.session.commit()
+    return jsonify({'message': 'Avatar saved successfully!'}), 200
+
+# Child: get mobile avatar
+@app.route('/get_mobile_avatar', methods=['GET'])
+def get_mobile_avatar():
+    user_id = request.args.get('user_id')
+    
+    if not user_id:
+        return jsonify({"message": "Login required!"}), 401
+
+    existing_avatar = MobileAvatar.query.filter_by(user_id=user_id).first()
+
+    # Default avatar attributes
+    default_avatar = {
+        'sex': 'man',
+        'faceColor': '#fe7479',
+        'earSize': 'big',
+        'hairColor': '#0e9aab',
+        'hairStyle': 'normal',
+        'hatColor': '#ffb036',
+        'hatStyle': 'none',
+        'eyeStyle': 'circle',
+        'glassesStyle': 'none',
+        'noseStyle': 'short',
+        'mouthStyle': 'smile',
+        'shirtStyle': 'hoody',
+        'shirtColor': '#ffb036',
+        'bgColor': '#fe7479',
+        'isGradient': False
+    }
+
+    if existing_avatar:
+        avatar_data = {
+            'sex': existing_avatar.sex,
+            'faceColor': existing_avatar.face_color,
+            'earSize': existing_avatar.ear_size,
+            'hairColor': existing_avatar.hair_color,
+            'hairStyle': existing_avatar.hair_style,
+            'hatColor': existing_avatar.hat_color,
+            'hatStyle': existing_avatar.hat_style,
+            'eyeStyle': existing_avatar.eye_style,
+            'glassesStyle': existing_avatar.glasses_style,
+            'noseStyle': existing_avatar.nose_style,
+            'mouthStyle': existing_avatar.mouth_style,
+            'shirtStyle': existing_avatar.shirt_style,
+            'shirtColor': existing_avatar.shirt_color,
+            'bgColor': existing_avatar.bg_color,
+            'isGradient': existing_avatar.is_gradient,
+            'isDefault' : False
+        }
+    else:
+       avatar_data = {**default_avatar, 'isDefault' : True}
 
     return jsonify(avatar_data), 200
 

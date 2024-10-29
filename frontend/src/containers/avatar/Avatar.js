@@ -265,7 +265,7 @@ const AvatarBuilder = () => {
       if (!userId) return; 
   
       try {
-          const response = await fetch(`http://localhost:5000/get_avatar?user_id=${userId}`);
+          const response = await fetch(`http://localhost:5000/get_web_avatar?user_id=${userId}`);
           if (!response.ok) throw new Error("Failed to fetch avatar");
   
           const avatarData = await response.json();
@@ -298,7 +298,7 @@ const AvatarBuilder = () => {
   // Save to db
   const handleSave = async () => {
     try {
-      const response = await fetch('http://localhost:5000/save_avatar', {
+      const response = await fetch('http://localhost:5000/save_web_avatar', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
