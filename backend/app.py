@@ -11,6 +11,7 @@ from google.cloud.sql.connector import Connector
 from google.cloud import storage 
 from datetime import datetime, timezone
 from werkzeug.utils import secure_filename
+from transformers import pipeline
 
 # model import
 from model.git_base_model import generate_captions_git_base  # Import from git_large_model.py
@@ -713,6 +714,17 @@ def get_user_scores():
     except Exception as e:
         return jsonify({"error": str(e)}), 500
 
+# Spam review detector
+spam_detector = pipeline("text-classification", model="roberta-base-openai-detector")
+def is_spam(review):
+    result = spam_detector(review)
+    print(f"Model output for review '{review}': {result}")
+    label = result[0]['label']
+    score = result[0]['score']
+    spam_threshold = 0.75
+
+    return label == 'Fake' and score > spam_threshold
+
 # Parent: add review route
 @app.route('/add_review', methods=['POST'])
 def add_review():
@@ -723,8 +735,14 @@ def add_review():
     if not user_id:
         return jsonify({"message": "Login required!"}), 401
 
+    description = data['description']
+    
+    # Check for spam
+    if is_spam(description):
+        return jsonify({"message": "Review rejected as spam!"}), 400
+    
     try:
-        new_review = Review(user_id=user_id, type=data['type'], description=data['description'], rating=data['rating'] )
+        new_review = Review(user_id=user_id, type=data['type'], description=description, rating=data['rating'] )
         db.session.add(new_review)
         db.session.commit()
         
