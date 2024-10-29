@@ -19,37 +19,43 @@ const CreateChild = () => {
     const planName = params.get("plan");
     const maxProfiles = parseInt(params.get("maxProfiles"), 10);
 
-    // Initialize profile count on component mount
+    const userId = localStorage.getItem('user_id'); // Get the current logged-in user
+
+    // Initialize profile count for the current user on component mount
     useEffect(() => {
-        // Reset count to 0 when entering this page
-        localStorage.setItem('created_profiles', '0'); 
-    }, []);
+        // Check if profile count exists for the current user and plan
+        const createdProfiles = localStorage.getItem(`profilesCreated_${userId}_${planName}`);
+        
+        // If not found, initialize it to 0
+        if (!createdProfiles) {
+            localStorage.setItem(`profilesCreated_${userId}_${planName}`, '0');
+        }
+    }, [userId, planName]);
 
     const submit = async () => {
-        const userId = localStorage.getItem('user_id');
-    
+        if (!userId) {
+            alert("User ID is missing. Please log in again.");
+            return;
+        }
+
         if (form.username === "" || form.name === "" || form.password === "") {
             setErrorMessage("Please fill in all fields");
             return;
         }
-    
+
         if (form.password !== form.confirmPassword) {
             setErrorMessage("Passwords do not match!");
             return;
         }
-    
-        // Extract the current plan and its max profile count
-        const planName = new URLSearchParams(location.search).get("plan");
-        const maxProfiles = parseInt(location.search.split('maxProfiles=')[1], 10);
-    
-        // Get the current profile count from localStorage for the selected plan
-        const createdProfiles = parseInt(localStorage.getItem(`profilesCreated_${planName}`) || '0', 10);
-    
+
+        // Get the current profile count for the logged-in user
+        const createdProfiles = parseInt(localStorage.getItem(`profilesCreated_${userId}_${planName}`) || '0', 10);
+
         if (createdProfiles >= maxProfiles) {
-            alert("You have reached your profile limit."); 
+            alert("You have reached your profile limit.");
             return; 
         }
-    
+
         setSubmitting(true);
         try {
             const response = await fetch('http://localhost:5000/add_child', {
@@ -64,14 +70,14 @@ const CreateChild = () => {
                     user_id: userId,
                 }),
             });
-    
+
             const data = await response.json();
-    
+
             if (response.ok) {
-                // Increment the profile count in localStorage for the specific plan
-                localStorage.setItem(`profilesCreated_${planName}`, createdProfiles + 1);
+                // Increment the profile count for the specific user and plan
+                localStorage.setItem(`profilesCreated_${userId}_${planName}`, createdProfiles + 1);
                 alert(data.message);
-    
+
                 // Check if reached the limit after increment
                 if (createdProfiles + 1 === maxProfiles) {
                     navigate("/profile"); // Direct to profile if at limit
@@ -85,14 +91,15 @@ const CreateChild = () => {
             setSubmitting(false);
         }
     };
-    
 
     return (
         <div className="parentHome">
             <div className="parent-welcome-header">
                 <h2>Add New Child Profile</h2>
                 <p>Fill in the form below to create a new child profile</p>
-                <p>You have created {localStorage.getItem('created_profiles')} out of {maxProfiles} profiles under the {planName} plan.</p> {/* Inform user of limits */}
+                <p>
+                    You have created {localStorage.getItem(`profilesCreated_${userId}_${planName}`)} out of {maxProfiles} profiles under the {planName} plan.
+                </p>
                 <button className="parent-profile-btn" onClick={() => navigate("/profile")}>
                     Back to Profiles
                 </button>
