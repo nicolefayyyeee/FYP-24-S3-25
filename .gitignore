@@ -11,3 +11,4 @@ __pycache__/
 
 # Ignore environment configuration files
 .env
+backend/model/__pycache__/git_base_model.cpython-312.pyc
