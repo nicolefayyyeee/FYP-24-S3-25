@@ -32,7 +32,6 @@ const Profile = () => {
   const handleChildLogin = async (user) => {
     try {
       localStorage.removeItem('user_id');
-    
       localStorage.setItem('user_id', user.user_id);
       localStorage.setItem('profile', "child");
       localStorage.setItem('username', user.username);
@@ -50,6 +49,11 @@ const Profile = () => {
   const toggleManageMode = () => {
     setManageMode((prevMode) => !prevMode);
   };
+
+  const handleAddProfile = () => {
+    navigate('/subscriptionPlans'); 
+};
+
 
   if (loading) {
     return <p>Loading...</p>;
@@ -90,7 +94,7 @@ const Profile = () => {
               </div>
             ))
           )}
-          <button className="addIcon" onClick={() => navigate('/createChild')}>
+          <button className="addIcon" onClick={handleAddProfile}>
             <FontAwesomeIcon icon={faPlusCircle} />
             <span>Add Profile</span>
           </button>
