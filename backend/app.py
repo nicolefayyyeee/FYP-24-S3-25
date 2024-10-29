@@ -178,6 +178,30 @@ def user_gallery():
     # Return the list of images as JSON
     return jsonify({"images": image_list}), 200
 
+# Fetch specific image by ID
+@app.route('/image/<int:image_id>', methods=['GET'])
+def get_image_by_id(image_id):
+    # Query the image by ID
+    image = ChildImage.query.get(image_id)
+    
+    # Check if the image exists
+    if not image:
+        return jsonify({"error": "Image not found"}), 404
+
+    # Create a dictionary with image details
+    image_data = {
+        "image_id": image.id,
+        "filename": image.filename,
+        "filepath": image.filepath,
+        "caption": image.imageCaption,
+        "is_favorite": image.is_favorite,
+        "dateUploaded": image.date_uploaded
+    }
+    
+    # Return the image data as JSON
+    return jsonify({"image": image_data}), 200
+
+
 
 # Route for Admin to upload images
 @app.route('/admin/upload', methods=['POST'])
