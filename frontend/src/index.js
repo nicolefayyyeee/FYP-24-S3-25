@@ -4,6 +4,7 @@ import './index.css';
 import App from './App';
 
 import {BrowserRouter, Routes, Route} from 'react-router-dom'
+import ProtectedRoute from './ProtectedRoute';
 
 // Main Home Pages
 import OurApp from './routes/OurAppPage'
@@ -38,7 +39,6 @@ import ManageAccountsPage from './routes/ManageAccountsPage';
 import ManageUserProfilesPage from './routes/ManageUserProfilesPage';
 import CreateAdminPage from './routes/CreateAdminPage';
 import CreateProfilePage from './routes/CreateProfilePage';
-// import EditUserProfilePage from './routes/EditUserProfilePage';
 import ViewAllAccountsPage from './routes/ViewAllAccountsPage';
 import ViewAllProfilesPage from './routes/ViewAllProfilesPage';
 import ViewAllReviewsPage from './routes/ViewAllReviewsPage';
@@ -54,41 +54,54 @@ ReactDOM.render(
       <Route path='/ourApp' element={<OurApp />} />
       <Route path='/about' element={<AboutPage />} />
       <Route path='/contact' element={<ContactPage />} />
-      <Route path='/login' element={<LoginPage />} />
+      <Route path='/login' element={<ProtectedRoute redirectTo="/"><LoginPage /></ProtectedRoute>} />
       <Route path="/imageCaptioning" element={<ImageCaptionPage />} />
-      <Route path='/profile' element={<ProfilePage />} />
       
       {/* Child Routes */}
-      <Route path='/childhome' element={<ChildHomePage />} />
-      <Route path="/games" element={<GameSelectionPage />} />
-      <Route path="/match-picture" element={<MatchPictureGamePage />} />
-      <Route path="/storytelling-game" element={<StorytellingGamePage />} />
-      <Route path='/galleryPage' element={<GalleryPage />} />
-      <Route path='/explorePage' element={<ChildExplorePage />} />
-      <Route path='/avatar' element={<Avatar />} />
+      <Route path='/childhome' element={<ProtectedRoute role="child"><ChildHomePage /></ProtectedRoute>} />
+      <Route path="/games" element={<ProtectedRoute role="child"><GameSelectionPage /></ProtectedRoute>} />
+      <Route path="/match-picture" element={<ProtectedRoute role="child"><MatchPictureGamePage /></ProtectedRoute>} />
+      <Route path="/storytelling-game" element={<ProtectedRoute role="child"><StorytellingGamePage /></ProtectedRoute>} />
+      <Route path='/galleryPage' element={<ProtectedRoute role="child"><GalleryPage /></ProtectedRoute>} />
+      <Route path='/explorePage' element={<ProtectedRoute role="child"><ChildExplorePage /></ProtectedRoute>} />
+      <Route path='/avatar' element={<ProtectedRoute role="child"><Avatar /></ProtectedRoute>} />
 
       {/* Parent Routes */}
-      <Route path='/parenthome' element={<ParentHomePage />} />
-      <Route path='/subscriptionPlans' element={<SubscriptionPlansPage/>} />
-      <Route path='/achievementsAndActivity' element={<AchievementsAndActivityPage/>} /> 
-      <Route path='/createChild' element={<CreateChildPage />} />
-      <Route path='/editChild' element={<EditChildPage />} />
-      <Route path='/addReview' element={<AddReviewPage />} />
-      <Route path='/myReviews' element={<MyReviewsPage />} />
+      <Route path='/parenthome' element={<ProtectedRoute role="parent"><ParentHomePage /></ProtectedRoute>} />
+      <Route path='/subscriptionPlans' element={<ProtectedRoute role="parent"><SubscriptionPlansPage /></ProtectedRoute>} />
+      <Route path='/achievementsAndActivity' element={<ProtectedRoute role="parent"><AchievementsAndActivityPage /></ProtectedRoute>} />
+      <Route path='/createChild' element={<ProtectedRoute role="parent"><CreateChildPage /></ProtectedRoute>} />
+      <Route path='/editChild' element={<ProtectedRoute role="parent"><EditChildPage /></ProtectedRoute>} />
+      <Route path='/addReview' element={<ProtectedRoute role="parent"><AddReviewPage /></ProtectedRoute>} />
+      <Route path='/myReviews' element={<ProtectedRoute role="parent"><MyReviewsPage /></ProtectedRoute>} />
+      <Route path='/profile' element={<ProtectedRoute role="parent"><ProfilePage /></ProtectedRoute>} />
 
       {/* Admin Routes */}
-      <Route path='/adminhome' element={<AdminHomePage />} />
-      <Route path='/adminUpload' element={<AdminUploadImg />} />
-      <Route path='/manageAccounts' element={<ManageAccountsPage/>} />
-      <Route path='/manageUserProfiles' element={<ManageUserProfilesPage/>} />
-      <Route path='/createAdmin' element={<CreateAdminPage/>} />
-      <Route path='/createProfile' element={<CreateProfilePage/>} />
-      {/* <Route path='/editUserProfile' element={<EditUserProfilePage/>} />  */}
-      <Route path='/viewAllAccounts' element={<ViewAllAccountsPage/>} />
-      <Route path='/viewAllProfiles' element={<ViewAllProfilesPage/>} />
-      <Route path='/viewAllReviews' element={<ViewAllReviewsPage/>} />
-      <Route path='/viewData' element={<ViewDataPage/>} />
-      <Route path='/editAccount' element={<EditAccountPage/>} /> 
+      <Route path='/adminhome' element={<ProtectedRoute role="admin"><AdminHomePage /></ProtectedRoute>} />
+      <Route path='/adminUpload' element={<ProtectedRoute role="admin"><AdminUploadImg /></ProtectedRoute>} />
+      <Route path='/manageAccounts' element={<ProtectedRoute role="admin"><ManageAccountsPage /></ProtectedRoute>} />
+      <Route path='/manageUserProfiles' element={<ProtectedRoute role="admin"><ManageUserProfilesPage /></ProtectedRoute>} />
+      <Route path='/createAdmin' element={<ProtectedRoute role="admin"><CreateAdminPage /></ProtectedRoute>} />
+      <Route path='/createProfile' element={<ProtectedRoute role="admin"><CreateProfilePage /></ProtectedRoute>} />
+      <Route path='/viewAllAccounts' element={<ProtectedRoute role="admin"><ViewAllAccountsPage /></ProtectedRoute>} />
+      <Route path='/viewAllProfiles' element={<ProtectedRoute role="admin"><ViewAllProfilesPage /></ProtectedRoute>} />
+      <Route path='/viewAllReviews' element={<ProtectedRoute role="admin"><ViewAllReviewsPage /></ProtectedRoute>} />
+      <Route path='/viewData' element={<ProtectedRoute role="admin"><ViewDataPage /></ProtectedRoute>} />
+      <Route path='/editAccount' element={<ProtectedRoute role={["admin", "parent"]}><EditAccountPage /></ProtectedRoute>} />
+    
+      <Route path='/unauthorized' element={
+        <div style={{ textAlign: 'center', margin: '50px' }}>
+          <h1>Unauthorized Access</h1> 
+          <p style={{ color: "white" }}>You do not have permission to view this page.</p>
+          <a 
+            href="/" 
+            className="profile-btn"
+            onMouseEnter={(e) => {e.currentTarget.style.color = 'white'; e.currentTarget.style.textDecoration = 'none';}}
+          >
+            Back to Home
+          </a>
+        </div>
+      } />
 
     </Routes>
   </BrowserRouter>,

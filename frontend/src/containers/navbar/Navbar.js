@@ -35,6 +35,7 @@ const Navbar = () => {
         });
 
         if (response.ok) {
+            localStorage.removeItem('username');
             localStorage.removeItem('user_id');
             localStorage.removeItem('profile'); 
             navigate('/login');

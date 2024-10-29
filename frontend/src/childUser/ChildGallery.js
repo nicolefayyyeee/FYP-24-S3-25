@@ -59,6 +59,9 @@ const ChildGallery = () => {
     ? gallery.filter((item) => item.is_favorite)
     : gallery;
 
+  const capitalizeFirstLetter = (text) => text ? text.charAt(0).toUpperCase() + text.slice(1) : '';
+
+
   return (
     <div className="gallery-container">
       <h1 className="gallery-title">My Gallery</h1>
@@ -99,7 +102,7 @@ const ChildGallery = () => {
                   </button>
                 </div>
               </div>
-              <p className="gallery-caption">{item.caption}</p>
+              <p className="gallery-caption">{capitalizeFirstLetter(item.caption)}</p>
             </div>
           ))
         ) : (

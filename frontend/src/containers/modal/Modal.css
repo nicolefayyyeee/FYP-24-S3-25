@@ -62,7 +62,7 @@
     line-height: 20px;
 }
 
-.modal-btn {
+.modal-content button {
     margin: auto;
     margin-bottom: 10px;
     padding: 12px;
@@ -74,7 +74,7 @@
     width: 120px;
 }
 
-.modal-btn:hover {
+.modal-content button:hover {
     background-color: #f44336;
     box-shadow: 0 0;
 }
