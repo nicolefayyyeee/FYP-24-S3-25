@@ -1,11 +1,47 @@
-import React, { useState, useRef, useEffect } from "react";
+import React, { useState, useRef, useEffect, useCallback } from "react";
 import axios from "axios";
 import Slider from "react-slick"; // image slider
 import Webcam from "react-webcam"; // web cam
-import { useLocation } from "react-router-dom"; // Import useLocation
+import { useLocation, useNavigate } from "react-router-dom"; // Import useLocation
+import Modal from "../containers/modal/Modal";
+import useModal from "../containers/hooks/useModal";
 import "./ImageCaptioning.css";
 
 const ImageCaptioning = () => {
+  const navigate = useNavigate();
+  const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal(); // modal
+ 
+  // for time limit
+  const logoutUser = useCallback(() => {
+    openModal("Time limit is up!", "You have been logged out.", () => {
+      localStorage.clear();
+      setTimeout(() => {
+        navigate('/login');
+      }, 100); 
+    });
+  }, [openModal, navigate]);
+
+  useEffect(() => {
+    let timer;
+    const storedLogoutTime = localStorage.getItem('logoutTime');
+    
+    if (storedLogoutTime) {
+      const remainingTime = storedLogoutTime - Date.now();
+
+      if (remainingTime > 0) {
+        timer = setTimeout(() => {
+          logoutUser();
+        }, remainingTime);
+      } else {
+        logoutUser();
+      }
+    }
+
+    return () => {
+      clearTimeout(timer); 
+    };
+  }, [logoutUser]); 
+
   //state functions (self explanatory)
   const [caption, setCaption] = useState("");
   const [preview, setPreview] = useState(null);
@@ -283,6 +319,13 @@ const ImageCaptioning = () => {
           </button>
         </div>
       </form>
+      <Modal 
+        isOpen={modalOpen} 
+        onClose={closeModal} 
+        onConfirm={modalAction}
+        header={modalHeader} 
+        message={modalMessage} 
+      />
     </div>
   );
 };

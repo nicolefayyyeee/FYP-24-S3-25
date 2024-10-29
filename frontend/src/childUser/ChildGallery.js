@@ -1,5 +1,8 @@
 import axios from 'axios';
-import React, { useEffect, useState } from 'react';
+import React, { useEffect, useState, useCallback } from 'react';
+import { useNavigate } from "react-router-dom";
+import Modal from "../containers/modal/Modal";
+import useModal from "../containers/hooks/useModal";
 import './ChildGallery.css';
 
 const ChildGallery = () => {
@@ -7,6 +10,39 @@ const ChildGallery = () => {
   const [error, setError] = useState('');
   const [showFavorites, setShowFavorites] = useState(false);  // State for showing only favorites
   const userId = localStorage.getItem('user_id');
+  const navigate = useNavigate();
+  const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal(); // modal
+
+  // for time limit
+  const logoutUser = useCallback(() => {
+    openModal("Time limit is up!", "You have been logged out.", () => {
+      localStorage.clear();
+      setTimeout(() => {
+        navigate('/login');
+      }, 100); 
+    });
+  }, [openModal, navigate]);
+
+  useEffect(() => {
+    let timer;
+    const storedLogoutTime = localStorage.getItem('logoutTime');
+    
+    if (storedLogoutTime) {
+      const remainingTime = storedLogoutTime - Date.now();
+
+      if (remainingTime > 0) {
+        timer = setTimeout(() => {
+          logoutUser();
+        }, remainingTime);
+      } else {
+        logoutUser();
+      }
+    }
+
+    return () => {
+      clearTimeout(timer); 
+    };
+  }, [logoutUser]); 
 
   useEffect(() => {
     fetchGallery();
@@ -109,6 +145,13 @@ const ChildGallery = () => {
           <p>No images uploaded yet.</p>
         )}
       </div>
+      <Modal 
+        isOpen={modalOpen} 
+        onClose={closeModal} 
+        onConfirm={modalAction}
+        header={modalHeader} 
+        message={modalMessage} 
+      />
     </div>
   );
 };

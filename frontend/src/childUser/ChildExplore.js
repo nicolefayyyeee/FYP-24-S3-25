@@ -1,11 +1,45 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import { useNavigate } from 'react-router-dom';  // To navigate to caption generator
+import Modal from "../containers/modal/Modal";
+import useModal from "../containers/hooks/useModal";
 import './ExplorePage.css';  // Import the CSS file
 
 const ExplorePage = () => {
   const [images, setImages] = useState([]);
   const navigate = useNavigate();  // Initialize navigation
+  const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal(); // modal
+
+  // for time limit
+  const logoutUser = useCallback(() => {
+    openModal("Time limit is up!", "You have been logged out.", () => {
+      localStorage.clear();
+      setTimeout(() => {
+        navigate('/login');
+      }, 100); 
+    });
+  }, [openModal, navigate]);
+
+  useEffect(() => {
+    let timer;
+    const storedLogoutTime = localStorage.getItem('logoutTime');
+    
+    if (storedLogoutTime) {
+      const remainingTime = storedLogoutTime - Date.now();
+
+      if (remainingTime > 0) {
+        timer = setTimeout(() => {
+          logoutUser();
+        }, remainingTime);
+      } else {
+        logoutUser();
+      }
+    }
+
+    return () => {
+      clearTimeout(timer); 
+    };
+  }, [logoutUser]); 
 
   // Fetch the gallery images
   const fetchGallery = async () => {
@@ -42,6 +76,13 @@ const ExplorePage = () => {
           </div>
         ))}
       </div>
+      <Modal 
+        isOpen={modalOpen} 
+        onClose={closeModal} 
+        onConfirm={modalAction}
+        header={modalHeader} 
+        message={modalMessage} 
+      />
     </div>
   );
 };

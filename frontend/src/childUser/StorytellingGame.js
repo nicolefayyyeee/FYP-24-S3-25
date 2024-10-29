@@ -1,6 +1,9 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect, useCallback } from 'react';
 import axios from 'axios';
 import './StorytellingGame.css';
+import Modal from "../containers/modal/Modal";
+import useModal from "../containers/hooks/useModal";
+import { useNavigate } from "react-router-dom";
 
 // Use the environment variable for the Pexels API key
 const PEXELS_API_KEY = process.env.REACT_APP_PEXELS_API_KEY;
@@ -375,6 +378,40 @@ const categories = [
 ];
 
 const StorytellingGame = () => {
+    const navigate = useNavigate();
+    const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal(); // modal
+ 
+    // for time limit
+    const logoutUser = useCallback(() => {
+        openModal("Time limit is up!", "You have been logged out.", () => {
+            localStorage.clear();
+            setTimeout(() => {
+            navigate('/login');
+            }, 100); 
+        });
+        }, [openModal, navigate]);
+    
+        useEffect(() => {
+        let timer;
+        const storedLogoutTime = localStorage.getItem('logoutTime');
+    
+        if (storedLogoutTime) {
+            const remainingTime = storedLogoutTime - Date.now();
+    
+            if (remainingTime > 0) {
+            timer = setTimeout(() => {
+                logoutUser();
+            }, remainingTime);
+            } else {
+            logoutUser();
+            }
+        }
+    
+        return () => {
+            clearTimeout(timer); 
+        };
+        }, [logoutUser]);
+
     const [selectedCategory, setSelectedCategory] = useState(null);  
     const [images, setImages] = useState([]);  
     const [selectedPicture, setSelectedPicture] = useState(null); 
@@ -534,7 +571,13 @@ if (category === "Birds") {
         </div>
     )}
 </div>
-
+            <Modal 
+                isOpen={modalOpen} 
+                onClose={closeModal} 
+                onConfirm={modalAction}
+                header={modalHeader} 
+                message={modalMessage} 
+            />
         </>
     );
 };

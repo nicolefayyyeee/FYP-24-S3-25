@@ -1,26 +1,27 @@
-import React, { useEffect, useState } from "react";
+import React, { useEffect, useState, useCallback } from "react";
 import { useNavigate, Link } from "react-router-dom";
-
+import Modal from "../containers/modal/Modal";
+import useModal from "../containers/hooks/useModal";
 import "./ChildHome.css"; // Custom styles for the home page
 
 const ChildHome = () => {
-  const [timeLimit, setTimeLimit] = useState(0); 
   const [gameAccess, setGameAccess] = useState(false); 
   const [galleryAccess, setGalleryAccess] = useState(false);
   const username = localStorage.getItem('username');
   const userId = localStorage.getItem('user_id'); 
   const navigate = useNavigate();
+  const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal(); // modal
+
   const handleEditAvatar = () => {
     navigate('/avatar'); 
   };
 
-  const logoutUser = () => {
-    localStorage.clear();
-    navigate('/login'); 
-    setTimeout(() => {
-      alert("Time limit is up! You have been logged out."); 
-    }, 100); 
-  };
+  const logoutUser = useCallback(() => {
+    openModal("Time limit is up!", "You have been logged out.", () => {
+      localStorage.clear();
+        navigate('/login');
+    });
+  }, [openModal, navigate]);
 
   useEffect(() => {
     const fetchUserData = async () => {
@@ -29,7 +30,8 @@ const ChildHome = () => {
         const data = await response.json();
         if (data) {
           if (data.time_limit !== undefined) {
-            setTimeLimit(data.time_limit);
+            const logoutTime = Date.now() + data.time_limit * 1000;
+            localStorage.setItem('logoutTime', logoutTime);
           }
           if (data.game_access !== undefined) {
             setGameAccess(data.game_access);
@@ -47,21 +49,25 @@ const ChildHome = () => {
   }, [userId]);
 
   useEffect(() => {
-    // time limit logic not done yet
-    let timer; 
-    if (timeLimit > 0) {
-      const logoutTime = Date.now() + timeLimit * 1000; // in seconds for now, 3600000 = hours
-      timer = setInterval(() => {
-        if (Date.now() >= logoutTime) {
-          logoutUser(); 
-          clearInterval(timer); 
-        }
-      }, 1000);
+    let timer;
+    const storedLogoutTime = localStorage.getItem('logoutTime');
+    
+    if (storedLogoutTime) {
+      const remainingTime = storedLogoutTime - Date.now();
+
+      if (remainingTime > 0) {
+        timer = setTimeout(() => {
+          logoutUser();
+        }, remainingTime);
+      } else {
+        logoutUser();
+      }
     }
+
     return () => {
-      clearInterval(timer); 
+      clearTimeout(timer);
     };
-  }, [timeLimit]);
+  }, [logoutUser]); 
 
   return (
     <>
@@ -104,6 +110,13 @@ const ChildHome = () => {
           )}
         </div>
       </div>
+      <Modal 
+        isOpen={modalOpen} 
+        onClose={closeModal} 
+        onConfirm={modalAction}
+        header={modalHeader} 
+        message={modalMessage} 
+      />
     </>
   );
 };

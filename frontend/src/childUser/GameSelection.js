@@ -1,8 +1,44 @@
-import React from "react";
-import { Link } from "react-router-dom";
+import React, { useEffect, useCallback } from "react";
+import { useNavigate, Link } from "react-router-dom";
+import Modal from "../containers/modal/Modal";
+import useModal from "../containers/hooks/useModal";
 import "./GameSelection.css"; // Make sure this points to the correct CSS
 
 const GameSelection = () => {
+  const navigate = useNavigate();
+  const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal(); // modal
+
+  // for time limit
+  const logoutUser = useCallback(() => {
+    openModal("Time limit is up!", "You have been logged out.", () => {
+      localStorage.clear();
+      setTimeout(() => {
+        navigate('/login');
+      }, 100); 
+    });
+  }, [openModal, navigate]);
+
+  useEffect(() => {
+    let timer;
+    const storedLogoutTime = localStorage.getItem('logoutTime');
+    
+    if (storedLogoutTime) {
+      const remainingTime = storedLogoutTime - Date.now();
+
+      if (remainingTime > 0) {
+        timer = setTimeout(() => {
+          logoutUser();
+        }, remainingTime);
+      } else {
+        logoutUser();
+      }
+    }
+
+    return () => {
+      clearTimeout(timer); 
+    };
+  }, [logoutUser]); 
+
   return (
     <div className="game-selection-container">
       <h1 className="game-selection-header">Choose a Game</h1>
@@ -22,6 +58,13 @@ const GameSelection = () => {
           </Link>
         </div>
       </div>
+      <Modal 
+        isOpen={modalOpen} 
+        onClose={closeModal} 
+        onConfirm={modalAction}
+        header={modalHeader} 
+        message={modalMessage} 
+      />
     </div>
   );
 };

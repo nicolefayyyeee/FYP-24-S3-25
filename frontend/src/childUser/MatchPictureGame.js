@@ -1,6 +1,9 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState, useEffect, useCallback} from 'react';
 import './MatchPictureGame.css';
 import axios from 'axios';
+import Modal from "../containers/modal/Modal";
+import useModal from "../containers/hooks/useModal";
+import { useNavigate } from "react-router-dom";
 
 // Use the environment variable for the Pexels API key
 const PEXELS_API_KEY = process.env.REACT_APP_PEXELS_API_KEY;
@@ -19,6 +22,40 @@ const categoryMapping = {
 };
 
 const MatchPictureGame = () => {
+    const navigate = useNavigate();
+    const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal(); // modal
+ 
+    // for time limit
+    const logoutUser = useCallback(() => {
+    openModal("Time limit is up!", "You have been logged out.", () => {
+        localStorage.clear();
+        setTimeout(() => {
+        navigate('/login');
+        }, 100); 
+    });
+    }, [openModal, navigate]);
+
+    useEffect(() => {
+    let timer;
+    const storedLogoutTime = localStorage.getItem('logoutTime');
+
+    if (storedLogoutTime) {
+        const remainingTime = storedLogoutTime - Date.now();
+
+        if (remainingTime > 0) {
+        timer = setTimeout(() => {
+            logoutUser();
+        }, remainingTime);
+        } else {
+        logoutUser();
+        }
+    }
+
+    return () => {
+        clearTimeout(timer); 
+    };
+    }, [logoutUser]); 
+
     const [pictures, setPictures] = useState([]);
     const [words, setWords] = useState([]);
     const [correctMatches, setCorrectMatches] = useState(0);
@@ -144,7 +181,7 @@ const MatchPictureGame = () => {
         event.preventDefault();
     };
 
-    const closeModal = () => {
+    const closeGameModal = () => {
         setShowCongrats(false);
         resetGame();
     };
@@ -195,11 +232,18 @@ const MatchPictureGame = () => {
             </div>
 
             <div className={`congrats-popup ${showCongrats ? 'show' : ''}`}>
-                <button className="close-btn" onClick={closeModal}>&times;</button>
+                <button className="close-btn" onClick={closeGameModal}>&times;</button>
                 <h2>Congratulations!</h2>
                 <p>Your total score is: {Math.max(score, 0)}/5</p>
                 <p>Total time used: {time} seconds</p>
             </div>
+            <Modal 
+                isOpen={modalOpen} 
+                onClose={closeModal} 
+                onConfirm={modalAction}
+                header={modalHeader} 
+                message={modalMessage} 
+            />
         </div>
     );
 };
