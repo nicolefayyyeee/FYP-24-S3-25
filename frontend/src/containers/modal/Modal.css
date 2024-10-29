@@ -1,0 +1,97 @@
+/* Fade-in Animation for Modal Overlay */
+@keyframes fadeIn {
+    from {
+        opacity: 0;
+    }
+    to {
+        opacity: 1;
+    }
+}
+
+/* Bounce-in Animation for Modal Content */
+@keyframes bounceIn {
+    0% {
+        transform: scale(0.7);
+        opacity: 0;
+    }
+    80% {
+        transform: scale(1.1);
+        opacity: 1;
+    }
+    100% {
+        transform: scale(1);
+        opacity: 1;
+    }
+}
+
+.modal-overlay {
+    position: fixed;
+    top: 0;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    background-color: rgba(0, 0, 0, 0.5);
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    z-index: 1000;
+    animation: fadeIn 0.3s ease-in-out;
+}
+
+.modal-content {
+    border-radius: 8px;
+    box-shadow: 7px 8px rgba(80, 80, 80);
+    background-color: #fefefe;
+    margin: auto;
+    padding: 15px;
+    border: none;
+    width: 30%;
+    color: black;
+    animation: bounceIn 0.4s ease-in-out;
+}
+
+.modal-content h3{
+    margin-bottom: 10px;
+    font-weight: bold;
+    text-transform: uppercase;
+} 
+
+.modal-content p{
+    font-size: 17px;
+    padding: 10px;
+    line-height: 20px;
+}
+
+.modal-btn {
+    margin: auto;
+    margin-bottom: 10px;
+    padding: 12px;
+    border: none;
+    border-radius: 20px;
+    color: white;
+    background-color: #db3d32;
+    font-size: 14px;
+    width: 120px;
+}
+
+.modal-btn:hover {
+    background-color: #f44336;
+    box-shadow: 0 0;
+}
+
+.modal-content a.close{
+    color: #858585;
+    text-align: right;
+    font-size: 28px;
+    font-weight: bold;
+    background: none;
+    padding: 0;
+    margin: 0;
+    text-decoration:none;
+    cursor: pointer;
+}
+
+.modal-content a.close:hover{
+  color:#333;
+}
+

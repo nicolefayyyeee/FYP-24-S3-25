@@ -371,7 +371,32 @@ class Child(db.Model):
     time_limit = db.Column(db.Integer, default=0)
     game_access = db.Column(db.Boolean, default=True)
     gallery_access = db.Column(db.Boolean, default=True)
-    avatar = db.Column(db.Text, nullable=True) 
+
+# Avatar model
+class Avatar(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    user_id = db.Column(db.Integer, db.ForeignKey('user.id'), nullable=False)
+    base_color = db.Column(db.String(255), nullable=True, default='6bd9e9')
+    earring_color = db.Column(db.String(255), nullable=True, default='ff5733')
+    earrings = db.Column(db.String(255), nullable=True, default='hoop')
+    eyebrows = db.Column(db.String(255), nullable=True, default='down')
+    eyes = db.Column(db.String(255), nullable=True, default='eyes')
+    eyes_color = db.Column(db.String(255), nullable=True, default='000000')
+    facial_hair = db.Column(db.String(255), nullable=True, default='beard')
+    facial_hair_color = db.Column(db.String(255), nullable=True, default='d2b48c')
+    glasses = db.Column(db.String(255), nullable=True, default='round')
+    glasses_color = db.Column(db.String(255), nullable=True, default='6bd9e9')
+    hair = db.Column(db.String(255), nullable=True, default='dannyPhantom')
+    hair_color = db.Column(db.String(255), nullable=True, default='ff5733')
+    mouth = db.Column(db.String(255), nullable=True, default='smile')
+    mouth_color = db.Column(db.String(255), nullable=True, default='000000')
+    nose = db.Column(db.String(255), nullable=True, default='curve')
+    shirt = db.Column(db.String(255), nullable=True, default='collared')
+    shirt_color = db.Column(db.String(255), nullable=True, default='9287ff')
+    background_type = db.Column(db.String(255), nullable=True, default='gradientLinear')
+    background_color = db.Column(db.String(255), nullable=True, default='ffb036')
+    gradient_start_color = db.Column(db.String(255), nullable=True, default='ffb036')
+    gradient_end_color = db.Column(db.String(255), nullable=True, default='fe7479')
 
 # Profile model
 class Profile(db.Model):
@@ -411,28 +436,113 @@ with app.app_context():
 @app.route('/save_avatar', methods=['POST'])
 def save_avatar():
     data = request.get_json()
-    avatar_svg = data.get('avatar')
-    user_id = data.get('user_id') 
+    user_id = data.get('user_id')
+    
     if not user_id:
         return jsonify({"message": "Login required!"}), 401
 
-    user = Child.query.get(user_id)
-    user.avatar = avatar_svg 
+    avatar_attributes = {
+        'base_color': data.get('baseColor'),
+        'earring_color': data.get('earringColor'),
+        'earrings': data.get('earrings'),
+        'eyebrows': data.get('eyebrows'),
+        'eyes': data.get('eyes'),
+        'eyes_color': data.get('eyesColor'),
+        'facial_hair': data.get('facialHair'),
+        'facial_hair_color': data.get('facialHairColor'),
+        'glasses': data.get('glasses'),
+        'glasses_color': data.get('glassesColor'),
+        'hair': data.get('hair'),
+        'hair_color': data.get('hairColor'),
+        'mouth': data.get('mouth'),
+        'mouth_color': data.get('mouthColor'),
+        'nose': data.get('nose'),
+        'shirt': data.get('shirt'),
+        'shirt_color': data.get('shirtColor'),
+        'background_type': data.get('backgroundType'),
+        'background_color': data.get('backgroundColor'),
+        'gradient_start_color': data.get('gradientStartColor'),
+        'gradient_end_color': data.get('gradientEndColor') 
+    }
+
+    # Check if the avatar already exists for the user
+    existing_avatar = Avatar.query.filter_by(user_id=user_id).first()
+
+    if existing_avatar:
+        for key, value in avatar_attributes.items():
+            if value is not None:
+                setattr(existing_avatar, key, value)
+    else:
+        new_avatar_data = {k: v for k, v in avatar_attributes.items() if v is not None}
+        new_avatar = Avatar(user_id=user_id, **new_avatar_data)
+        db.session.add(new_avatar)
 
     db.session.commit()
     return jsonify({'message': 'Avatar saved successfully!'}), 200
-
 
 # Child: get avatar
 @app.route('/get_avatar', methods=['GET'])
 def get_avatar():
     user_id = request.args.get('user_id')
+    
     if not user_id:
         return jsonify({"message": "Login required!"}), 401
 
-    user = Child.query.get(user_id)
+    existing_avatar = Avatar.query.filter_by(user_id=user_id).first()
+    
+    # Default avatar attributes
+    default_avatar = {
+        'base_color': '#77311d',
+        'earring_color': '#77311d',
+        'earrings': 'hoop',
+        'eyebrows': 'down',
+        'eyes': 'eyes',
+        'eyes_color': '#000000',
+        'facial_hair': 'beard',
+        'facial_hair_color': '#000000',
+        'glasses': 'round',
+        'glasses_color': '#000000',
+        'hair': 'dannyPhantom',
+        'hair_color': '#000000',
+        'mouth': 'smile',
+        'mouth_color': '#000000',
+        'nose': 'curve',
+        'shirt': 'collared',
+        'shirt_color': '#000000',
+        'background_type': 'gradientLinear',
+        'background_color': '#ffb036',
+        'gradient_start_color': '#ffb036',
+        'gradient_end_color': '#fe7479'
+    }
 
-    return jsonify({'avatar': user.avatar}), 200
+    if existing_avatar:
+        avatar_data = {
+            'baseColor': existing_avatar.base_color,
+            'earringColor': existing_avatar.earring_color,
+            'earrings': existing_avatar.earrings,
+            'eyebrows': existing_avatar.eyebrows,
+            'eyes': existing_avatar.eyes,
+            'eyesColor': existing_avatar.eyes_color,
+            'facialHair': existing_avatar.facial_hair,
+            'facialHairColor': existing_avatar.facial_hair_color,
+            'glasses': existing_avatar.glasses,
+            'glassesColor': existing_avatar.glasses_color,
+            'hair': existing_avatar.hair,
+            'hairColor': existing_avatar.hair_color,
+            'mouth': existing_avatar.mouth,
+            'mouthColor': existing_avatar.mouth_color,
+            'nose': existing_avatar.nose,
+            'shirt': existing_avatar.shirt,
+            'shirtColor': existing_avatar.shirt_color,
+            'backgroundType': existing_avatar.background_type,
+            'backgroundColor': existing_avatar.background_color,
+            'gradientStartColor': existing_avatar.gradient_start_color,
+            'gradientEndColor': existing_avatar.gradient_end_color
+        }
+    else:
+        avatar_data = default_avatar
+
+    return jsonify(avatar_data), 200
 
 # Parent: view all users (by user_id & profile_id)
 @app.route('/get_users', methods=['GET'])

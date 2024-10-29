@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
+import Modal from "../containers/modal/Modal";
+import useModal from "../containers/hooks/useModal";
 import "./ParentHome.css";
 
 const EditAccount = () => {
@@ -12,8 +14,13 @@ const EditAccount = () => {
         password: "",
     });
     const [errorMessage, setErrorMessage] = useState('');
+
     const userId = localStorage.getItem('user_id');
     const profile = localStorage.getItem('profile');
+
+    // useModal
+    const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal();
+
     const getHomeLink = () => {
         if (profile === 'admin') {
             return '/adminhome';
@@ -87,44 +94,52 @@ const EditAccount = () => {
             const data = await response.json();
 
             if (response.ok) {
-                alert(data.message);
-                navigate(getHomeLink());
+                // open modal to show success message
+                openModal("Success", `Account details updated successfully`, () => {
+                    navigate(getHomeLink());
+                });
             } else {
                 setErrorMessage(data.message || "Failed to update account.");
             }
+
         } catch (error) {
-            alert("Error: " + error.message);
+            openModal("Error", `Error: ${error.message}`);
         } finally {
             setSubmitting(false);
         }
     };
 
-    const deleteAccount = async () => {
-        let confirmation = false;
-
+    const deleteAccount = () => {
+        let confirmationMessage = "";
+    
         if (profile === 'admin') {
-            confirmation = window.confirm("Are you sure you want to delete your account? This action cannot be undone.");
+            confirmationMessage = "Are you sure you want to delete your account? This action cannot be undone.";
         } else if (profile === 'parent') {
-            confirmation = window.confirm("Are you sure you want to delete your account? All children profiles under your account will be deleted too. This action cannot be undone.");
+            confirmationMessage = "Are you sure you want to delete your account? All children profiles under your account will be deleted too. This action cannot be undone.";
         }
+    
+        openModal("Confirm Deletion", confirmationMessage, handleConfirmDelete);
+    };
 
-        if (!confirmation) return;
-        
+    const handleConfirmDelete = async () => {
+        console.log("Confirm delete action triggered");
         try {
             const response = await fetch(`http://localhost:5000/delete_user/${userId}`, {
                 method: 'DELETE',
             });
 
             if (response.ok) {
-                alert("Your account has been deleted.");
-                localStorage.clear();
-                navigate('/');
+                openModal("Account Deleted", "Your account has been deleted.", () => {
+                    localStorage.clear();
+                    navigate('/login');
+                });
+
             } else {
                 const data = await response.json();
                 setErrorMessage(data.message || "Failed to delete account.");
             }
         } catch (error) {
-            alert("Error: " + error.message);
+            openModal("Error", `Error: ${error.message}`);
         }
     };
 
@@ -193,6 +208,14 @@ const EditAccount = () => {
                     Delete Account
                 </button>
             </div>
+            {/* modal component */}
+            <Modal
+                isOpen={modalOpen}
+                onClose={closeModal}
+                header={modalHeader}
+                message={modalMessage}
+                onConfirm={modalAction}
+            />
         </div>
     );
 };
