@@ -380,13 +380,18 @@ class WebAvatar(db.Model):
     base_color = db.Column(db.String(255), nullable=True, default='6bd9e9')
     earring_color = db.Column(db.String(255), nullable=True, default='ff5733')
     earrings = db.Column(db.String(255), nullable=True, default='hoop')
+    earrings_probability = db.Column(db.Boolean, nullable=True, default=True)
     eyebrows = db.Column(db.String(255), nullable=True, default='down')
+    eyebrows_color = db.Column(db.String(255), nullable=True, default='9287ff')
     eyes = db.Column(db.String(255), nullable=True, default='eyes')
     eyes_color = db.Column(db.String(255), nullable=True, default='000000')
+    eye_shadow_color = db.Column(db.String(255), nullable=True, default='9287ff')
     facial_hair = db.Column(db.String(255), nullable=True, default='beard')
     facial_hair_color = db.Column(db.String(255), nullable=True, default='d2b48c')
+    facial_hair_probability = db.Column(db.Boolean, nullable=True, default=True)
     glasses = db.Column(db.String(255), nullable=True, default='round')
     glasses_color = db.Column(db.String(255), nullable=True, default='6bd9e9')
+    glasses_probability = db.Column(db.Boolean, nullable=True, default=True)
     hair = db.Column(db.String(255), nullable=True, default='dannyPhantom')
     hair_color = db.Column(db.String(255), nullable=True, default='ff5733')
     mouth = db.Column(db.String(255), nullable=True, default='smile')
@@ -467,13 +472,18 @@ def save_web_avatar():
         'base_color': data.get('baseColor'),
         'earring_color': data.get('earringColor'),
         'earrings': data.get('earrings'),
+        'earrings_probability': data.get('earringsProbability'),
         'eyebrows': data.get('eyebrows'),
+        'eyebrows_color': data.get('eyebrowsColor'),
         'eyes': data.get('eyes'),
         'eyes_color': data.get('eyesColor'),
+        'eye_shadow_color': data.get('eyeShadowColor'),
         'facial_hair': data.get('facialHair'),
         'facial_hair_color': data.get('facialHairColor'),
+        'facial_hair_probability': data.get('facialHairProbability'),
         'glasses': data.get('glasses'),
         'glasses_color': data.get('glassesColor'),
+        'glasses_probability': data.get('glassesProbability'),
         'hair': data.get('hair'),
         'hair_color': data.get('hairColor'),
         'mouth': data.get('mouth'),
@@ -514,41 +524,51 @@ def get_web_avatar():
     
     # Default avatar attributes
     default_avatar = {
-        'base_color': '#77311d',
-        'earring_color': '#77311d',
+        'baseColor': '6bd9e9',
+        'earringColor': 'ff5733',
         'earrings': 'hoop',
+        'earringsProbability': True,
         'eyebrows': 'down',
+        'eyebrowsColor': '9287ff',
         'eyes': 'eyes',
-        'eyes_color': '#000000',
-        'facial_hair': 'beard',
-        'facial_hair_color': '#000000',
+        'eyesColor': '000000',
+        'eyeShadowColor': 'ffcc00',
+        'facialHair': 'beard',
+        'facialHairColor': 'd2b48c',
+        'facialHairProbability': True,
         'glasses': 'round',
-        'glasses_color': '#000000',
+        'glassesColor': '6bd9e9',
+        'glassesProbability': True,
         'hair': 'dannyPhantom',
-        'hair_color': '#000000',
+        'hairColor': 'ff5733',
         'mouth': 'smile',
-        'mouth_color': '#000000',
+        'mouthColor': '000000',
         'nose': 'curve',
         'shirt': 'collared',
-        'shirt_color': '#000000',
-        'background_type': 'gradientLinear',
-        'background_color': '#ffb036',
-        'gradient_start_color': '#ffb036',
-        'gradient_end_color': '#fe7479'
+        'shirtColor': '9287ff',
+        'backgroundType': 'gradientLinear',
+        'backgroundColor': 'ffb036',
+        'gradientStartColor': 'ffb036',
+        'gradientEndColor': 'fe7479'
     }
 
     if existing_avatar:
         avatar_data = {
             'baseColor': existing_avatar.base_color,
             'earringColor': existing_avatar.earring_color,
+            'earringsProbability': existing_avatar.earrings_probability,
             'earrings': existing_avatar.earrings,
             'eyebrows': existing_avatar.eyebrows,
+            'eyebrowsColor': existing_avatar.eyebrows_color,
             'eyes': existing_avatar.eyes,
+            'eyeShadowColor': existing_avatar.eye_shadow_color,
             'eyesColor': existing_avatar.eyes_color,
             'facialHair': existing_avatar.facial_hair,
             'facialHairColor': existing_avatar.facial_hair_color,
+            'facialHairProbability': existing_avatar.facial_hair_probability,
             'glasses': existing_avatar.glasses,
             'glassesColor': existing_avatar.glasses_color,
+            'glassesProbability': existing_avatar.glasses_probability,
             'hair': existing_avatar.hair,
             'hairColor': existing_avatar.hair_color,
             'mouth': existing_avatar.mouth,
