@@ -30,7 +30,7 @@ const ChildHome = () => {
         const data = await response.json();
         if (data) {
           if (data.time_limit !== undefined) {
-            const logoutTime = Date.now() + data.time_limit * 1000;
+            const logoutTime = Date.now() + data.time_limit * 3600000;
             localStorage.setItem('logoutTime', logoutTime);
           }
           if (data.game_access !== undefined) {
