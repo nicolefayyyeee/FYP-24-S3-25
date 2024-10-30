@@ -13,6 +13,8 @@ const CreateChild = () => {
         confirmPassword: "",
     });
     const [errorMessage, setErrorMessage] = useState('');
+    const [hasReachedLimit, setHasReachedLimit] = useState(false);
+    const [createdProfiles, setCreatedProfiles] = useState(0);
 
     // Extract query parameters from the URL
     const params = new URLSearchParams(location.search);
@@ -21,16 +23,44 @@ const CreateChild = () => {
 
     const userId = localStorage.getItem('user_id'); // Get the current logged-in user
 
-    // Initialize profile count for the current user on component mount
+    // State to track whether the free plan has been used (fetched from backend on login)
+    const [hasUsedFreePlan, setHasUsedFreePlan] = useState(false);
+
+    // Fetch the user's Free plan status from the backend
     useEffect(() => {
-        // Check if profile count exists for the current user and plan
-        const createdProfiles = localStorage.getItem(`profilesCreated_${userId}_${planName}`);
-        
-        // If not found, initialize it to 0
-        if (!createdProfiles) {
-            localStorage.setItem(`profilesCreated_${userId}_${planName}`, '0');
+        const fetchUserDetails = async () => {
+            try {
+                const response = await fetch(`http://localhost:5000/user/${userId}`);
+                const data = await response.json();
+                setHasUsedFreePlan(data.used_free_plan); // Fetch and set free plan status
+            } catch (error) {
+                console.error("Error fetching user details:", error);
+            }
+        };
+
+        if (userId) {
+            fetchUserDetails(); // Fetch user details when the component mounts
         }
-    }, [userId, planName]);
+    }, [userId]);
+
+    // Initialize profile count and free plan usage status on component mount
+    useEffect(() => {
+        if (planName !== "Free") {
+            // For Basic, Pro, and Premium plans, reset the profile count to 0 every time
+            localStorage.setItem(`profilesCreated_${userId}_${planName}`, '0');
+            setCreatedProfiles(0);
+        } else {
+            // Fetch created profiles from localStorage for Free plan
+            const createdProfiles = parseInt(localStorage.getItem(`profilesCreated_${userId}_${planName}`) || '0', 10);
+            setCreatedProfiles(createdProfiles);
+
+            // Check if the user has reached the profile limit
+            if (createdProfiles >= maxProfiles) {
+                setHasReachedLimit(true);
+                alert(`You have reached the maximum number of profiles for the ${planName} plan.`);
+            }
+        }
+    }, [userId, planName, maxProfiles]);
 
     const submit = async () => {
         if (!userId) {
@@ -49,11 +79,16 @@ const CreateChild = () => {
         }
 
         // Get the current profile count for the logged-in user
-        const createdProfiles = parseInt(localStorage.getItem(`profilesCreated_${userId}_${planName}`) || '0', 10);
+        const currentCreatedProfiles = parseInt(localStorage.getItem(`profilesCreated_${userId}_${planName}`) || '0', 10);
 
-        if (createdProfiles >= maxProfiles) {
-            alert("You have reached your profile limit.");
-            return; 
+        if (planName === "Free" && hasUsedFreePlan) {
+            alert("You have already used the Free plan and cannot create more profiles.");
+            return;
+        }
+
+        if (currentCreatedProfiles >= maxProfiles) {
+            alert(`You have reached the maximum number of profiles for the ${planName} plan.`);
+            return;
         }
 
         setSubmitting(true);
@@ -75,12 +110,26 @@ const CreateChild = () => {
 
             if (response.ok) {
                 // Increment the profile count for the specific user and plan
-                localStorage.setItem(`profilesCreated_${userId}_${planName}`, createdProfiles + 1);
+                const updatedProfileCount = currentCreatedProfiles + 1;
+                localStorage.setItem(`profilesCreated_${userId}_${planName}`, updatedProfileCount);
+                setCreatedProfiles(updatedProfileCount);
                 alert(data.message);
 
+                // If using the Free plan, mark it as used on backend
+                if (planName === "Free") {
+                    await fetch("http://localhost:5000/user/useFreePlan", {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({ userId }),
+                    });
+                    setHasUsedFreePlan(true);
+                }
+
                 // Check if reached the limit after increment
-                if (createdProfiles + 1 === maxProfiles) {
-                    navigate("/profile"); // Direct to profile if at limit
+                if (updatedProfileCount >= maxProfiles) {
+                    setHasReachedLimit(true);
+                    alert(`You have reached the maximum number of profiles for the ${planName} plan.`);
+                    navigate("/profile");
                 }
             } else {
                 setErrorMessage(data.message || "Failed to create profile.");
@@ -98,7 +147,7 @@ const CreateChild = () => {
                 <h2>Add New Child Profile</h2>
                 <p>Fill in the form below to create a new child profile</p>
                 <p>
-                    You have created {localStorage.getItem(`profilesCreated_${userId}_${planName}`)} out of {maxProfiles} profiles under the {planName} plan.
+                    You have created {createdProfiles} out of {maxProfiles} profiles under the {planName} plan.
                 </p>
                 <button className="parent-profile-btn" onClick={() => navigate("/profile")}>
                     Back to Profiles
@@ -113,6 +162,7 @@ const CreateChild = () => {
                             type="text"
                             value={form.username}
                             onChange={(e) => setForm({ ...form, username: e.target.value })}
+                            disabled={hasReachedLimit}
                         />
                     </div>
 
@@ -122,6 +172,7 @@ const CreateChild = () => {
                             type="text"
                             value={form.name}
                             onChange={(e) => setForm({ ...form, name: e.target.value })}
+                            disabled={hasReachedLimit}
                         />
                     </div>
 
@@ -131,6 +182,7 @@ const CreateChild = () => {
                             type="password"
                             value={form.password}
                             onChange={(e) => setForm({ ...form, password: e.target.value })}
+                            disabled={hasReachedLimit}
                         />
                     </div>
                     
@@ -140,11 +192,17 @@ const CreateChild = () => {
                             type="password"
                             value={form.confirmPassword}
                             onChange={(e) => setForm({ ...form, confirmPassword: e.target.value })}
+                            disabled={hasReachedLimit}
                         />
                     </div>
-                    <button className="submit-btn" type="submit" disabled={isSubmitting}>
+                    <button className="submit-btn" type="submit" disabled={isSubmitting || hasReachedLimit}>
                         {isSubmitting ? "Submitting..." : "Submit"}
                     </button>
+                    {hasReachedLimit && (
+                        <p className="error-msg">
+                            You have reached the maximum number of profiles for the {planName} plan.
+                        </p>
+                    )}
                 </form>
             </div>
         </div>
