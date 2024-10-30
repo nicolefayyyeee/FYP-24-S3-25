@@ -147,7 +147,7 @@ const AchievementsAndActivity = () => {
 
   const determinePeriod = (time) => {
     const hours = new Date(time).getHours();
-    if (hours >= 6 && hours < 12) return "morning";
+    if (hours >= 0 && hours < 12) return "morning";
     if (hours >= 12 && hours < 18) return "afternoon";
     return "night";
   };
@@ -246,21 +246,37 @@ const AchievementsAndActivity = () => {
           </div>
 
           <div className="task-progress">
-            {Object.keys(taskProgress).map((period) => (
-              <div key={period} className="task-box">
-                <h4>{period.charAt(0).toUpperCase() + period.slice(1)} Task</h4>
-                <CircularProgressbar
-                  value={(taskProgress[period].completed / taskProgress[period].requiredImages) * 100}
-                  text={`${taskProgress[period].completed} / ${taskProgress[period].requiredImages}`}
-                  styles={buildStyles({
-                    textSize: "14px",
-                    pathColor: "#3e98c7",
-                    textColor: "#fff",
-                  })}
-                />
-                <p>{taskProgress[period].task}</p>
-              </div>
-            ))}
+            {Object.keys(taskProgress).map((period, index) => {
+              // Define path color based on task box gradient for each period
+              let pathColor;
+              if (period === "morning") pathColor = "#60efff";
+              else if (period === "afternoon") pathColor = "#f292ed";
+              else if (period === "night") pathColor = "#ea5459";
+
+              return (
+                <div key={period} className="task-box">
+                  <h4>{period.charAt(0).toUpperCase() + period.slice(1)} Task</h4>
+                  <div className="circular-container">
+                    <CircularProgressbar
+                      value={Math.ceil((taskProgress[period].completed / taskProgress[period].requiredImages) * 100)}
+                      text={`${Math.ceil((taskProgress[period].completed / taskProgress[period].requiredImages) * 100)}%`}
+                      styles={buildStyles({
+                        textSize: "20px",
+                        textColor: "#ffffff", 
+                        pathColor: pathColor,
+                      })}
+                    />
+                    <span
+                      className="custom-progress-text"
+                      style={{ backgroundColor: pathColor }}
+                    >
+                      {`${taskProgress[period].completed} of ${taskProgress[period].requiredImages} tasks completed`}
+                    </span>
+                  </div>
+                  <p className="task-description">{taskProgress[period].task}</p>
+                </div>
+              );
+            })}
           </div>
 
           <div className="score-container">
@@ -271,7 +287,7 @@ const AchievementsAndActivity = () => {
                 text={`${highestScore}%`}
                 styles={buildStyles({
                   textSize: "18px",
-                  pathColor: "rgba(62, 152, 199, 1)",
+                  pathColor: "#60efff",
                   textColor: "#fff",
                   trailColor: "#d6d6d6",
                 })}
@@ -284,7 +300,7 @@ const AchievementsAndActivity = () => {
                 text={`${averageScore}%`}
                 styles={buildStyles({
                   textSize: "18px",
-                  pathColor: "rgba(62, 152, 199, 1)",
+                  pathColor: "#f292ed",
                   textColor: "#fff",
                   trailColor: "#d6d6d6",
                 })}

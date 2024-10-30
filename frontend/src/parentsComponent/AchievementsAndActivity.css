@@ -63,7 +63,7 @@ body {
   background-color: rgba(58, 49, 106, 0.85);
   padding: 20px;
   border-radius: 10px;
-  width: 150px;
+  width: 380px;
   text-align: center;
 }
 
@@ -78,7 +78,7 @@ body {
   background-color: rgba(58, 49, 106, 0.85);
   border-radius: 10px;
   width: 80%;
-  max-width: 800px;
+  max-width: 780px;
   margin-left: auto;
   margin-right: auto;
 }
@@ -175,14 +175,6 @@ body {
   color: #ccc;
 }
 
-.task-box {
-  background-color: #4a4a7d;
-  padding: 15px;
-  border-radius: 8px;
-  text-align: center;
-  color: white;
-  margin-bottom: 20px;
-}
 
 .streak {
   font-size: 1.5rem;
@@ -192,6 +184,68 @@ body {
 
 .task-progress {
   display: flex;
-  justify-content: space-around;
+  justify-content: center;
+  gap: 15px;
   margin: 20px 0;
+  margin-bottom: 40px;
+}
+
+.task-box {
+  display: flex;
+  padding: 15px;
+  border-radius: 8px;
+  text-align: center;
+  color: white;
+  width: 250px;
+  flex-direction: column;
+  align-items: center;
+}
+
+.task-box:nth-child(1) {
+  background: linear-gradient(135deg, #58d2f7c4, #005dc7ce); /* Morning gradient */
+}
+
+.task-box:nth-child(2) {
+  background: linear-gradient(135deg, #e775ded7, #e83597d5); /* Afternoon gradient */
+}
+
+.task-box:nth-child(3) {
+  background: linear-gradient(135deg, #d44449cc, #5a0d20d2); /* Night gradient */
+}
+
+.task-box h4 {
+  font-size: 2rem;
+  margin-bottom: 10px;
+}
+
+.circular-container {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.CircularProgressbar {
+  width: 60px;
+  height: 60px;
+  margin-bottom: 5px;
+}
+
+.custom-progress-text {
+  background-color: rgba(255, 255, 255, 0.3); 
+  font-size: 10px;
+  padding: 5px 8px;
+  border-radius: 12px;
+  color: #ffffff;
+  font-weight: bold;
+}
+
+
+.task-description {
+  font-size: 0.9rem;
+  color: #f0f0f0;
+  margin-top: 5px;
+  border: 1px solid rgba(255, 255, 255, 0.3);
+  padding: 6px 10px;
+  border-radius: 8px;
+  background-color: rgba(255, 255, 255, 0.15);
 }
