@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import Modal from "../containers/modal/Modal";
+import useModal from "../containers/hooks/useModal"; 
 import "./ParentHome.css";
 
 const EditChild = () => {
@@ -17,6 +19,7 @@ const EditChild = () => {
         galleryAccess: true
     });
     const [errorMessage, setErrorMessage] = useState('');
+    const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal();
 
     useEffect(() => {
         const fetchUserData = async () => {
@@ -70,13 +73,14 @@ const EditChild = () => {
             const data = await response.json();
 
             if (response.ok) {
-                alert(data.message);
-                navigate("/profile");
+                openModal("Success", data.message, () => {
+                    navigate("/profile");
+                });
             } else {
                 setErrorMessage(data.message || "Failed to update profile.");
             }
         } catch (error) {
-            alert("Error: " + error.message);
+            openModal("Error", error.message, closeModal);
         } finally {
             setSubmitting(false);
         }
@@ -84,6 +88,13 @@ const EditChild = () => {
 
     return (
         <div className="parentHome">
+            <Modal
+                isOpen={modalOpen}
+                onClose={closeModal}
+                onConfirm={modalAction}
+                header={modalHeader}
+                message={modalMessage}
+            />
             <div className="parent-welcome-header">
                 <h2>Edit Child Profile</h2>
                 <p>Fill in the form below to update child profile</p>

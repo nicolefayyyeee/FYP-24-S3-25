@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Modal from "../containers/modal/Modal";
+import useModal from "../containers/hooks/useModal"; 
 import "./SubscriptionPlans.css";
 
 const SubscriptionPlans = () => {
   const navigate = useNavigate();
+  const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal();
   const [activeTab, setActiveTab] = useState("Monthly");
   const [activeMonthlyPlan, setActiveMonthlyPlan] = useState("Basic");
   const [activeYearlyPlan, setActiveYearlyPlan] = useState("");
@@ -28,7 +31,7 @@ const SubscriptionPlans = () => {
     // Check if the selected plan is "Free" and the user has already created a profile
     const createdProfilesFree = parseInt(localStorage.getItem('created_profiles_Free') || '0', 10);
     if (plan.name === "Free" && createdProfilesFree > 0) {
-      alert("You cannot select the Free plan because you have already created a profile.");
+      openModal("Error", "You cannot select the Free plan because you have already created a profile.", closeModal);
       return; 
     }
 
@@ -38,6 +41,13 @@ const SubscriptionPlans = () => {
 
   return (
     <div className="subPlans">
+      <Modal
+        isOpen={modalOpen}
+        onClose={closeModal}
+        onConfirm={modalAction}
+        header={modalHeader}
+        message={modalMessage}
+     />
       <div className="subPlans-header">
         <h2>Subscription Plans</h2>
         <p>View the best plan for your family.</p>

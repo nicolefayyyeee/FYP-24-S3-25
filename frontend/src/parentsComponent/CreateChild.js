@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
+import Modal from "../containers/modal/Modal";
+import useModal from "../containers/hooks/useModal"; 
 import "./ParentHome.css";
 
 const CreateChild = () => {
@@ -15,6 +17,7 @@ const CreateChild = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [hasReachedLimit, setHasReachedLimit] = useState(false);
     const [createdProfiles, setCreatedProfiles] = useState(0);
+    const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal();
 
     // Extract query parameters from the URL
     const params = new URLSearchParams(location.search);
@@ -57,14 +60,14 @@ const CreateChild = () => {
             // Check if the user has reached the profile limit
             if (createdProfiles >= maxProfiles) {
                 setHasReachedLimit(true);
-                alert(`You have reached the maximum number of profiles for the ${planName} plan.`);
+                openModal("Error", `You have reached the maximum number of profiles for the ${planName} plan.`, closeModal);
             }
         }
-    }, [userId, planName, maxProfiles]);
+    }, [userId, planName, maxProfiles, openModal, closeModal]);
 
     const submit = async () => {
         if (!userId) {
-            alert("User ID is missing. Please log in again.");
+            openModal("Error", "User ID is missing. Please log in again.", closeModal);
             return;
         }
 
@@ -82,12 +85,12 @@ const CreateChild = () => {
         const currentCreatedProfiles = parseInt(localStorage.getItem(`profilesCreated_${userId}_${planName}`) || '0', 10);
 
         if (planName === "Free" && hasUsedFreePlan) {
-            alert("You have already used the Free plan and cannot create more profiles.");
+            openModal("Error", "You have already used the Free plan and cannot create more profiles.", closeModal);
             return;
         }
 
         if (currentCreatedProfiles >= maxProfiles) {
-            alert(`You have reached the maximum number of profiles for the ${planName} plan.`);
+            openModal("Error", `You have reached the maximum number of profiles for the ${planName} plan.`, closeModal);
             return;
         }
 
@@ -113,8 +116,7 @@ const CreateChild = () => {
                 const updatedProfileCount = currentCreatedProfiles + 1;
                 localStorage.setItem(`profilesCreated_${userId}_${planName}`, updatedProfileCount);
                 setCreatedProfiles(updatedProfileCount);
-                alert(data.message);
-
+                openModal("Success", data.message, closeModal);
                 // If using the Free plan, mark it as used on backend
                 if (planName === "Free") {
                     await fetch("http://localhost:5000/user/useFreePlan", {
@@ -128,14 +130,15 @@ const CreateChild = () => {
                 // Check if reached the limit after increment
                 if (updatedProfileCount >= maxProfiles) {
                     setHasReachedLimit(true);
-                    alert(`You have reached the maximum number of profiles for the ${planName} plan.`);
-                    navigate("/profile");
+                    openModal("Error", `You have reached the maximum number of profiles for the ${planName} plan.`, () => {
+                        navigate("/profile");
+                    });
                 }
             } else {
                 setErrorMessage(data.message || "Failed to create profile.");
             }
         } catch (error) {
-            alert("Error: " + error.message);
+            openModal("Error", error.message, closeModal);
         } finally {
             setSubmitting(false);
         }
@@ -143,6 +146,13 @@ const CreateChild = () => {
 
     return (
         <div className="parentHome">
+            <Modal
+                isOpen={modalOpen}
+                onClose={closeModal}
+                onConfirm={modalAction}
+                header={modalHeader}
+                message={modalMessage}
+            />
             <div className="parent-welcome-header">
                 <h2>Add New Child Profile</h2>
                 <p>Fill in the form below to create a new child profile</p>

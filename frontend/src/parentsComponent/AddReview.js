@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Modal from "../containers/modal/Modal";
+import useModal from "../containers/hooks/useModal"; 
 import { FaStar } from "react-icons/fa";
 import "./ParentHome.css";
 
@@ -12,6 +14,7 @@ const AddReview = () => {
         type: "",
     });
     const [errorMessage, setErrorMessage] = useState('');
+    const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal();
     
     const submit = async () => {
         const userId = localStorage.getItem('user_id');
@@ -38,14 +41,15 @@ const AddReview = () => {
             const data = await response.json();
 
             if (response.ok) {
-                alert(data.message);
-                navigate("/parentHome");
+                openModal("Success", data.message, () => {
+                    navigate("/parentHome");
+                });
               } else {
                 setErrorMessage(data.message);
               }
 
         } catch (error) {
-            alert("Error: " + error.message);
+            openModal("Error", error.message, closeModal);
         } finally {
             setSubmitting(false);
         }
@@ -57,6 +61,13 @@ const AddReview = () => {
 
     return (
         <div className="adminHome">
+            <Modal
+                isOpen={modalOpen}
+                onClose={closeModal}
+                onConfirm={modalAction}
+                header={modalHeader}
+                message={modalMessage}
+            />
             <div className="parent-welcome-header">
                 <h2>Add a Review</h2>
                 <p>Fill in the form below to leave a review</p>

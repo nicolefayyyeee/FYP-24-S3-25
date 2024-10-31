@@ -40,7 +40,7 @@ const Modal = ({ isOpen, onClose, onConfirm, header, message }) => {
 export default Modal;
 
 /**
-See Admin ViewAllAccounts.js/Parent EditAccount.js for reference, if cannot work lmk -kj
+See Admin ViewAllAccounts.js/CreateProfile.js/Parent EditAccount.js for reference, if cannot work lmk -kj
 Example usage:
 
 import Modal from "../containers/modal/Modal";
@@ -52,11 +52,16 @@ const Component = () => {
     const navigate = useNavigate();
     
     const handleSubmit = () => {
-        // open a success modal after form submission
-        openModal("Success", "Your form has been submitted!", () => {
-            // action to execute after modal closes (navigating to home)
-            navigate("/home");
-        });
+        try {
+            // open a success modal after form submission (with navigation action)
+            openModal("Success", data.message, () => {
+                // action to execute after modal closes (navigating to home)
+                navigate("/home");
+            });
+        } catch (error) {
+            // else open an error modal (with no action)
+            openModal("Error", error.message, closeModal);
+        }
     };
 
     const handleDelete = () => {
