@@ -685,15 +685,10 @@ def get_mobile_avatar():
 # Parent: view all users (by user_id & profile_id)
 @app.route('/get_users', methods=['GET'])
 def get_users():
-    # global session_user # temp
-    # session_user = session['user']
     user_id = request.args.get('user_id')
     print(user_id)
-    # user_id2 = session.get("user_id")
-    # print(user_id2)
     if not user_id:
         return jsonify({"message": "Login required!"}), 401
-    # current_user = User.query.filter_by(id=user_id).first()
     child_users = User.query.filter_by(parent_id=user_id).order_by(User.id.asc()).all()
     user_list = []
     for user in child_users:
@@ -704,13 +699,11 @@ def get_users():
             "password": user.password 
         }
         user_list.append(user_info)
-    # user_list.append(current_user.name)
     return jsonify(user_list), 200
 
 # Parent: add new child user
 @app.route('/add_child', methods=['POST'])
 def add_child():
-    # global session_user # temp
     data = request.get_json()
     user_id = data.get('user_id') 
     if not user_id:
@@ -753,22 +746,24 @@ def signup():
 # All: login 
 @app.route('/login', methods=['POST'])
 def login():
-    # global session_user # temp
     data = request.get_json()
     print(data)
     user = User.query.filter_by(username=data['username']).first()
-    
-    if user and bcrypt.check_password_hash(user.password, data['password']):
-        session['user_id'] = user.id
-        # session_user = user.id # temp
+    if user:
+        if user.suspend:
+            return jsonify({"message": "Account is suspended. Login not allowed."}), 403
+        
+        # Check password and proceed if not suspended
+        if bcrypt.check_password_hash(user.password, data['password']):
+            session['user_id'] = user.id
 
-        # Check if the user role
-        if user.profile_id == 1: # admin
-            return jsonify({"message": "Admin login successful!", "user_id": user.id, "profile": "admin"}), 200
-        elif user.profile_id == 2: # parent
-            return jsonify({"message": "Parent login successful!", "user_id": user.id, "profile": "parent"}), 200
-        elif user.profile_id == 3: # child
-            return jsonify({"message": "Child login successful!", "user_id": user.id, "profile": "child"}), 200
+            # Check if the user role
+            if user.profile_id == 1: # admin
+                return jsonify({"message": "Admin login successful!", "user_id": user.id, "profile": "admin"}), 200
+            elif user.profile_id == 2: # parent
+                return jsonify({"message": "Parent login successful!", "user_id": user.id, "profile": "parent"}), 200
+            elif user.profile_id == 3: # child
+                return jsonify({"message": "Child login successful!", "user_id": user.id, "profile": "child"}), 200
    
     return jsonify({"message": "Invalid username or password!"}), 401
 
