@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Modal from "../containers/modal/Modal";
+import useModal from "../containers/hooks/useModal"; 
 import "./AdminHome.css";
 import "./CreateAdmin.css";
 
@@ -10,6 +12,7 @@ const CreateProfile = () => {
         role: "",
     });
     const [errorMessage, setErrorMessage] = useState('');
+    const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal();
     
     const submit = async () => {
         if (form.role === "") {
@@ -32,14 +35,15 @@ const CreateProfile = () => {
             const data = await response.json();
 
             if (response.ok) {
-                alert(data.message);
-                navigate("/manageUserProfiles");
+                openModal("Success", data.message, () => {
+                    navigate("/manageUserProfiles");
+                });
               } else {
                 setErrorMessage(data.message);
               }
 
         } catch (error) {
-            alert("Error: " + error.message);
+            openModal("Error", error.message, closeModal);
         } finally {
             setSubmitting(false);
         }
@@ -47,6 +51,13 @@ const CreateProfile = () => {
 
     return (
         <div className="adminHome">
+            <Modal
+                isOpen={modalOpen}
+                onClose={closeModal}
+                onConfirm={modalAction}
+                header={modalHeader}
+                message={modalMessage}
+            />
             <div className="admin-welcome-header">
                 <h2>Create User Profile</h2>
                 <p>Fill in the form below to create a new user profile</p>

@@ -1,5 +1,7 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
+import Modal from "../containers/modal/Modal";
+import useModal from "../containers/hooks/useModal"; 
 import "./AdminHome.css";
 import "./CreateAdmin.css";
 
@@ -14,7 +16,8 @@ const CreateAdmin = () => {
         confirmPassword: "",
     });
     const [errorMessage, setErrorMessage] = useState('');
-    
+    const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal();
+
     const submit = async () => {
         if (form.username === "" || form.name === "" || form.email === "" || form.password === "" || form.confirmPassword === "") {
             setErrorMessage("Please fill in all fields");
@@ -43,15 +46,15 @@ const CreateAdmin = () => {
 
             const data = await response.json();
             if (response.ok) {
-                alert(data.message);
-                // alert("Admin created successfully");
-                navigate("/manageAccounts");
+                openModal("Success", data.message, () => {
+                    navigate("/manageAccounts");
+                });
             } else {
                 setErrorMessage(data.message);
             }
 
         } catch (error) {
-            alert("Error: " + error.message);
+            openModal("Error", error.message, closeModal);
         } finally {
             setSubmitting(false);
         }
@@ -59,6 +62,13 @@ const CreateAdmin = () => {
 
     return (
         <div className="adminHome">
+            <Modal
+                isOpen={modalOpen}
+                onClose={closeModal}
+                onConfirm={modalAction}
+                header={modalHeader}
+                message={modalMessage}
+            />
             <div className="admin-welcome-header">
                 <h2>Create Admin Account</h2>
                 <p>Fill in the form below to create a new admin account</p>

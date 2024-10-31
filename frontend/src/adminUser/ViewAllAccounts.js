@@ -59,7 +59,7 @@ const ViewAllAccounts = () => {
                             user.id === userId ? { ...user, suspend: currentStatus } : user
                         )
                     );
-                    openModal("Error", data.message || "Error updating user suspend status");
+                    openModal("Error", data.message || "Error updating user suspend status", closeModal);
                 }
             } catch (error) {
                 openModal("Error", "Error updating user suspend status");
