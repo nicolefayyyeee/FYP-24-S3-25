@@ -9,7 +9,7 @@ import "./ImageCaptioning.css";
 
 const ImageCaptioning = () => {
   const navigate = useNavigate();
-  const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal(); // modal
+  const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal} = useModal(); // modal
  
   // for time limit
   const logoutUser = useCallback(() => {
@@ -104,7 +104,9 @@ const ImageCaptioning = () => {
 
     // error handling process
     if (!imageFile && !imageURL && !imageBlob) {
-      showAlert("No image selected, please upload an image.");
+      openModal("Error", "No image selected, please upload an image.");
+      // showAlert("No image selected, please upload an image.");
+      setLoading(false);
       return; //stop the process
     }
 
@@ -146,7 +148,16 @@ const ImageCaptioning = () => {
   const previewImage = (event) => {
     const file = event.target.files[0];
     if (file) {
-      setPreview(URL.createObjectURL(file));
+      const fileType = file.type;
+  
+      // Validate file type
+      if (fileType === "image/jpeg" || fileType === "image/jpg") {
+        setPreview(URL.createObjectURL(file));
+      } else {
+        // Open modal if file type is not allowed
+        openModal("Error", "Only JPG or JPEG file formats are allowed.");
+        imageFileRef.current.value = null; // Clear the file input
+      }
     }
   };
 
@@ -212,6 +223,15 @@ const ImageCaptioning = () => {
 
   return (
     <div className="container-imageCaptioning">
+      <Modal 
+        isOpen={modalOpen} 
+        onClose={closeModal} 
+        onConfirm={() => {
+          closeModal();
+        }}
+        header={modalHeader} 
+        message={modalMessage} 
+      />
       <div>
         <h1 className="image-captioning-title">Upload or Capture an Image</h1>
         <p>
@@ -319,13 +339,6 @@ const ImageCaptioning = () => {
           </button>
         </div>
       </form>
-      <Modal 
-        isOpen={modalOpen} 
-        onClose={closeModal} 
-        onConfirm={modalAction}
-        header={modalHeader} 
-        message={modalMessage} 
-      />
     </div>
   );
 };

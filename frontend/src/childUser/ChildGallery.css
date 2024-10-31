@@ -98,27 +98,40 @@
   right: 10px;
   display: flex;
   justify-content: space-between;
+  align-items: center;
 }
 
- .gallery-container .delete-btn {
+.gallery-container .favorite-btn {
   background: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
   color: white;
   border: none;
-  padding: 8px;
-  border-radius: 50%;
+  width: 32px; /* Set a fixed width */
+  height: 32px; /* Set a fixed height */
+  padding: 17px;
+  margin-top: 8px;
+  border-radius: 50%; /* Fully round the button */
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: background-color 0.3s ease;
 }
 
-.gallery-container .favorite-btn{
+.gallery-container .delete-btn{
   background: rgba(0, 0, 0, 0.6); /* Semi-transparent background */
   color: white;
   border: none;
-  padding: 8px;
-  border-radius:50%;
+  padding: 17px;
+  width: 32px; /* Set a fixed width */
+  height: 32px; /* Set a fixed height */
+  border-radius: 50%; /* Fully round the button */
   cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
   transition: background-color 0.3s ease;
 }
+
 
 .gallery-container .favorite-btn.favorited {
   background: rgba(245, 245, 245, 0.6);; /* Gold background for favorited items */

@@ -54,7 +54,7 @@ const ChildGallery = () => {
       const response = await axios.get(`http://localhost:5000/gallery?user_id=${userId}`, {
         withCredentials: true,
       });
-      console.log("Gallery data received:", response.data);
+      // console.log("Gallery data received:", response.data);
       setGallery(response.data.images);
     } catch (error) {
       console.error("Error fetching gallery:", error);
@@ -78,16 +78,20 @@ const ChildGallery = () => {
   };
 
   // Delete Image with Confirmation
-  const handleDelete = async (imageId) => {
-    const confirmDelete = window.confirm("Are you sure you want to delete this image?");
-    if (!confirmDelete) return;
-
-    try {
-      await axios.delete(`http://localhost:5000/delete/${imageId}`);
-      fetchGallery(); // Refresh gallery after deletion
-    } catch (error) {
-      console.error("Error deleting image:", error);
-    }
+  const handleDelete = (imageId) => {
+    openModal(
+      "Confirm Deletion", 
+      "Are you sure you want to delete this image?", 
+      async () => {
+        try {
+          await axios.delete(`http://localhost:5000/delete/${imageId}`);
+          fetchGallery(); // Refresh gallery after deletion
+        } catch (error) {
+          console.error("Error deleting image:", error);
+        }
+        closeModal(); // Close modal after action is complete
+      }
+    );
   };
 
   // Filter the gallery based on the showFavorites state

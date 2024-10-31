@@ -1,5 +1,7 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
+import useModal from "../containers/hooks/useModal"; // Import useModal hook
+import Modal from "../containers/modal/Modal"; // Import Modal component
 import "./AdminUpload.css"; // Import the CSS file
 
 const AdminUploadImg = () => {
@@ -10,6 +12,15 @@ const AdminUploadImg = () => {
   const [uploading, setUploading] = useState(false);
   const [selectedImage, setSelectedImage] = useState(null); // For image enlargement
   const imagesPerPage = 5; // Set images per page
+
+  const {
+    modalOpen,
+    modalHeader,
+    modalMessage,
+    modalAction,
+    openModal,
+    closeModal,
+  } = useModal(); // Use modal
 
   // Fetch the gallery images
   const fetchGallery = async () => {
@@ -27,7 +38,9 @@ const AdminUploadImg = () => {
 
   const generateUniqueFilename = (userId) => {
     const now = new Date();
-    const formattedDate = `${String(now.getDate()).padStart(2, "0")}${String(now.getMonth() + 1).padStart(2, "0")}${now.getFullYear()}`;
+    const formattedDate = `${String(now.getDate()).padStart(2, "0")}${String(
+      now.getMonth() + 1
+    ).padStart(2, "0")}${now.getFullYear()}`;
     const randomString = Math.random().toString(36).substring(2, 8); // Generate a random string
     return `AdminImage_${userId}_${formattedDate}_${randomString}.jpg`; // Combine user ID, formatted date, and random string
   };
@@ -36,6 +49,18 @@ const AdminUploadImg = () => {
   const handleUpload = async (e) => {
     e.preventDefault();
     if (!file) return; // Prevent upload if no file is selected
+
+    // Validate file extension
+    const validExtensions = ["jpg", "jpeg"];
+    const fileExtension = file.name.split(".").pop().toLowerCase();
+    if (!validExtensions.includes(fileExtension)) {
+      openModal(
+        "Invalid File",
+        "Please upload a .jpg or .jpeg file.",
+        closeModal
+      );
+      return;
+    }
 
     const formData = new FormData();
     const userId = localStorage.getItem("user_id");
@@ -60,27 +85,44 @@ const AdminUploadImg = () => {
   };
 
   // Handle image deletion with confirmation
-  const handleDelete = async (id) => {
-    if (window.confirm("Are you sure you want to delete this image?")) {
-      try {
-        await axios.delete(`http://localhost:5000/admin/delete/${id}`);
-        fetchGallery(); // Refresh gallery after delete
-      } catch (error) {
-        console.error("Error deleting image:", error);
+  const handleDelete = (id) => {
+    openModal(
+      "Confirm Deletion",
+      "Are you sure you want to delete this image?",
+      async () => {
+        try {
+          await axios.delete(`http://localhost:5000/admin/delete/${id}`);
+          fetchGallery();
+        } catch (error) {
+          console.error("Error deleting image:", error);
+        }
+        closeModal();
       }
-    }
+    );
   };
 
-  // Handle file change and show image preview
+  // Handle file change, validate file type, and show image preview
   const handleFileChange = (e) => {
     const selectedFile = e.target.files[0];
-    setFile(selectedFile);
 
-    // Create a preview URL for the selected image
     if (selectedFile) {
-      const reader = new FileReader();
-      reader.onloadend = () => setImagePreview(reader.result); // Show the preview
-      reader.readAsDataURL(selectedFile);
+      const fileType = selectedFile.type;
+
+      // Check if the file type is valid
+      if (fileType === "image/jpeg" || fileType === "image/jpg") {
+        setFile(selectedFile);
+
+        // Create a preview URL for the selected image
+        const reader = new FileReader();
+        reader.onloadend = () => setImagePreview(reader.result); // Show the preview
+        reader.readAsDataURL(selectedFile);
+      } else {
+        // Open modal if file type is not allowed
+        openModal("Error", "Only JPG or JPEG file formats are allowed.");
+        e.target.value = null; // Clear the file input
+        setFile(null);
+        setImagePreview(null);
+      }
     } else {
       setImagePreview(null);
     }
@@ -115,6 +157,16 @@ const AdminUploadImg = () => {
   return (
     <div className="admin-dashboard">
       <h2>Upload Photos to the Explore Page</h2>
+
+      <Modal
+        isOpen={modalOpen}
+        onClose={closeModal}
+        onConfirm={() => {
+          closeModal();
+        }}
+        header={modalHeader}
+        message={modalMessage}
+      />
 
       {/* Upload Section */}
       <div className="action-button">
