@@ -1,6 +1,8 @@
 import React, { useState, useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
 import { FaSearch } from "react-icons/fa";
+import Modal from "../containers/modal/Modal";
+import useModal from "../containers/hooks/useModal"; 
 import "./ViewAll.css";
 import "./AdminHome.css";
 
@@ -13,6 +15,7 @@ const ViewAllProfiles = () => {
     const [editingRoleId, setEditingRoleId] = useState(null);
     const [editedRoleName, setEditedRoleName] = useState("");
     const inputRef = useRef(null);
+    const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal();
 
     const fetchProfiles = async () => {
         setLoading(true);
@@ -51,7 +54,7 @@ const ViewAllProfiles = () => {
                     )
                 );
             } else {
-                alert(data.message || "Error updating role name");
+                openModal("Error", data.message || "Error updating role name", closeModal);
             }
         } catch (error) {
             console.error("Error updating role name:", error);
@@ -72,72 +75,71 @@ const ViewAllProfiles = () => {
 
     const handleSuspendProfile = async (profileId, shouldSuspend, suspendedCount, userCount) => {
         if (shouldSuspend && suspendedCount === userCount) {
-            alert("All users in this profile are already suspended.");
+            openModal("Error", "All users in this profile are already suspended.", closeModal);
             return;
         } else if (!shouldSuspend && suspendedCount === 0) {
-            alert("No users in this profile are suspended.");
+            openModal("Error", "No users in this profile are suspended.", closeModal);
             return;
         }
-
-        const confirmation = window.confirm(
-            `Are you sure you want to ${shouldSuspend ? "suspend" : "unsuspend"} all users in this profile?`
-        );
-
-        if (confirmation) {
-            setProfiles((prevProfiles) =>
-                prevProfiles.map((profile) =>
-                    profile.id === profileId
-                        ? {
-                            ...profile,
-                            suspended_count: shouldSuspend ? userCount : 0,
-                        }
-                        : profile
-                )
-            );
-
-            try {
-                const response = await fetch(`http://localhost:5000/suspend_profile/${profileId}`, {
-                    method: "PUT",
-                    body: JSON.stringify({ suspend: shouldSuspend }),
-                    headers: { "Content-Type": "application/json" },
-                });
-                const data = await response.json();
-                if (response.ok) {
+        openModal(
+            `Confirm ${shouldSuspend ? "suspend" : "unsuspend"}`,
+            `Are you sure you want to ${shouldSuspend ? "suspend" : "unsuspend"} all users in this profile?`,
+            async () => {
+                setProfiles((prevProfiles) =>
+                    prevProfiles.map((profile) =>
+                        profile.id === profileId
+                            ? {
+                                ...profile,
+                                suspended_count: shouldSuspend ? userCount : 0,
+                            }
+                            : profile
+                    )
+                );
+    
+                try {
+                    const response = await fetch(`http://localhost:5000/suspend_profile/${profileId}`, {
+                        method: "PUT",
+                        body: JSON.stringify({ suspend: shouldSuspend }),
+                        headers: { "Content-Type": "application/json" },
+                    });
+                    const data = await response.json();
+                    if (response.ok) {
+                        setProfiles((prevProfiles) =>
+                            prevProfiles.map((profile) =>
+                                profile.id === profileId
+                                    ? {
+                                        ...profile,
+                                        suspended_count: shouldSuspend ? userCount : 0,
+                                    }
+                                    : profile
+                            )
+                        );
+                        openModal("Success", `All users ${shouldSuspend ? "suspended" : "unsuspended"} successfully`, closeModal);
+                    } else {
+                        openModal("Error", data.message || "Error updating profile suspend status", closeModal);
+                        setProfiles((prevProfiles) =>
+                            prevProfiles.map((profile) =>
+                                profile.id === profileId
+                                    ? {
+                                        ...profile,
+                                        suspended_count: shouldSuspend ? 0 : suspendedCount,
+                                    }
+                                    : profile
+                            )
+                        );
+                    }
+                } catch (error) {
+                    console.error("Error updating profile suspend status:", error);
                     setProfiles((prevProfiles) =>
                         prevProfiles.map((profile) =>
-                            profile.id === profileId
-                                ? {
-                                    ...profile,
-                                    suspended_count: shouldSuspend ? userCount : 0,
-                                }
-                                : profile
-                        )
-                    );
-                    alert(`All users ${shouldSuspend ? "suspended" : "unsuspended"} successfully`);
-                } else {
-                    alert(data.message || "Error updating profile suspend status");
-                    setProfiles((prevProfiles) =>
-                        prevProfiles.map((profile) =>
-                            profile.id === profileId
-                                ? {
-                                    ...profile,
-                                    suspended_count: shouldSuspend ? 0 : suspendedCount,
-                                }
-                                : profile
+                            profile.id === profileId ? { ...profile, suspended_count: suspendedCount } : profile
                         )
                     );
                 }
-            } catch (error) {
-                console.error("Error updating profile suspend status:", error);
-                setProfiles((prevProfiles) =>
-                    prevProfiles.map((profile) =>
-                        profile.id === profileId ? { ...profile, suspended_count: suspendedCount } : profile
-                    )
-                );
             }
-        }
+        );
     };
-
+    
     const filteredProfiles = profiles.filter((profile) =>
         profile.role.toLowerCase().includes(searchQuery.toLowerCase())
     );
@@ -156,6 +158,13 @@ const ViewAllProfiles = () => {
 
     return (
         <div className="adminHome">
+            <Modal
+                isOpen={modalOpen}
+                onClose={closeModal}
+                onConfirm={modalAction}
+                header={modalHeader}
+                message={modalMessage}
+            />
             <div className="admin-welcome-header">
                 <h2>View All Profiles</h2>
                 <p>Click suspend/unsuspend to update the profile status</p>
