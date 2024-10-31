@@ -10,8 +10,8 @@ const Header = () => {
         <p>Capture. Cherish. Learn.</p>
       </header>
       <br />
-      <Link to="/login">
-        <button aria-label="Get started with the app">Get Started Now</button>
+      <Link to="/imageCaptioning">
+        <button aria-label="Get started with the app">Try us out!</button>
       </Link>
     </div>
   );

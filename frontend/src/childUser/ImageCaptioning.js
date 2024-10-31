@@ -5,26 +5,27 @@ import Webcam from "react-webcam"; // web cam
 import { useLocation, useNavigate } from "react-router-dom"; // Import useLocation
 import Modal from "../containers/modal/Modal";
 import useModal from "../containers/hooks/useModal";
+import Cookies from 'js-cookie'; // Import js-cookie
 import "./ImageCaptioning.css";
 
 const ImageCaptioning = () => {
   const navigate = useNavigate();
-  const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal} = useModal(); // modal
- 
+  const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal(); // modal
+
   // for time limit
   const logoutUser = useCallback(() => {
     openModal("Time limit is up!", "You have been logged out.", () => {
       localStorage.clear();
       setTimeout(() => {
         navigate('/login');
-      }, 100); 
+      }, 100);
     });
   }, [openModal, navigate]);
 
   useEffect(() => {
     let timer;
     const storedLogoutTime = localStorage.getItem('logoutTime');
-    
+
     if (storedLogoutTime) {
       const remainingTime = storedLogoutTime - Date.now();
 
@@ -38,9 +39,9 @@ const ImageCaptioning = () => {
     }
 
     return () => {
-      clearTimeout(timer); 
+      clearTimeout(timer);
     };
-  }, [logoutUser]); 
+  }, [logoutUser]);
 
   //state functions (self explanatory)
   const [caption, setCaption] = useState("");
@@ -100,14 +101,31 @@ const ImageCaptioning = () => {
     const imageURL = imageUrlRef.current.value || selectedImageUrl;
     const imageBlob = capturedImage;
 
-    const userId = localStorage.getItem("user_id");
+    let userId = localStorage.getItem("user_id");
 
     // error handling process
     if (!imageFile && !imageURL && !imageBlob) {
       openModal("Error", "No image selected, please upload an image.");
-      // showAlert("No image selected, please upload an image.");
       setLoading(false);
       return; //stop the process
+    }
+
+    // Guest user usage limit check
+    if (!userId) {
+      // Guest user
+      let usageCount = parseInt(Cookies.get('guest_usage_count')) || 0;
+
+      if (usageCount >= 5) {
+        openModal("Usage Limit Reached", "You have reached the usage limit for guest users. Try logging in to continue.");
+        setLoading(false);
+        return;
+      } else {
+        usageCount += 1;
+        Cookies.set('guest_usage_count', usageCount, { expires: 7 }); // Expires in 7 days
+      }
+      userId = '0'; // Set userId to '0' for guest users
+    } else {
+      userId = userId.toString();
     }
 
     const uniqueFilename = generateUniqueFilename(userId);
@@ -122,6 +140,7 @@ const ImageCaptioning = () => {
       formData.append("imageFile", imageBlob, uniqueFilename);
     }
 
+    // Always append userId
     formData.append("userId", userId);
 
     //pass the image
@@ -130,9 +149,13 @@ const ImageCaptioning = () => {
       body: formData,
     });
 
-    //get the caption
-    const data = await response.json();
-    setCaption(data.caption);
+    if (response.ok) {
+      //get the caption
+      const data = await response.json();
+      setCaption(data.caption);
+    } else {
+      openModal("Error", "Failed to generate caption. Please try again.");
+    }
     setLoading(false);
   };
 
@@ -149,7 +172,7 @@ const ImageCaptioning = () => {
     const file = event.target.files[0];
     if (file) {
       const fileType = file.type;
-  
+
       // Validate file type
       if (fileType === "image/jpeg" || fileType === "image/jpg") {
         setPreview(URL.createObjectURL(file));
@@ -220,17 +243,16 @@ const ImageCaptioning = () => {
 
   const capitalizeFirstLetter = (text) => text ? text.charAt(0).toUpperCase() + text.slice(1) : '';
 
-
   return (
     <div className="container-imageCaptioning">
-      <Modal 
-        isOpen={modalOpen} 
-        onClose={closeModal} 
+      <Modal
+        isOpen={modalOpen}
+        onClose={closeModal}
         onConfirm={() => {
           closeModal();
         }}
-        header={modalHeader} 
-        message={modalMessage} 
+        header={modalHeader}
+        message={modalMessage}
       />
       <div>
         <h1 className="image-captioning-title">Upload or Capture an Image</h1>
@@ -242,8 +264,8 @@ const ImageCaptioning = () => {
 
       <form onSubmit={handleSubmit}>
         <div className="actions">
-          <div class="upload-btn-wrapper">
-            <button class="btn btn-upload">Upload Image</button>
+          <div className="upload-btn-wrapper">
+            <button className="btn btn-upload">Upload Image</button>
             <input
               type="file"
               ref={imageFileRef}
@@ -289,9 +311,7 @@ const ImageCaptioning = () => {
         <div className="image-preview-container">
           <div className="outer">
             {preview ? (
-              preview && (
-                <img src={preview} alt="Preview" className="image-preview" />
-              )
+              <img src={preview} alt="Preview" className="image-preview" />
             ) : (
               <div className="image-placeholder">No Image Selected</div>
             )}
@@ -320,7 +340,7 @@ const ImageCaptioning = () => {
           <Slider {...settings}>
             {exampleImages.map((image, index) => (
               <div key={index} onClick={() => handleImageClick(image.filepath)}>
-                <img src={image.filepath} className="slider-image" />
+                <img src={image.filepath} className="slider-image" alt={`Example ${index}`} />
               </div>
             ))}
           </Slider>
