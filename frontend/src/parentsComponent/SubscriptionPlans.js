@@ -31,12 +31,21 @@ const SubscriptionPlans = () => {
     // Check if the selected plan is "Free" and the user has already created a profile
     const createdProfilesFree = parseInt(localStorage.getItem('created_profiles_Free') || '0', 10);
     if (plan.name === "Free" && createdProfilesFree > 0) {
-      openModal("Error", "You cannot select the Free plan because you have already created a profile.", closeModal);
+      alert("You cannot select the Free plan because you have already created a profile.");
       return; 
     }
 
-    // Navigate to the CreateChild page with plan details
-    navigate(`/createChild?plan=${plan.name}&maxProfiles=${plan.maxProfiles}`);
+    
+    if (plan.name !== "Free") {
+      const confirmPayment = window.confirm(`Do you want to proceed to payment for the ${plan.name} plan?`);
+      if (confirmPayment) {
+        
+        navigate(`/paymentScreen?plan=${plan.name}&price=${plan.price}&maxProfiles=${plan.maxProfiles}`);
+      }
+    } else {
+      
+      navigate(`/createChild?plan=${plan.name}&maxProfiles=${plan.maxProfiles}`);
+    }
   };
 
   return (
