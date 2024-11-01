@@ -24,6 +24,8 @@ import ImageCaptionPage from "./routes/ImageCaptionPage";
 
 // Parent Pages
 import SubscriptionPlansPage from './routes/SubscriptionPlansPage';
+import PaymentScreenPage from './routes/PaymentScreenPage';
+import { PaymentSuccess, PaymentCancel } from './parentsComponent/PaymentScreen';
 import AchievementsAndActivityPage from './routes/AchievementsAndActivityPage';
 import ParentHomePage from './routes/ParentHomePage';
 import CreateChildPage from './routes/CreateChildPage';
@@ -69,6 +71,9 @@ ReactDOM.render(
       {/* Parent Routes */}
       <Route path='/parenthome' element={<ProtectedRoute role="parent"><ParentHomePage /></ProtectedRoute>} />
       <Route path='/subscriptionPlans' element={<ProtectedRoute role="parent"><SubscriptionPlansPage /></ProtectedRoute>} />
+      <Route path="/paymentScreen" element={<ProtectedRoute role="parent"><PaymentScreenPage /></ProtectedRoute>} />
+      <Route path="/paymentSuccess" element={<ProtectedRoute role="parent"><PaymentSuccess /></ProtectedRoute>} />
+      <Route path="/paymentCancel" element={<ProtectedRoute role="parent"><PaymentCancel /></ProtectedRoute>} />
       <Route path='/achievementsAndActivity' element={<ProtectedRoute role="parent"><AchievementsAndActivityPage /></ProtectedRoute>} />
       <Route path='/createChild' element={<ProtectedRoute role="parent"><CreateChildPage /></ProtectedRoute>} />
       <Route path='/editChild' element={<ProtectedRoute role="parent"><EditChildPage /></ProtectedRoute>} />
