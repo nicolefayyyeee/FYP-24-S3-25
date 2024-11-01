@@ -78,7 +78,7 @@ const ViewAllAccounts = () => {
 
     useEffect(() => {
         fetchUsers();
-    }, [fetchUsers]);
+    }, []);
 
     if (loading) {
         return <p>Loading...</p>;
