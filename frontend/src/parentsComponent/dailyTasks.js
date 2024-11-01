@@ -66,33 +66,6 @@ const dailyTasks = {
         requiredImages: 3,
       },
     ],
-    weekly: [
-      {
-        id: 13,
-        task: "Take five images over the week showing your favorite moments",
-        requiredImages: 5,
-      },
-      {
-        id: 14,
-        task: "Capture an image each day for five days in a row",
-        requiredImages: 5,
-      },
-      {
-        id: 15,
-        task: "Take three images of nature over the week",
-        requiredImages: 3,
-      },
-      {
-        id: 16,
-        task: "Take one picture every day this week of something that made you happy",
-        requiredImages: 7,
-      },
-      {
-        id: 17,
-        task: "Take two images each day showing something you enjoyed",
-        requiredImages: 14,
-      },
-    ],
   };
   
   export default dailyTasks;
