@@ -429,20 +429,6 @@ class Profile(db.Model):
     id = db.Column(db.Integer, primary_key=True)
     role = db.Column(db.String(255), nullable=False)
 
-# Game Content model
-class GameContent(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    image_url = db.Column(db.String(255), nullable=False)
-    name = db.Column(db.String(100), nullable=False)
-
-# User Scores model
-class UserScores(db.Model):
-    id = db.Column(db.Integer, primary_key=True)
-    user_id = db.Column(db.String(100), nullable=False)
-    score = db.Column(db.Integer, nullable=False)
-    time_taken = db.Column(db.String(50), nullable=False)
-    date = db.Column(db.DateTime, default=datetime.utcnow)
-
 # Review model
 class Review(db.Model):
     id = db.Column(db.Integer, primary_key=True)
@@ -773,78 +759,6 @@ def logout():
     session.pop('user', None)
     session.clear()
     return jsonify({"message": "Logout successful!"}), 200
-
-# Get game content route
-@app.route('/api/game-content', methods=['GET'])
-def get_game_content():
-    try:
-        content = GameContent.query.all()
-        if len(content) < 5:
-            return jsonify({"error": "Not enough content available to create a game."}), 400
-
-        # Select 5 random pictures from the content
-        pictures = random.sample(content, min(len(content), 5))
-        matching_words = [picture.name for picture in pictures]
-        
-        # Select additional words, ensuring we don't select duplicates
-        additional_words = random.sample(
-            [c.name for c in content if c.name not in matching_words],
-            min(len(content) - len(matching_words), 5)
-        )
-        
-        words = matching_words + additional_words
-        random.shuffle(words)
-
-        # Prepare the response
-        game_data = {
-            "pictures": [{"id": p.id, "imageUrl": p.image_url, "name": p.name} for p in pictures],
-            "words": words
-        }
-        return jsonify(game_data), 200
-
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-# Save user score route
-@app.route('/api/save-score', methods=['POST'])
-def save_score():
-    data = request.json
-    user_id = data.get('userId')
-    score = data.get('score')
-    time_taken = data.get('timeTaken')
-
-    if not user_id or not score or not time_taken:
-        return jsonify({"error": "Invalid request data"}), 400
-
-    try:
-        new_score = UserScores(user_id=user_id, score=score, time_taken=time_taken)
-        db.session.add(new_score)
-        db.session.commit()
-        return jsonify({"message": "Score saved successfully."}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
-
-# Get user scores route
-@app.route('/api/user-scores', methods=['GET'])
-def get_user_scores():
-    user_id = request.args.get('userId')
-    
-    try:
-        if user_id:
-            scores = UserScores.query.filter_by(user_id=user_id).all()
-        else:
-            scores = UserScores.query.all()
-        score_list = [
-            {
-                "userId": score.user_id,
-                "score": score.score,
-                "timeTaken": score.time_taken,
-                "date": score.date.strftime('%Y-%m-%d')
-            } for score in scores
-        ]
-        return jsonify({"scores": score_list}), 200
-    except Exception as e:
-        return jsonify({"error": str(e)}), 500
 
 # Spam review detector
 spam_detector = pipeline("text-classification", model="roberta-base-openai-detector")
