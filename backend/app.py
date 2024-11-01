@@ -1,6 +1,11 @@
 from datetime import datetime
 import pytz
 import os
+from dotenv import load_dotenv
+load_dotenv()  
+import stripe
+stripe.api_key = os.getenv("STRIPE_SECRET_KEY")
+from urllib.parse import quote
 os.environ['TF_ENABLE_ONEDNN_OPTS'] = '0'
 
 from flask import Flask, request, jsonify, session, url_for, send_from_directory
@@ -68,7 +73,41 @@ def delete_from_gcs(file, bucket_name,filename):
     
     blob = bucket.blob(filename)
     blob.delete()
+    
+#stripe payment check out
+@app.route('/create-checkout-session', methods=['POST'])
+def create_checkout_session():
+    data = request.get_json()
+    amount = data.get("amount", 1000) 
+    plan_name = data.get("planName")   
+    max_profiles = data.get("maxProfiles")  
 
+    
+    encoded_plan_name = quote(plan_name)
+    encoded_max_profiles = quote(str(max_profiles))
+
+    try:
+        session = stripe.checkout.Session.create(
+            payment_method_types=['card'],
+            line_items=[{
+                'price_data': {
+                    'currency': 'usd',
+                    'product_data': {
+                        'name': 'Subscription Plan',
+                    },
+                    'unit_amount': amount,
+                },
+                'quantity': 1,
+            }],
+            mode='payment',
+            
+            success_url=f'http://localhost:3000/paymentSuccess?planName={encoded_plan_name}&maxProfiles={encoded_max_profiles}',
+            cancel_url='http://localhost:3000/paymentCancel?status=cancel',
+        )
+        return jsonify({"url": session.url})
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
 # Image caption function start & upload user image to google bucket
 @app.route('/imageCaptioning', methods=['POST'])
 def predict_caption():
