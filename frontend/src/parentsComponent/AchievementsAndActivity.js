@@ -5,7 +5,6 @@ import 'react-circular-progressbar/dist/styles.css';
 import { Bar } from "react-chartjs-2";
 import 'chart.js/auto';
 import "./AchievementsAndActivity.css";
-import dailyTasks from './dailyTasks';
 
 const AchievementsAndActivity = () => {
   const [children, setChildren] = useState([]);
@@ -21,13 +20,25 @@ const AchievementsAndActivity = () => {
   const [achievementGoal, setAchievementGoal] = useState(20);
   const [earliestUploadDate, setEarliestUploadDate] = useState(new Date());
   const [uploadsByDate, setUploadsByDate] = useState({});
+  const [dailyTasks, setDailyTasks] = useState({});
 
   const parentId = localStorage.getItem('user_id');
 
   useEffect(() => {
     fetchChildren();
+    fetchDailyTasks();
   }, []);
 
+  const fetchDailyTasks = async () => {
+    try {
+      const response = await axios.get(`http://localhost:5000/daily_tasks`);
+      setDailyTasks(response.data.tasks);
+    } catch (error) {
+      console.error('Error fetching daily tasks:', error);
+      setError('Failed to load daily tasks.');
+    }
+  };
+  
   const fetchChildren = async () => {
     try {
       const response = await axios.get(

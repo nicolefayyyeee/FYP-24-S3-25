@@ -479,9 +479,42 @@ class Review(db.Model):
     display = db.Column(db.Boolean, default=False)
 
     user = db.relationship('User', backref=db.backref('reviews', lazy=True))
+
+# Daily Tasks model
+class DailyTasks(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    task = db.Column(db.String(255), nullable=False)    
+    required_images = db.Column(db.Integer, nullable=False)
+    time_of_day = db.Column(db.String(50), nullable=False) 
+
 # Create DB
 with app.app_context():
     db.create_all()
+
+# Parent: get daily tasks
+@app.route('/daily_tasks', methods=['GET'])
+def daily_tasks():
+    try:
+        tasks = DailyTasks.query.all()
+        task_list = [
+            {
+                "id": task.id,
+                "task": task.task,
+                "requiredImages": task.required_images,
+                "time_of_day": task.time_of_day
+            }
+            for task in tasks
+        ]
+        organized_tasks = {
+            "morning": [task for task in task_list if task["time_of_day"] == "morning"],
+            "afternoon": [task for task in task_list if task["time_of_day"] == "afternoon"],
+            "night": [task for task in task_list if task["time_of_day"] == "night"]
+        }
+
+        return jsonify({"tasks": organized_tasks}), 200
+
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # WEB AVATAR
 # Child: save web avatar
