@@ -340,7 +340,7 @@ const AchievementsAndActivity = () => {
           </div>
 
           <div className="activity-section">
-            <h3>Recent Uploaded Pictures</h3>
+            <h3>Recently Uploaded Pictures</h3>
             {error && <p className="error">{error}</p>}
             <div className="pictures-container">
               {gallery
