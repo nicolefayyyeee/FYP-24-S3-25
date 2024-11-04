@@ -1,15 +1,18 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
-import Modal from "../containers/modal/Modal";
-import useModal from "../containers/hooks/useModal"; 
 import "./SubscriptionPlans.css";
 
 const SubscriptionPlans = () => {
   const navigate = useNavigate();
-  const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal();
   const [activeTab, setActiveTab] = useState("Monthly");
   const [activeMonthlyPlan, setActiveMonthlyPlan] = useState("Basic");
   const [activeYearlyPlan, setActiveYearlyPlan] = useState("");
+  const [currentPlan, setCurrentPlan] = useState(null);  
+
+  useEffect(() => {
+    const storedPlan = localStorage.getItem('currentPlan');
+    setCurrentPlan(storedPlan || "---");  
+  }, []);
 
   const monthlyPlans = [
     { name: "Free", price: "$0 per month", features: ["1 child profile", "Limited to 5 uploads/captures a day"], color: "red", maxProfiles: 1 },
@@ -35,7 +38,9 @@ const SubscriptionPlans = () => {
       return; 
     }
 
-    
+    // Store the selected plan in localStorage
+  localStorage.setItem('currentPlan', plan.name);
+
     if (plan.name !== "Free") {
       const confirmPayment = window.confirm(`Do you want to proceed to payment for the ${plan.name} plan?`);
       if (confirmPayment) {
@@ -50,16 +55,16 @@ const SubscriptionPlans = () => {
 
   return (
     <div className="subPlans">
-      <Modal
-        isOpen={modalOpen}
-        onClose={closeModal}
-        onConfirm={modalAction}
-        header={modalHeader}
-        message={modalMessage}
-     />
       <div className="subPlans-header">
         <h2>Subscription Plans</h2>
         <p>View the best plan for your family.</p>
+        {/* Display the current plan */}
+{currentPlan ? (
+  <p>Your current plan: <strong>{currentPlan}</strong></p>
+) : (
+  <p>Your current plan: <strong>---</strong></p>
+)}
+
         <button 
           className={`month-year-btn ${activeTab === "Monthly" ? "active" : ""}`}
           onClick={() => {
