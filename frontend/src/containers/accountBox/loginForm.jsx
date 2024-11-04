@@ -77,7 +77,7 @@ export function LoginForm(props) {
         {/* <MutedLink href="#">Forget your password?</MutedLink> */}
         <Marginer direction="vertical" margin="1.6em" />
         {errorMessage && <p style={{ color: 'red', textAlign: 'center' }} className="error-msg">{errorMessage}</p>}
-        <SubmitButton type="submit" onClick={handleSubmit}>Signin</SubmitButton>
+        <SubmitButton type="submit" onClick={handleSubmit}>Login</SubmitButton>
         </FormContainer>
       <Marginer direction="vertical" margin="1em" />
       <MutedLink href="#">
