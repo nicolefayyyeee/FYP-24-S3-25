@@ -55,6 +55,7 @@ export const PaymentSuccess = () => {
 
   useEffect(() => {
     alert("Payment Confirmed!");
+    localStorage.setItem('currentPlan', planName);
     navigate(`/createChild?plan=${planName}&maxProfiles=${maxProfiles}`);
   }, [navigate, planName, maxProfiles]);
 
