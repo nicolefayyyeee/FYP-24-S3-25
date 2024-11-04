@@ -839,7 +839,7 @@ def is_spam(review):
     print(f"Model output for review '{review}': {result}")
     label = result[0]['label']
     score = result[0]['score']
-    spam_threshold = 0.75
+    spam_threshold = 0.65
 
     return label == 'Fake' and score > spam_threshold
 
