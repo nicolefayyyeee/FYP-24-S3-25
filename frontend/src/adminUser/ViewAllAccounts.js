@@ -11,6 +11,7 @@ const ViewAllAccounts = () => {
     const [loading, setLoading] = useState(true);
     const [users, setUsers] = useState([]);
     const [searchQuery, setSearchQuery] = useState("");
+    const currentUserId = Number(localStorage.getItem('user_id'));
 
     // useModal
     const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal();
@@ -33,6 +34,11 @@ const ViewAllAccounts = () => {
     }, [openModal]);
 
     const handleSuspendToggle = (userId, currentStatus) => {
+        if (userId === currentUserId) {
+            openModal("Error", "You cannot suspend your own account.", closeModal);
+            return;
+        }
+
         const action = currentStatus ? "unsuspend" : "suspend";
         openModal(`Confirm ${action}`, `Are you sure you want to ${action} this user?`, async () => {
             setUsers((prevUsers) =>

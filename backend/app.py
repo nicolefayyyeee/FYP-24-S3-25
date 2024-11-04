@@ -1064,21 +1064,25 @@ def delete_user(user_id):
 # Admin: create admin user
 @app.route('/create_admin', methods=['POST'])
 def create_admin():
-    data = request.get_json()
+    try:
+        data = request.get_json()
 
-    # Check if the user already exists
-    if User.query.filter_by(username=data['username']).first():
-        return jsonify({"message": "Username already exists!"}), 400
+        # Check if the user already exists
+        if User.query.filter_by(username=data['username']).first():
+            return jsonify({"message": "Username already exists!"}), 400
+        
+        # Check if the email already exists
+        if User.query.filter_by(email=data['email']).first():
+            return jsonify({"message": "Email already exists!"}), 400
+        
+        hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
+        new_user = User(profile_id=1, username=data['username'], name=data['name'], email=data['email'], password=hashed_password)
+        db.session.add(new_user)
+        db.session.commit()
+        return jsonify({"message": "User created successfully!"}), 201
     
-    # Check if the email already exists
-    if User.query.filter_by(email=data['email']).first():
-        return jsonify({"message": "Email already exists!"}), 400
-    
-    hashed_password = bcrypt.generate_password_hash(data['password']).decode('utf-8')
-    new_user = User(profile_id=1, username=data['username'], name=data['name'], email=data['email'], password=hashed_password)
-    db.session.add(new_user)
-    db.session.commit()
-    return jsonify({"message": "User created successfully!"}), 201
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
 
 # Admin: view all users
 @app.route('/view_all_users', methods=['GET'])
@@ -1124,17 +1128,21 @@ def toggle_suspend(user_id):
 # Admin: create user profile
 @app.route('/create_profile', methods=['POST'])
 def create_profile():
-    data = request.get_json()
+    try:
+        data = request.get_json()
 
-    # Check if the role already exists
-    if Profile.query.filter_by(role=data['role']).first():
-        return jsonify({"message": "Role already exists!"}), 400
+        # Check if the role already exists
+        if Profile.query.filter_by(role=data['role']).first():
+            return jsonify({"message": "Role already exists!"}), 400
+        
+        new_profile = Profile(role=data['role'])
+        db.session.add(new_profile)
+        db.session.commit()
+        return jsonify({"message": "Profile created successfully!"}), 201
     
-    new_profile = Profile(role=data['role'])
-    db.session.add(new_profile)
-    db.session.commit()
-    return jsonify({"message": "Profile created successfully!"}), 201
-
+    except Exception as e:
+        return jsonify({"error": str(e)}), 500
+    
 # Admin: view all profiles
 @app.route('/view_all_profiles', methods=['GET'])
 def view_all_profiles():
