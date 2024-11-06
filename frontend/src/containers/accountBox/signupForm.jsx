@@ -9,6 +9,8 @@ import {
 } from "./common";
 import { Marginer } from "../marginer";
 import { AccountContext } from "./accountContext";
+import Modal from "../modal/Modal";
+import useModal from "../hooks/useModal"; 
 
 export function SignupForm(props) {
   const { switchToSignin } = useContext(AccountContext);
@@ -19,6 +21,7 @@ export function SignupForm(props) {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [errorMessage, setErrorMessage] = useState('');
+  const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal();
 
   const validateEmail = (email) => {
     const re = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -61,8 +64,9 @@ export function SignupForm(props) {
       const data = await response.json();
 
       if (response.ok) {
-        alert(data.message);
-        switchToSignin();
+        openModal("Success", data.message, () => {
+          switchToSignin();
+        });
       } else {
         setErrorMessage(data.message);
       }
@@ -73,6 +77,13 @@ export function SignupForm(props) {
 
   return (
     <BoxContainer>
+      <Modal
+        isOpen={modalOpen}
+        onClose={closeModal}
+        onConfirm={modalAction}
+        header={modalHeader}
+        message={modalMessage}
+      />
       <FormContainer onSubmit={handleSubmit}>
         <Input
           type="text"
