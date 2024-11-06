@@ -1,7 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { useNavigate, useLocation } from "react-router-dom";
-import Modal from "../containers/modal/Modal";
-import useModal from "../containers/hooks/useModal"; 
 import "./ParentHome.css";
 
 const CreateChild = () => {
@@ -17,7 +15,6 @@ const CreateChild = () => {
     const [errorMessage, setErrorMessage] = useState('');
     const [hasReachedLimit, setHasReachedLimit] = useState(false);
     const [createdProfiles, setCreatedProfiles] = useState(0);
-    const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal();
 
     // Extract query parameters from the URL
     const params = new URLSearchParams(location.search);
@@ -49,25 +46,23 @@ const CreateChild = () => {
     // Initialize profile count and free plan usage status on component mount
     useEffect(() => {
         if (planName !== "Free") {
-            // For Basic, Pro, and Premium plans, reset the profile count to 0 every time
             localStorage.setItem(`profilesCreated_${userId}_${planName}`, '0');
             setCreatedProfiles(0);
         } else {
-            // Fetch created profiles from localStorage for Free plan
             const createdProfiles = parseInt(localStorage.getItem(`profilesCreated_${userId}_${planName}`) || '0', 10);
             setCreatedProfiles(createdProfiles);
 
             // Check if the user has reached the profile limit
             if (createdProfiles >= maxProfiles) {
                 setHasReachedLimit(true);
-                openModal("Error", `You have reached the maximum number of profiles for the ${planName} plan.`, closeModal);
+                alert(`You have reached the maximum number of profiles for the ${planName} plan.`);
             }
         }
-    }, [userId, planName, maxProfiles, openModal, closeModal]);
+    }, [userId, planName, maxProfiles]);
 
     const submit = async () => {
         if (!userId) {
-            openModal("Error", "User ID is missing. Please log in again.", closeModal);
+            alert("User ID is missing. Please log in again.");
             return;
         }
 
@@ -81,16 +76,15 @@ const CreateChild = () => {
             return;
         }
 
-        // Get the current profile count for the logged-in user
         const currentCreatedProfiles = parseInt(localStorage.getItem(`profilesCreated_${userId}_${planName}`) || '0', 10);
 
         if (planName === "Free" && hasUsedFreePlan) {
-            openModal("Error", "You have already used the Free plan and cannot create more profiles.", closeModal);
+            alert("You have already used the Free plan and cannot create more profiles.");
             return;
         }
 
         if (currentCreatedProfiles >= maxProfiles) {
-            openModal("Error", `You have reached the maximum number of profiles for the ${planName} plan.`, closeModal);
+            alert(`You have reached the maximum number of profiles for the ${planName} plan.`);
             return;
         }
 
@@ -116,7 +110,12 @@ const CreateChild = () => {
                 const updatedProfileCount = currentCreatedProfiles + 1;
                 localStorage.setItem(`profilesCreated_${userId}_${planName}`, updatedProfileCount);
                 setCreatedProfiles(updatedProfileCount);
-                openModal("Success", data.message, closeModal);
+                alert(data.message);
+
+                // Update the total count for each plan in local storage for the ViewData page
+               const currentPlanCount = parseInt(localStorage.getItem(`${planName.toLowerCase()}UserCount`) || "0", 10);
+               localStorage.setItem(`${planName.toLowerCase()}UserCount`, currentPlanCount + 1);
+
                 // If using the Free plan, mark it as used on backend
                 if (planName === "Free") {
                     await fetch("http://localhost:5000/user/useFreePlan", {
@@ -130,15 +129,14 @@ const CreateChild = () => {
                 // Check if reached the limit after increment
                 if (updatedProfileCount >= maxProfiles) {
                     setHasReachedLimit(true);
-                    openModal("Error", `You have reached the maximum number of profiles for the ${planName} plan.`, () => {
-                        navigate("/profile");
-                    });
+                    alert(`You have reached the maximum number of profiles for the ${planName} plan.`);
+                    navigate("/profile");
                 }
             } else {
                 setErrorMessage(data.message || "Failed to create profile.");
             }
         } catch (error) {
-            openModal("Error", error.message, closeModal);
+            alert("Error: " + error.message);
         } finally {
             setSubmitting(false);
         }
@@ -146,13 +144,6 @@ const CreateChild = () => {
 
     return (
         <div className="parentHome">
-            <Modal
-                isOpen={modalOpen}
-                onClose={closeModal}
-                onConfirm={modalAction}
-                header={modalHeader}
-                message={modalMessage}
-            />
             <div className="parent-welcome-header">
                 <h2>Add New Child Profile</h2>
                 <p>Fill in the form below to create a new child profile</p>
