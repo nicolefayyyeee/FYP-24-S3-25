@@ -7,11 +7,16 @@ const SubscriptionPlans = () => {
   const [activeTab, setActiveTab] = useState("Monthly");
   const [activeMonthlyPlan, setActiveMonthlyPlan] = useState("Basic");
   const [activeYearlyPlan, setActiveYearlyPlan] = useState("");
-  const [currentPlan, setCurrentPlan] = useState(null);  
+  const [currentPlan, setCurrentPlan] = useState(null);
 
-  useEffect(() => {
+  useEffect(() => { 
     const storedPlan = localStorage.getItem('currentPlan');
-    setCurrentPlan(storedPlan || "---");  
+    if (!storedPlan) {
+      localStorage.setItem('currentPlan', 'Free');
+      setCurrentPlan('Free');
+    } else {
+      setCurrentPlan(storedPlan);
+    }
   }, []);
 
   const monthlyPlans = [
@@ -31,24 +36,21 @@ const SubscriptionPlans = () => {
   const plansToDisplay = activeTab === "Monthly" ? monthlyPlans : yearlyPlans;
 
   const handlePlanSelect = (plan) => {
-    // Check if the selected plan is "Free" and the user has already created a profile
     const createdProfilesFree = parseInt(localStorage.getItem('created_profiles_Free') || '0', 10);
     if (plan.name === "Free" && createdProfilesFree > 0) {
       alert("You cannot select the Free plan because you have already created a profile.");
-      return; 
+      return;
     }
 
-    // Store the selected plan in localStorage
-  localStorage.setItem('currentPlan', plan.name);
+    localStorage.setItem('currentPlan', plan.name);
+    setCurrentPlan(plan.name); 
 
     if (plan.name !== "Free") {
       const confirmPayment = window.confirm(`Do you want to proceed to payment for the ${plan.name} plan?`);
       if (confirmPayment) {
-        
         navigate(`/paymentScreen?plan=${plan.name}&price=${plan.price}&maxProfiles=${plan.maxProfiles}`);
       }
     } else {
-      
       navigate(`/createChild?plan=${plan.name}&maxProfiles=${plan.maxProfiles}`);
     }
   };
@@ -58,12 +60,7 @@ const SubscriptionPlans = () => {
       <div className="subPlans-header">
         <h2>Subscription Plans</h2>
         <p>View the best plan for your family.</p>
-        {/* Display the current plan */}
-{currentPlan ? (
-  <p>Your current plan: <strong>{currentPlan}</strong></p>
-) : (
-  <p>Your current plan: <strong>---</strong></p>
-)}
+        <p>Your current plan: <strong>{currentPlan || "---"}</strong></p>
 
         <button 
           className={`month-year-btn ${activeTab === "Monthly" ? "active" : ""}`}
@@ -92,7 +89,7 @@ const SubscriptionPlans = () => {
           <div 
             key={index}
             className={`subPlans-card ${plan.color} ${activeTab === "Monthly" && activeMonthlyPlan === plan.name ? "active-plan" : ""} ${activeTab === "Yearly" && activeYearlyPlan === plan.name ? "active-plan" : ""}`} 
-            onClick={() => handlePlanSelect(plan)} // Handle plan selection with logic
+            onClick={() => handlePlanSelect(plan)}
           >
             <div className="subPlans-column">
               <h3>{plan.name}</h3>
