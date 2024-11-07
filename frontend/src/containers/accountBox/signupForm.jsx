@@ -28,6 +28,16 @@ export function SignupForm(props) {
     return re.test(email);
   };
 
+  const validatePassword = (password) => {
+    const minLength = 8;
+    const hasUppercase = /[A-Z]/.test(password);
+    const hasLowercase = /[a-z]/.test(password);
+    const hasNumber = /\d/.test(password);
+    const hasSpecialChar = /[!@#$%^&*(),.?":{}|<>]/.test(password);
+
+    return password.length >= minLength && hasUppercase && hasLowercase && hasNumber && hasSpecialChar;
+  };
+
   const handleSubmit = async (e) => {
     e.preventDefault();
 
@@ -42,6 +52,11 @@ export function SignupForm(props) {
       return;
     }
 
+    if (!validatePassword(password)) {
+      setErrorMessage("Password must be at least 8 characters long and include uppercase, lowercase, number, and special characters.");
+      return;
+    }
+    
     if (password !== confirmPassword) {
       setErrorMessage("Passwords do not match!");
       return;
