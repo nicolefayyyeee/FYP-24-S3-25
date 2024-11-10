@@ -2,12 +2,26 @@ import React, { useState, useEffect } from "react";
 import { useNavigate } from "react-router-dom";
 import "./SubscriptionPlans.css";
 
+//modal
+import Modal from "../containers/modal/Modal";
+import useModal from "../containers/hooks/useModal";
+
 const SubscriptionPlans = () => {
   const navigate = useNavigate();
   const [activeTab, setActiveTab] = useState("Monthly");
   const [activeMonthlyPlan, setActiveMonthlyPlan] = useState("Basic");
   const [activeYearlyPlan, setActiveYearlyPlan] = useState("");
   const [currentPlan, setCurrentPlan] = useState(null);
+
+    //modal
+    const {
+      modalOpen,
+      modalHeader,
+      modalMessage,
+      modalAction,
+      openModal,
+      closeModal,
+    } = useModal();
 
   useEffect(() => { 
     const storedPlan = localStorage.getItem('currentPlan');
@@ -37,7 +51,7 @@ const SubscriptionPlans = () => {
 
   const handlePlanSelect = (plan) => {
     const createdProfilesFree = parseInt(localStorage.getItem('created_profiles_Free') || '0', 10);
-    if (plan.name === "Free" && createdProfilesFree > 0) {
+    if (plan.name == "Free" && createdProfilesFree > 0) {
       alert("You cannot select the Free plan because you have already created a profile.");
       return;
     }
@@ -46,10 +60,13 @@ const SubscriptionPlans = () => {
     setCurrentPlan(plan.name); 
 
     if (plan.name !== "Free") {
-      const confirmPayment = window.confirm(`Do you want to proceed to payment for the ${plan.name} plan?`);
-      if (confirmPayment) {
-        navigate(`/paymentScreen?plan=${plan.name}&price=${plan.price}&maxProfiles=${plan.maxProfiles}`);
-      }
+      openModal(
+        "Confirm Payment",
+        `Do you want to proceed to payment for the ${plan.name} plan?`,
+        () => {
+          navigate(`/paymentScreen?plan=${plan.name}&price=${plan.price}&maxProfiles=${plan.maxProfiles}`);
+        }
+      );
     } else {
       navigate(`/createChild?plan=${plan.name}&maxProfiles=${plan.maxProfiles}`);
     }
@@ -57,6 +74,15 @@ const SubscriptionPlans = () => {
 
   return (
     <div className="subPlans">
+      <Modal
+        isOpen={modalOpen}
+        onClose={closeModal}
+        onConfirm={() => {
+          closeModal();
+        }}
+        header={modalHeader}
+        message={modalMessage}
+      />
       <div className="subPlans-header">
         <h2>Subscription Plans</h2>
         <p>View the best plan for your family.</p>
