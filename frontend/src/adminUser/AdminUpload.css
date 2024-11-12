@@ -17,7 +17,7 @@
       color: transparent; /* Set the text color to transparent */ 
   }
 
-  .admin-dashboard h3{
+  .admin-header{
     text-align: center;
     color: #fff6f6;
     font-size: 2.5rem;

@@ -85,19 +85,44 @@ const AdminUploadImg = () => {
   };
 
   // Handle image deletion with confirmation
+  // const handleDelete = (id) => {
+  //   openModal(
+  //     "Confirm Deletion",
+  //     "Are you sure you want to delete this image?",
+  //     async () => {
+  //       try {
+  //         await axios.delete(`http://localhost:5000/admin/delete/${id}`);
+  //         fetchGallery();
+  //       } catch (error) {
+  //         console.error("Error deleting image:", error);
+  //       }
+  //       closeModal();
+  //     }
+  //   );
+  // };
+  
+  const handleConfirmDelete  = async (id) => {
+    try {
+      const response = await fetch(`http://localhost:5000/admin/delete/${id}`, {
+          method: 'DELETE',
+      });
+      fetchGallery();
+      if (response.ok) {
+          openModal("Image Deleted", "Image has been deleted.", closeModal);
+      } else {
+          const data = await response.json();
+          openModal("Error", data.message || "Error deleting image", closeModal);
+      }
+    } catch (error) {
+      console.error("Error deleting image:", error);
+    }
+  };
+
   const handleDelete = (id) => {
     openModal(
       "Confirm Deletion",
       "Are you sure you want to delete this image?",
-      async () => {
-        try {
-          await axios.delete(`http://localhost:5000/admin/delete/${id}`);
-          fetchGallery();
-        } catch (error) {
-          console.error("Error deleting image:", error);
-        }
-        closeModal();
-      }
+      () => handleConfirmDelete(id)
     );
   };
 
@@ -161,9 +186,7 @@ const AdminUploadImg = () => {
       <Modal
         isOpen={modalOpen}
         onClose={closeModal}
-        onConfirm={() => {
-          closeModal();
-        }}
+        onConfirm={modalAction}
         header={modalHeader}
         message={modalMessage}
       />
@@ -200,7 +223,7 @@ const AdminUploadImg = () => {
       </div>
 
       {/* Gallery Section */}
-      <h3>Pre-Existing Gallery</h3>
+      <h3 className="admin-header">Pre-Existing Gallery</h3>
       <div className="gallery-table">
         <table
           style={{
