@@ -29,7 +29,7 @@ import random  # For selecting game content
 
 app = Flask(__name__)
 GOOGLE_CLOUD_STORAGE_BUCKET = "image-upload-seesayai"
-CLOUD_SQL_CONNECTION_NAME = 'seesayai1:asia-southeast1:seesay-instance'
+CLOUD_SQL_CONNECTION_NAME = 'hybrid-chassis-437113-q6:asia-southeast1:seesay2-instance'
 DB_USER = 'root'
 DB_PASSWORD = 'seesay123!'
 DB_NAME = 'seesaydb'
