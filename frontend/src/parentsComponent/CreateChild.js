@@ -86,7 +86,7 @@ const CreateChild = () => {
 
   const submit = async () => {
     if (!userId) {
-      alert("User ID is missing. Please log in again.");
+      openModal("Error", "User ID is missing. Please log in again.", closeModal);
       return;
     }
 
@@ -106,16 +106,12 @@ const CreateChild = () => {
     );
 
     if (planName === "Free" && hasUsedFreePlan) {
-      alert(
-        "You have already used the Free plan and cannot create more profiles."
-      );
+      openModal("Error", "You have already used the Free plan and cannot create more profiles.", closeModal);
       return;
     }
 
     if (currentCreatedProfiles >= maxProfiles) {
-      alert(
-        `You have reached the maximum number of profiles for the ${planName} plan.`
-      );
+      openModal("Error", `You have reached the maximum number of profiles for the ${planName} plan.`, closeModal);
       return;
     }
 
@@ -144,7 +140,7 @@ const CreateChild = () => {
           updatedProfileCount
         );
         setCreatedProfiles(updatedProfileCount);
-        alert(data.message);
+        openModal("Success", data.message, closeModal);
 
         // Update the total count for each plan in local storage for the ViewData page
         const currentPlanCount = parseInt(
@@ -169,16 +165,15 @@ const CreateChild = () => {
         // Check if reached the limit after increment
         if (updatedProfileCount >= maxProfiles) {
           setHasReachedLimit(true);
-          alert(
-            `You have reached the maximum number of profiles for the ${planName} plan.`
-          );
-          navigate("/profile");
+          openModal("", `You have reached the maximum number of profiles for the ${planName} plan.`, () => {
+            navigate("/profile");
+          });
         }
       } else {
         setErrorMessage(data.message || "Failed to create profile.");
       }
     } catch (error) {
-      alert("Error: " + error.message);
+      openModal("Error", error.message, closeModal);
     } finally {
       setSubmitting(false);
     }
@@ -189,9 +184,7 @@ const CreateChild = () => {
       <Modal
         isOpen={modalOpen}
         onClose={closeModal}
-        onConfirm={() => {
-          closeModal();
-        }}
+        onConfirm={modalAction}
         header={modalHeader}
         message={modalMessage}
       />

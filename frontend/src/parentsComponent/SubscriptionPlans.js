@@ -52,7 +52,7 @@ const SubscriptionPlans = () => {
   const handlePlanSelect = (plan) => {
     const createdProfilesFree = parseInt(localStorage.getItem('created_profiles_Free') || '0', 10);
     if (plan.name == "Free" && createdProfilesFree > 0) {
-      alert("You cannot select the Free plan because you have already created a profile.");
+      openModal("Error", "You cannot select the Free plan because you have already created a profile.", closeModal);
       return;
     }
 
@@ -65,6 +65,7 @@ const SubscriptionPlans = () => {
         `Do you want to proceed to payment for the ${plan.name} plan?`,
         () => {
           navigate(`/paymentScreen?plan=${plan.name}&price=${plan.price}&maxProfiles=${plan.maxProfiles}`);
+          closeModal();
         }
       );
     } else {
@@ -77,9 +78,7 @@ const SubscriptionPlans = () => {
       <Modal
         isOpen={modalOpen}
         onClose={closeModal}
-        onConfirm={() => {
-          closeModal();
-        }}
+        onConfirm={modalAction}
         header={modalHeader}
         message={modalMessage}
       />

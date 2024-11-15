@@ -1,5 +1,7 @@
 import React, { useEffect } from "react";
 import { useLocation, useNavigate } from "react-router-dom";
+import Modal from "../containers/modal/Modal";
+import useModal from "../containers/hooks/useModal";
 
 const PaymentScreen = () => {
   const location = useLocation();
@@ -46,6 +48,7 @@ const PaymentScreen = () => {
 
 // PaymentSuccess component for successful payment
 export const PaymentSuccess = () => {
+  const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal();
   const navigate = useNavigate();
   const location = useLocation();
 
@@ -54,13 +57,22 @@ export const PaymentSuccess = () => {
   const maxProfiles = params.get("maxProfiles");
 
   useEffect(() => {
-    alert("Payment Confirmed!");
-    localStorage.setItem('currentPlan', planName);
-    navigate(`/createChild?plan=${planName}&maxProfiles=${maxProfiles}`);
+    openModal("Success", 'Payment Confirmed!', () => {
+      localStorage.setItem('currentPlan', planName);
+      navigate(`/createChild?plan=${planName}&maxProfiles=${maxProfiles}`);
+    });
   }, [navigate, planName, maxProfiles]);
 
   return (
+    
     <div style={{ textAlign: "center", marginTop: "50px" }}>
+      <Modal
+        isOpen={modalOpen}
+        onClose={closeModal}
+        header={modalHeader}
+        message={modalMessage}
+        onConfirm={modalAction}
+      />
       <h2 style={{ color: "white" }}>Payment successful! Redirecting...</h2>
     </div>
   );
@@ -68,16 +80,25 @@ export const PaymentSuccess = () => {
 
 // PaymentCancel component for canceled payment
 export const PaymentCancel = () => {
+  const { modalOpen, modalHeader, modalMessage, modalAction, openModal, closeModal } = useModal();
   const navigate = useNavigate();
 
   useEffect(() => {
-    alert("Payment failed");
-    navigate("/subscriptionPlans");  
+    openModal("Error", 'Payment failed', () => {
+      navigate("/subscriptionPlans");  
+    });
   }, [navigate]);
 
   return (
     <div style={{ textAlign: "center", marginTop: "50px" }}>
-      <h2 style={{ color: "white" }}>Payment canceled. Redirecting...</h2>
+      <Modal
+        isOpen={modalOpen}
+        onClose={closeModal}
+        header={modalHeader}
+        message={modalMessage}
+        onConfirm={modalAction}
+      />
+      <h2 style={{ color: "white" }}>Payment cancelled. Redirecting...</h2>
     </div>
   );
 };
